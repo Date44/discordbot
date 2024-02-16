@@ -194,16 +194,16 @@ async def on_message(message):
         text = text.replace("!del ", "")
         async for i in channel.history(limit=int(text) + 1):
             await i.delete()
-    elif text[0:4] == "!123":
-        time4 = datetime.datetime.now() + datetime.timedelta(hours=2)
-        time4 = time4.strftime("%H:%M:%S %d-%m-%Y")
-        time1 = "17:10:54 21-03-2023"
-        await channel.send(f"Сейчас = {time4}")
-        await message.delete()
-        await check_time(time1)
-        # getTime3()
-        # event = discord.ScheduledEvent(start_time=getTime3())
-        # event.channel=text[4:]
+    # elif text[0:4] == "!123":
+    #     time4 = datetime.datetime.now() + datetime.timedelta(hours=2)
+    #     time4 = time4.strftime("%H:%M:%S %d-%m-%Y")
+    #     time1 = "17:10:54 21-03-2023"
+    #     await channel.send(f"Сейчас = {time4}")
+    #     await message.delete()
+    #     await check_time(time1)
+    #     # getTime3()
+    #     # event = discord.ScheduledEvent(start_time=getTime3())
+    #     # event.channel=text[4:]
     elif str(message.author.id) not in black_listbot:
         # if message.channel.id == 1075443989089636472:
         # await channel.send(chatbot.get_response(str(message.content)))
@@ -212,6 +212,7 @@ async def on_message(message):
                 await message.delete()
                 exit()
             elif text[0:5] == "!text":
+                print("123")
                 text = text.replace("!text ", "")
                 text = text.split("\n")
                 text2 = text[0].split(' ')
@@ -229,6 +230,7 @@ async def on_message(message):
                     embed = discord.Embed(description=content, color=color)
                     await channel.send(embed=embed)
             elif text[0:5] == "!text":
+                print("1232")
                 text = text.replace("!text ", "")
                 text = text.split("\n")
                 text2 = text[0].split(' ')
