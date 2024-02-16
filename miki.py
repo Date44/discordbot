@@ -9,7 +9,7 @@ import time
 import discord
 import sqlite3
 
-from discord.ui import View, button, Button
+from discord.ui import View, button, Button, TextInput
 
 
 async def menu(
@@ -276,6 +276,24 @@ async def on_message(message):
                 channel = message.channel
                 if text == "гей":
                     await channel.send(text)
+
+@tree.command(name="Modal", description="Modal", guild=discord.Object(id=guild))
+async def modal(interaction):
+    channel = Bot.get_channel(int(bot_chat))
+    async def on_submit(interaction: discord.Interaction):
+        await channel.send(f"{m1.value}")
+    viev = discord.ui.Modal()
+    m1 = TextInput(label='123', placeholder="123")
+    m2 = TextInput(label='1234', placeholder="123", required=True)
+    m3 = TextInput(label='12345', placeholder="123")
+    m4 = TextInput(label='123456', style=2, placeholder="123")
+    m5 = TextInput(label='1234567', style=2, placeholder="123", min_length=1, max_length=128)
+    viev.add_item(m1)
+    viev.add_item(m2)
+    viev.add_item(m3)
+    viev.add_item(m4)
+    await viev.on_submit(on_submit)
+
 
 
 @tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild))
