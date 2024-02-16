@@ -230,7 +230,6 @@ async def on_message(message):
             #         embed = discord.Embed(description=content, color=color)
             #         await channel.send(embed=embed)
             elif text[0:5] == "!text":
-                print("12342")
                 text = text.replace("!text ", "")
                 text = text.split("\n")
                 text2 = text[0].split(' ')
@@ -238,7 +237,6 @@ async def on_message(message):
                 channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
                 del text[0]
                 content = '\n'.join(text)
-                print(content)
                 if color2:
                     color = colors[text2[0]]
                     if message.attachments:
@@ -277,28 +275,35 @@ async def on_message(message):
                 if text == "гей":
                     await channel.send(text)
 
-@tree.command(name="modal", description="Modal", guild=discord.Object(id=guild))
-async def modal(interaction):
-    channel = Bot.get_channel(int(bot_chat))
-    async def on_submit(interaction: discord.Interaction, values):
-        m1_value = values.get('123')
-        m2_value = values.get('1234')
-        m3_value = values.get('12345')
-        m4_value = values.get('123456')
-        m5_value = values.get('1234567')
-        await channel.send(f"{m1_value} {m2_value} {m3_value} {m4_value} {m5_value}")
-    view = discord.ui.Modal(title="1233")
-    m1 = TextInput(label='123', placeholder="123")
-    m2 = TextInput(label='1234', placeholder="123", required=True)
-    m3 = TextInput(label='12345', placeholder="123")
-    m4 = TextInput(label='123456', style=2, placeholder="123")
-    m5 = TextInput(label='1234567', style=2, placeholder="123", min_length=1, max_length=128)
-    view.add_item(m1)
-    view.add_item(m2)
-    view.add_item(m3)
-    view.add_item(m4)
-    view.on_submit(on_submit, m1.value, m2.value, m3.value, m4.value, m5.value)
-    await interaction.response.send_message(view=view)
+# @tree.command(name="modal", description="Modal", guild=discord.Object(id=guild))
+# async def modal(interaction):
+#     channel = Bot.get_channel(int(bot_chat))
+#     view = View()
+#     button = discord.ui.Button(label='Submit', custom_id="submit_button", style=discord.ButtonStyle.primary)
+#
+#     async def callback2(interaction):
+#         view = discord.ui.Modal(title="1233")
+#         m1 = TextInput(label='123', placeholder="123", custom_id="m1")
+#         m2 = TextInput(label='1234', placeholder="123", required=True, custom_id="m2")
+#         m3 = TextInput(label='12345', placeholder="123", custom_id="m3")
+#         m4 = TextInput(label='123456', placeholder="123", custom_id="m4")
+#         m5 = TextInput(label='1234567', placeholder="123", min_length=1, max_length=128, custom_id="m5")
+#         view.add_item(m1)
+#         view.add_item(m2)
+#         view.add_item(m3)
+#         view.add_item(m4)
+#         view.add_item(m5)
+#
+#         async def on_submit(interaction: discord.Interaction):
+#             await channel.send(m1.value + " " + m2.value + " " + m3.value + " " + m4.value + " " + m5.value)
+#         await view.on_submit(on_submit)
+#         await interaction.response.send_message(view=view)
+#
+#
+#
+#     view.add_item(button)
+#     button.callback = callback2
+#     await interaction.response.send_message(view=view)
 
 
 
@@ -572,7 +577,7 @@ async def event1(interaction, ивент: str, ссылка: str):
     view1 = View()
     button1 = Button(style=discord.ButtonStyle.primary, label='Голосовой канал', url=voice.jump_url)
     view.add_item(button1)
-    #---------------------------------------------------------------------------------
+    #-----------------------------ч----------------------------------------------------
     button2 = Button(style=discord.ButtonStyle.primary, label='Завершить ивент')
     view1.add_item(button2)
     button2.callback = callback2
