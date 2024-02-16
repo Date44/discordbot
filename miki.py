@@ -277,22 +277,29 @@ async def on_message(message):
                 if text == "гей":
                     await channel.send(text)
 
-@tree.command(name="Modal", description="Modal", guild=discord.Object(id=guild))
+@tree.command(name="modal", description="Modal", guild=discord.Object(id=guild))
 async def modal(interaction):
     channel = Bot.get_channel(int(bot_chat))
-    async def on_submit(interaction: discord.Interaction):
-        await channel.send(f"{m1.value}")
-    viev = discord.ui.Modal()
+    async def on_submit(interaction: discord.Interaction, values):
+        m1_value = values.get('123')
+        m2_value = values.get('1234')
+        m3_value = values.get('12345')
+        m4_value = values.get('123456')
+        m5_value = values.get('1234567')
+        await channel.send(f"{m1_value} {m2_value} {m3_value} {m4_value} {m5_value}")
+    view = discord.ui.Modal(title="1233")
     m1 = TextInput(label='123', placeholder="123")
     m2 = TextInput(label='1234', placeholder="123", required=True)
     m3 = TextInput(label='12345', placeholder="123")
     m4 = TextInput(label='123456', style=2, placeholder="123")
     m5 = TextInput(label='1234567', style=2, placeholder="123", min_length=1, max_length=128)
-    viev.add_item(m1)
-    viev.add_item(m2)
-    viev.add_item(m3)
-    viev.add_item(m4)
-    await viev.on_submit(on_submit)
+    view.add_item(m1)
+    view.add_item(m2)
+    view.add_item(m3)
+    view.add_item(m4)
+    view.on_submit(on_submit, m1.value, m2.value, m3.value, m4.value, m5.value)
+    await interaction.response.send_message(view=view)
+
 
 
 
