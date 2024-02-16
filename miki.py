@@ -235,12 +235,12 @@ async def on_message(message):
                 text = text.split("\n")
                 text2 = text[0].split(' ')
                 color2 = text2[0] in colors
+                channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
+                del text[0]
                 content = '\n'.join(text)
                 print(content)
                 if color2:
                     color = colors[text2[0]]
-                    channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
-                    del text[0]
                     if message.attachments:
                         for attach in message.attachments:
                             await attach.save(f"foto/{attach.filename}")
