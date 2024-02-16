@@ -235,6 +235,8 @@ async def on_message(message):
                 text = text.split("\n")
                 text2 = text[0].split(' ')
                 color2 = text2[0] in colors
+                content = '\n'.join(text)
+                print(content)
                 if color2:
                     color = colors[text2[0]]
                     channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
@@ -242,11 +244,10 @@ async def on_message(message):
                     if message.attachments:
                         for attach in message.attachments:
                             await attach.save(f"foto/{attach.filename}")
-                            embed = discord.Embed(color=color)
+                            embed = discord.Embed(description=content, color=color)
                             embed.set_image(url=attach.url)
                             await channel.send(embed=embed)
                     else:
-                        content = '\n'.join(text)
                         embed = discord.Embed(description=content, color=color)
                         await channel.send(embed=embed)
                 else:
