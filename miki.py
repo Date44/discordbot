@@ -211,26 +211,26 @@ async def on_message(message):
             if text[0:5] == "!stop":
                 await message.delete()
                 exit()
+            # elif text[0:5] == "!text":
+            #     print("123")
+            #     text = text.replace("!text ", "")
+            #     text = text.split("\n")
+            #     text2 = text[0].split(' ')
+            #     color = colors[text2[0]]
+            #     channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
+            #     del text[0]
+            #     if message.attachments:
+            #         for attach in message.attachments:
+            #             await attach.save(f"foto/{attach.filename}")
+            #             embed = discord.Embed(color=color)
+            #             embed.set_image(url=attach.url)
+            #             await channel.send(embed=embed)
+            #     else:
+            #         content = '\n'.join(text)
+            #         embed = discord.Embed(description=content, color=color)
+            #         await channel.send(embed=embed)
             elif text[0:5] == "!text":
-                print("123")
-                text = text.replace("!text ", "")
-                text = text.split("\n")
-                text2 = text[0].split(' ')
-                color = colors[text2[0]]
-                channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
-                del text[0]
-                if message.attachments:
-                    for attach in message.attachments:
-                        await attach.save(f"foto/{attach.filename}")
-                        embed = discord.Embed(color=color)
-                        embed.set_image(url=attach.url)
-                        await channel.send(embed=embed)
-                else:
-                    content = '\n'.join(text)
-                    embed = discord.Embed(description=content, color=color)
-                    await channel.send(embed=embed)
-            elif text[0:5] == "!text":
-                print("1232")
+                print("12342")
                 text = text.replace("!text ", "")
                 text = text.split("\n")
                 text2 = text[0].split(' ')
