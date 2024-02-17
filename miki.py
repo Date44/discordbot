@@ -222,7 +222,7 @@ async def on_message(message):
                         await channel.send(embed=embed)
                 else:
                     await message.reply(f"Нету такого цвета '{text2[0]}'")
-            elif text[0:16] == "!правила-создание":
+            elif text[0:17] == "!правила-создание":
                 text = text.replace("!правила-создание ", "")
                 text = text.split("\n")
                 # channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
