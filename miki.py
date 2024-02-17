@@ -226,22 +226,18 @@ async def on_message(message):
                 text = text.replace("!text ", "")
                 text = text.split("\n")
                 text2 = text[0].split(' ')
-                color2 = text2[0] in colors
-                channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
+                # channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
                 del text[0]
                 print(text)
-                if color2:
-                    color = colors[text2[0]]
-                    embed = discord.Embed(color=color)
-                    embed.title = "**title**"
-                    embed.set_footer(text="footer")
-                    embed.add_field(name="**> name123213112 **", value="```valu3122133113e```", inline=False)
-                    embed.add_field(name="**> name21312312 **", value="```v3211321233alue```", inline=True)
-                    embed.add_field(name="**> name3213231232 **", value="```val123323e```", inline=True)
+                embed = discord.Embed(color=0x000000)
+                embed.title = "**title**"
+                embed.set_footer(text="footer")
+                embed.add_field(name="**> name123213112 **", value="```valu3122133113e```", inline=False)
+                embed.add_field(name="**> name21312312 **", value="```v3211321233alue```", inline=True)
+                embed.add_field(name="**> name3213231232 **", value="```val123323e```", inline=True)
 
-                    await channel.send(embed=embed)
-                else:
-                    await message.reply(f"Нету такого цвета '{text2[0]}'")
+                await channel.send(embed=embed)
+
             elif text[0:5] == "!edit":
                 text = text.replace("!edit ", "").split("\n")
                 color2 = text[0].split(" ")[0] in colors
