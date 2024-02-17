@@ -194,15 +194,6 @@ async def on_message(message):
         text = text.replace("!del ", "")
         async for i in channel.history(limit=int(text) + 1):
             await i.delete()
-    elif text[0:4] == "!text2":
-        embed = discord.Embed()
-        embed.title = "**title**"
-        embed.set_footer(text="footer")
-        embed.add_field(name="**> name123213112 **", value="```valu3122133113e```", inline=False)
-        embed.add_field(name="**> name21312312 **", value="```v3211321233alue```", inline=True)
-        embed.add_field(name="**> name3213231232 **", value="```val123323e```", inline=True)
-
-        await channel.send(embed=embed)
     elif str(message.author.id) not in black_listbot:
         # if message.channel.id == 1075443989089636472:
         # await channel.send(chatbot.get_response(str(message.content)))
@@ -229,6 +220,26 @@ async def on_message(message):
                     else:
                         embed = discord.Embed(description=content, color=color)
                         await channel.send(embed=embed)
+                else:
+                    await message.reply(f"Нету такого цвета '{text2[0]}'")
+            elif text[0:4] == "!правила-создание":
+                text = text.replace("!text ", "")
+                text = text.split("\n")
+                text2 = text[0].split(' ')
+                color2 = text2[0] in colors
+                channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
+                del text[0]
+                print(text)
+                if color2:
+                    color = colors[text2[0]]
+                    embed = discord.Embed(color=color)
+                    embed.title = "**title**"
+                    embed.set_footer(text="footer")
+                    embed.add_field(name="**> name123213112 **", value="```valu3122133113e```", inline=False)
+                    embed.add_field(name="**> name21312312 **", value="```v3211321233alue```", inline=True)
+                    embed.add_field(name="**> name3213231232 **", value="```val123323e```", inline=True)
+
+                    await channel.send(embed=embed)
                 else:
                     await message.reply(f"Нету такого цвета '{text2[0]}'")
             elif text[0:5] == "!edit":
