@@ -236,6 +236,22 @@ async def on_message(message):
                 embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
 
                 await channel.send(embed=embed)
+            elif text[0:18] == "!правила-изменение":
+                text = text.replace("!правила-изменение ", "")
+                text = text.split("\n")
+                text2 = text[0].split(" ")[1].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')
+                print(text2)
+                channel = Bot.get_channel(int(text2[0]))
+                del text[0]
+
+                embed = discord.Embed(color=0x000000)
+                embed.title = f"**{text[0]}**"
+                embed.set_footer(text=f"{text[7]}")
+                embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
+                embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
+                embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
+
+                await channel.send(embed=embed)
 
             elif text[0:5] == "!edit":
                 text = text.replace("!edit ", "").split("\n")
