@@ -227,7 +227,6 @@ async def on_message(message):
                 text = text.split("\n")
                 channel = Bot.get_channel(int(1008286403068702832))
                 del text[0]
-                print(text)
 
                 embed = discord.Embed(color=0x000000)
                 embed.title = f"**{text[0]}**"
