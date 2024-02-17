@@ -222,12 +222,10 @@ async def on_message(message):
                         await channel.send(embed=embed)
                 else:
                     await message.reply(f"Нету такого цвета '{text2[0]}'")
-            elif text[0:4] == "!правила-создание":
-                text = text.replace("!text ", "")
+            elif text[0:16] == "!правила-создание":
+                text = text.replace("!правила-создание ", "")
                 text = text.split("\n")
-                text2 = text[0].split(' ')
                 # channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
-                del text[0]
                 print(text)
                 embed = discord.Embed(description=text,color=0x000000)
                 embed.title = "**title**"
