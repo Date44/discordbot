@@ -267,7 +267,7 @@ class my_modal(discord.ui.Modal, title='Modal'):
 
 
     async def on_submit(self, interaction: discord.Interaction):
-        channel = Bot.get_channel(int(bot_chat))
+        channel = Bot.get_channel(int(1208052717344399440))
         embed = discord.Embed(title=self.title, description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}", color = discord. Colour. blue())
         embed.set_author(name =interaction.user, icon_url=interaction.user.avatar)
         await channel.send(embed=embed)
