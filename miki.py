@@ -278,7 +278,7 @@ async def on_message(message):
 
 class my_modal(discord.ui.Modal, title='Modal'):
     m1 = discord.ui.TextInput(label='**Ваш возраст.**', placeholder="23 года.")
-    m2 = discord.ui.TextInput(label='**Никнейм в игре.**', placeholder="flowle_", required=False)
+    m2 = discord.ui.TextInput(label='**Никнейм в игре.**', placeholder="flowle_")
     m3 = discord.ui.TextInput(label='**Чем планируете заняться на сервере?**', placeholder="строительством, фермерством.")
     m4 = discord.ui.TextInput(label='**Расскажите немного о себе.** ', style=discord.TextStyle.long, placeholder="Я Максим, люблю пиццу.", min_length=16, max_length=128)
 
