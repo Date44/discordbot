@@ -277,11 +277,11 @@ async def on_message(message):
 
 
 class my_modal(discord.ui.Modal, title='Modal'):
-    m1 = discord.ui.TextInput(label='123', placeholder="123")
-    m2 = discord.ui.TextInput(label='1234', placeholder="123", required=False)
-    m3 = discord.ui.TextInput(label='12345', style=discord.TextStyle.short, placeholder="123")
-    m4 = discord.ui.TextInput(label='123456', style=discord.TextStyle.paragraph, placeholder="123")
-    m5 = discord.ui.TextInput(label='1234567', style=discord.TextStyle.long , placeholder="123", min_length=1, max_length=128)
+    m1 = discord.ui.TextInput(label='**Ваш возраст.**', placeholder="23 года.")
+    m2 = discord.ui.TextInput(label='**Никнейм в игре.**', placeholder="flowle_", required=False)
+    m3 = discord.ui.TextInput(label='**Чем планируете заняться на сервере?**', placeholder="строительством, фермерством.")
+    m4 = discord.ui.TextInput(label='**Расскажите немного о себе.** ', style=discord.TextStyle.long, placeholder="Я Максим, люблю пиццу.", min_length=16, max_length=128)
+
 
 
 
