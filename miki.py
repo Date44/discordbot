@@ -197,7 +197,7 @@ async def on_message(message):
     elif str(message.author.id) not in black_listbot:
         # if message.channel.id == 1075443989089636472:
         # await channel.send(chatbot.get_response(str(message.content)))
-        if message.channel.id == bot_chat:
+        if message.channel.id == bot_chat or message.channel.id ==  1208500022371557396:
             if text[0:5] == "!stop":
                 await message.delete()
                 exit()
@@ -240,8 +240,6 @@ async def on_message(message):
                 text = text.replace("!правила-изменение ", "")
                 text = text.split("\n")
                 text2 = text[0].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')
-                print(text)
-                print(text2)
                 channel = Bot.get_channel(int(text2[0]))
                 del text[0]
 
@@ -251,8 +249,12 @@ async def on_message(message):
                 embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
                 embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
                 embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
-
-                await channel.send(embed=embed)
+                async for i in channel.history():
+                    if i.id == int(text2[1]):
+                        await i.edit(embed=embed)
+                        break
+                    else:
+                        pass
 
             elif text[0:5] == "!edit":
                 text = text.replace("!edit ", "").split("\n")
