@@ -290,6 +290,7 @@ class my_modal(discord.ui.Modal, title='Modal'):
         embed = discord.Embed(title=self.title, description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}\n**{self.m5.label}**\n{self.m5}", color = discord. Colour. blue())
         embed.set_author(name =interaction.user, icon_url=interaction.user.avatar)
         await channel.send(embed=embed)
+        await interaction. response.send_message(embed=embed, enumerate=True)
 
 @tree.command(name="modal", description="Modal", guild=discord.Object(id=guild))
 async def modal(interaction):
