@@ -229,7 +229,7 @@ async def on_message(message):
                 # channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
                 del text[0]
                 print(text)
-                embed = discord.Embed(color=0x000000)
+                embed = discord.Embed(description=text,color=0x000000)
                 embed.title = "**title**"
                 embed.set_footer(text="footer")
                 embed.add_field(name="**> name123213112 **", value="```valu3122133113e```", inline=False)
