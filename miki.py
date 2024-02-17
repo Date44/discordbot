@@ -225,7 +225,7 @@ async def on_message(message):
             elif text[0:17] == "!правила-создание":
                 text = text.replace("!правила-создание ", "")
                 text = text.split("\n")
-                # channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
+                channel = Bot.get_channel(int(1008286403068702832))
                 del text[0]
                 print(text)
 
