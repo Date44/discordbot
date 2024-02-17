@@ -194,16 +194,15 @@ async def on_message(message):
         text = text.replace("!del ", "")
         async for i in channel.history(limit=int(text) + 1):
             await i.delete()
-    # elif text[0:4] == "!123":
-    #     time4 = datetime.datetime.now() + datetime.timedelta(hours=2)
-    #     time4 = time4.strftime("%H:%M:%S %d-%m-%Y")
-    #     time1 = "17:10:54 21-03-2023"
-    #     await channel.send(f"Сейчас = {time4}")
-    #     await message.delete()
-    #     await check_time(time1)
-    #     # getTime3()
-    #     # event = discord.ScheduledEvent(start_time=getTime3())
-    #     # event.channel=text[4:]
+    elif text[0:4] == "!text2":
+        embed = discord.Embed()
+        embed.title = "**title**"
+        embed.set_footer(text="footer")
+        embed.add_field(name="**> name123213112 **", value="```valu3122133113e```", inline=False)
+        embed.add_field(name="**> name21312312 **", value="```v3211321233alue```", inline=True)
+        embed.add_field(name="**> name3213231232 **", value="```val123323e```", inline=True)
+
+        await channel.send(embed=embed)
     elif str(message.author.id) not in black_listbot:
         # if message.channel.id == 1075443989089636472:
         # await channel.send(chatbot.get_response(str(message.content)))
@@ -211,24 +210,6 @@ async def on_message(message):
             if text[0:5] == "!stop":
                 await message.delete()
                 exit()
-            # elif text[0:5] == "!text":
-            #     print("123")
-            #     text = text.replace("!text ", "")
-            #     text = text.split("\n")
-            #     text2 = text[0].split(' ')
-            #     color = colors[text2[0]]
-            #     channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
-            #     del text[0]
-            #     if message.attachments:
-            #         for attach in message.attachments:
-            #             await attach.save(f"foto/{attach.filename}")
-            #             embed = discord.Embed(color=color)
-            #             embed.set_image(url=attach.url)
-            #             await channel.send(embed=embed)
-            #     else:
-            #         content = '\n'.join(text)
-            #         embed = discord.Embed(description=content, color=color)
-            #         await channel.send(embed=embed)
             elif text[0:5] == "!text":
                 text = text.replace("!text ", "")
                 text = text.split("\n")
@@ -277,17 +258,17 @@ async def on_message(message):
 
 
 class my_modal(discord.ui.Modal, title='Modal'):
-    m1 = discord.ui.TextInput(label='**Ваш возраст.**', placeholder="23 года.")
-    m2 = discord.ui.TextInput(label='**Никнейм в игре.**', placeholder="flowle_")
-    m3 = discord.ui.TextInput(label='**Чем планируете заняться на сервере?**', placeholder="строительством, фермерством.")
-    m4 = discord.ui.TextInput(label='**Расскажите немного о себе.** ', style=discord.TextStyle.long, placeholder="Я Максим, люблю пиццу.", min_length=16, max_length=128)
+    m1 = discord.ui.TextInput(label='Ваш возраст', placeholder="23 года")
+    m2 = discord.ui.TextInput(label='Никнейм в игре', placeholder="flowle_")
+    m3 = discord.ui.TextInput(label='Чем планируете заняться на сервере?', placeholder="Cтроительством, фермерством")
+    m4 = discord.ui.TextInput(label='Расскажите немного о себе', style=discord.TextStyle.long, placeholder="Я Максим, люблю пиццу", min_length=16, max_length=128)
 
 
 
 
     async def on_submit(self, interaction: discord.Interaction):
         channel = Bot.get_channel(int(bot_chat))
-        embed = discord.Embed(title=self.title, description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}\n**{self.m5.label}**\n{self.m5}", color = discord. Colour. blue())
+        embed = discord.Embed(title=self.title, description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}", color = discord. Colour. blue())
         embed.set_author(name =interaction.user, icon_url=interaction.user.avatar)
         await channel.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
