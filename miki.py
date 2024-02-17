@@ -278,10 +278,10 @@ async def on_message(message):
 
 class my_modal(discord.ui.Modal, title='Modal'):
     m1 = discord.ui.TextInput(label='123', placeholder="123")
-    m2 = discord.ui.TextInput(label='1234', placeholder="123", required=True)
+    m2 = discord.ui.TextInput(label='1234', placeholder="123", required=False)
     m3 = discord.ui.TextInput(label='12345', placeholder="123")
     m4 = discord.ui.TextInput(label='123456', placeholder="123")
-    m5 = discord.ui.TextInput(label='1234567', placeholder="123", min_length=1, max_length=128)
+    m5 = discord.ui.TextInput(label='1234567', style=discord.TextStyle.long , placeholder="123", min_length=1, max_length=128)
 
 
 
