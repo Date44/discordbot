@@ -282,6 +282,8 @@ class my_modal(discord.ui.Modal, title='Modal'):
     m3 = discord.ui.TextInput(label='12345', style=discord.TextStyle.short, placeholder="123")
     m4 = discord.ui.TextInput(label='123456', style=discord.TextStyle.paragraph, placeholder="123")
     m5 = discord.ui.TextInput(label='1234567', style=discord.TextStyle.long , placeholder="123", min_length=1, max_length=128)
+    m6 = discord.ui.TextInput(label='1234567', style=discord.TextStyle.long, placeholder="123", min_length=1,
+                              max_length=128)
 
 
 
