@@ -275,37 +275,25 @@ async def on_message(message):
                 if text == "гей":
                     await channel.send(text)
 
-# @tree.command(name="modal", description="Modal", guild=discord.Object(id=guild))
-# async def modal(interaction):
-#     channel = Bot.get_channel(int(bot_chat))
-#     view = View()
-#     button = discord.ui.Button(label='Submit', custom_id="submit_button", style=discord.ButtonStyle.primary)
-#
-#     async def callback2(interaction):
-#         view = discord.ui.Modal(title="1233")
-#         m1 = TextInput(label='123', placeholder="123", custom_id="m1")
-#         m2 = TextInput(label='1234', placeholder="123", required=True, custom_id="m2")
-#         m3 = TextInput(label='12345', placeholder="123", custom_id="m3")
-#         m4 = TextInput(label='123456', placeholder="123", custom_id="m4")
-#         m5 = TextInput(label='1234567', placeholder="123", min_length=1, max_length=128, custom_id="m5")
-#         view.add_item(m1)
-#         view.add_item(m2)
-#         view.add_item(m3)
-#         view.add_item(m4)
-#         view.add_item(m5)
-#
-#         async def on_submit(interaction: discord.Interaction):
-#             await channel.send(m1.value + " " + m2.value + " " + m3.value + " " + m4.value + " " + m5.value)
-#         await view.on_submit(on_submit)
-#         await interaction.response.send_message(view=view)
-#
-#
-#
-#     view.add_item(button)
-#     button.callback = callback2
-#     await interaction.response.send_message(view=view)
+
+class my_modal(discord.ui.Modal, title='Modal'):
+    m1 = discord.ui.TextInput(label='123', placeholder="123")
+    m2 = discord.ui.TextInput(label='1234', placeholder="123", required=True)
+    m3 = discord.ui.TextInput(label='12345', placeholder="123")
+    m4 = discord.ui.TextInput(label='123456', placeholder="123")
+    m5 = discord.ui.TextInput(label='1234567', placeholder="123", min_length=1, max_length=128)
 
 
+
+    async def on_submit(self, interaction: discord.Interaction):
+        channel = Bot.get_channel(int(bot_chat))
+        embed = discord.Embed(title=self.title, description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}\n**{self.m5.label}**\n{self.m5}", color = discord. Colour. blue())
+        embed.set_author(name =interaction.user, icon_url=interaction.user.avatar)
+        await channel.send(embed=embed)
+
+@tree.command(name="modal", description="Modal", guild=discord.Object(id=guild))
+async def modal(interaction):
+    await interaction.response.send_modal(my_modal())
 
 
 @tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild))
@@ -518,7 +506,8 @@ async def event3(interaction, ивент: str, дата: str, время: str):
     time_object1 = time_object1.strftime("%H:%M")
     await event2([ивент, time_object, time_object1])
 
-    await interaction.response.send_message(content = f"Ивент запланирован, дата и время проведения `{дата}` **:** `{время}`", ephemeral = True)
+    await interaction.response.send_message(
+        content=f"Ивент запланирован, дата и время проведения `{дата}` **:** `{время}`", ephemeral=True)
 
 
 async def event2(text: list):
@@ -543,7 +532,8 @@ async def event2(text: list):
         list1.append(data1)
     embed = discord.Embed(
         description=f"**РАСПИСАНИЕ ИВЕНТОВ**\n\n{list1[0]}\n{list2[0]}\n\n{list1[1]}\n{list2[1]}\n\n{list1[2]}\n{list2[2]}\n\n{list1[3]}\n{list2[3]}\n\n{list1[4]}\n{list2[4]}\n\n{list1[5]}\n{list2[5]}\n\n{list1[6]}\n{list2[6]}\n")
-    embed.set_image(url="https://media.discordapp.net/attachments/1143935103962198137/1146180780175937627/21dea55f066d9d29.png?width=1595&height=637")
+    embed.set_image(
+        url="https://media.discordapp.net/attachments/1143935103962198137/1146180780175937627/21dea55f066d9d29.png?width=1595&height=637")
     await r.edit(embed=embed)
 
 
@@ -556,7 +546,7 @@ async def event1(interaction, ивент: str, ссылка: str):
     voice = await guild1.create_voice_channel(name=str(ивент), reason="Начало ивента", user_limit=15, category=category)
     channel = Bot.get_channel(int(event_chat))
     embed = discord.Embed(description=f"""**Event {ивент}**\nНачат ивент `{ивент}`""", color=0x1)
-    #embed1 = discord.Embed(description=f"""**Event {ивент}**\nОкончен ивент `{ивент}`""", color=0x1)
+    # embed1 = discord.Embed(description=f"""**Event {ивент}**\nОкончен ивент `{ивент}`""", color=0x1)
     embed2 = discord.Embed(
         description=f"""**Event {ивент}**\nГолосовой канал ивента создан  -  -  -  >  {voice.jump_url} """, color=0x1)
     embed3 = discord.Embed(
@@ -567,7 +557,7 @@ async def event1(interaction, ивент: str, ссылка: str):
     async def callback2(interaction):
         if interaction.user.id == interaction1.user.id:
             await interaction.response.send_message(embed=embed3)
-            #await channel.send(embed=embed1)
+            # await channel.send(embed=embed1)
             print(interaction.message.content)
             await voice.delete()
         else:
@@ -577,11 +567,11 @@ async def event1(interaction, ивент: str, ссылка: str):
     view1 = View()
     button1 = Button(style=discord.ButtonStyle.primary, label='Голосовой канал', url=voice.jump_url)
     view.add_item(button1)
-    #-----------------------------ч----------------------------------------------------
+    # -----------------------------ч----------------------------------------------------
     button2 = Button(style=discord.ButtonStyle.primary, label='Завершить ивент')
     view1.add_item(button2)
     button2.callback = callback2
-    #---------------------------------------------------------------------------------
+    # ---------------------------------------------------------------------------------
     button3 = Button(style=discord.ButtonStyle.primary, label='Сайт', url=str(ссылка))
     view.add_item(button3)
 
