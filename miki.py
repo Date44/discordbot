@@ -240,6 +240,7 @@ async def on_message(message):
                 text = text.replace("!правила-изменение ", "")
                 text = text.split("\n")
                 text2 = text[0].split(" ")[1].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')
+                print(text)
                 print(text2)
                 channel = Bot.get_channel(int(text2[0]))
                 del text[0]
