@@ -685,6 +685,7 @@ async def printer(channel):
     all = cur.fetchall()
     for i in all:
         print(i)
+        print(i[4])
 
 
 # 1. Во время запуска бота
