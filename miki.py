@@ -684,8 +684,13 @@ async def printer(channel):
     cur.execute("SELECT * FROM Users WHERE ban_timeout != 0")
     all = cur.fetchall()
     for i in all:
-        print(i)
-        print(i[3])
+        current_time_str = datetime.now().strftime('%H:%M:%S %d-%m-%Y')
+        time_obj = datetime.strptime(i[3], '%H:%M:%S %d-%m-%Y')
+        current_time_obj = datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
+        if current_time_obj >= time_obj:
+            print(time_obj + " =< " + current_time_str)
+        elif current_time_obj < time_obj:
+            print(time_obj + " > " + current_time_str)
 
 
 # 1. Во время запуска бота
