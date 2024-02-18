@@ -764,7 +764,7 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @tasks.loop(seconds=10)
-async def printer(self):
+async def printer():
     channel = Bot.get_channel(int(1075518862889590895))
     await channel.send(f"{datetime.datetime.now()}")
 
