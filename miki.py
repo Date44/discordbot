@@ -1,3 +1,4 @@
+import asyncio
 import configparser
 import datetime
 import os
@@ -763,10 +764,10 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tasks.loop(seconds=5.0)
 async def printer(self):
     channel = Bot.get_channel(int(1075518862889590895))
     await channel.send(f"{datetime.datetime.now()}")
+    await asyncio.sleep(10)
 
 
 # 1. Во время запуска бота
@@ -808,4 +809,5 @@ async def on_ready():
 
 
 # Запуск бота
+Bot.loop.create_task(printer())
 Bot.run(token)
