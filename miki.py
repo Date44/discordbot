@@ -288,9 +288,6 @@ class my_modal(discord.ui.Modal, title='Modal'):
     m3 = discord.ui.TextInput(label='Чем планируете заняться на сервере?', placeholder="Cтроительством, фермерством")
     m4 = discord.ui.TextInput(label='Расскажите немного о себе', style=discord.TextStyle.long, placeholder="Я Максим, люблю пиццу", min_length=16, max_length=128)
 
-
-
-
     async def on_submit(self, interaction: discord.Interaction):
         channel = Bot.get_channel(int(1208052717344399440))
         embed = discord.Embed(title=self.title, description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}", color = discord. Colour. blue())
@@ -318,6 +315,8 @@ async def info(interaction):
             "    `заголовок`\n"
             "    `текст`\n"
             "    **!stop** - перезапустить бота\n"
+            "    **!правила-создание** \n [Title] \n[Текст1] \n[Текст1] \n[Текст2] \n[Текст2] \n[Текст3] \n[Текст3]\n"
+            "    **!правила-изменение** \n [Title] \n[Текст1] \n[Текст1] \n[Текст2] \n[Текст2] \n[Текст3] \n[Текст3]\n"
             "    ")
     embed = discord.Embed(title="Инфо", description=info, color=0x1)
     await interaction.response.send_message(embed=embed)
@@ -386,10 +385,6 @@ async def money(interaction):
         color=0x1)
     embed.set_thumbnail(url=interaction.user.avatar)
     embed.set_author(name="Пользователь")
-    # async with aiohttp.ClientSession() as session: webhook = discord.Webhook.from_url(
-    # url='https://discord.com/api/webhooks/1008413933847191573
-    # /NcCm_HNnRoYjaqrWyGgAxhglXfwL_CVQVCYvyHfKkh_tyoSxz3SjVkLE3C0UV66oREAx', session=session) await webhook.send(
-    # embed=embed, username=interaction.user.name, avatar_url=interaction.user.avatar.url)
     await interaction.response.send_message(embed=embed)
 
 
