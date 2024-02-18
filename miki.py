@@ -681,9 +681,9 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
 
 @tasks.loop(minutes=1)
 async def printer(channel):
-    print(datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y'))
+    # print(datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y'))
     cur.execute("SELECT * FROM Users WHERE ban_timeout != 0")
-    all = cur.fetchone()
+    all = cur.fetchall()
     print(all)
     # channel = Bot.get_channel(int(1075518862889590895))
     # await channel.send(f"{datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')}")
