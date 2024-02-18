@@ -766,7 +766,7 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
 @tasks.loop(seconds=5.0)
 async def printer(self):
     channel = Bot.get_channel(int(1075518862889590895))
-    await channel.send("123")
+    await channel.send(f"{datetime.datetime.now()}")
 
 
 # 1. Во время запуска бота
