@@ -763,11 +763,10 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
     print(error)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
-
+@tasks.loop(seconds=10)
 async def printer(self):
     channel = Bot.get_channel(int(1075518862889590895))
     await channel.send(f"{datetime.datetime.now()}")
-    await asyncio.sleep(10)
 
 
 # 1. Во время запуска бота
@@ -775,42 +774,7 @@ async def printer(self):
 async def on_ready():
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
-    # check123(281772955690860544)
-    # a = True
-    # while a:
-    #     r = str(input())
-    #     if r == "stop":
-    #         exit()
-    #     elif r == "123":
-    #
+    printer.start()
 
-    # while True:
-    #     cur.execute("SELECT name, ban_timeout, mute_timeout FROM Users")
-    #     all = cur.fetchone()
-    #     time.sleep(300)
-    # await channel.send(f"{time} Start")
-    # channel = Bot.get_channel(1067138540544200724)
-    # a = False
-    # r = requests.get(f"https://logs1.shadowcraft.ru/Magic_public_logs/{getTime2()}.txt")
-    # lastlog = r.text
-    # while a == True:
-    #     if times != getTime2():
-    #         a = False
-    #     else:
-    #         if r.text != lastlog:
-    #             rr = r.text
-    #             text = r.text.replace(lastlog, "")
-    #             lastlog = rr
-    #             await channel.send(text)
-    #             sleep(10)
-    #         else:
-    #             r = requests.get(f"https://logs1.shadowcraft.ru/Magic_public_logs/{getTime2()}.txt")
-    #             sleep(10)
 
-async def start_check():
-    await Bot.wait_until_ready()
-    Bot.loop.create_task(printer())
-
-# Запуск бота
-Bot.loop.create_task(start_check())
 Bot.run(token)
