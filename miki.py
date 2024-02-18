@@ -679,9 +679,12 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tasks.loop(seconds=10)
+@tasks.loop(minutes=1)
 async def printer(channel):
     print(datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y'))
+    cur.execute("SELECT ban_timeout FROM Users WHERE *")
+    all = cur.fetchone()
+    print(all)
     # channel = Bot.get_channel(int(1075518862889590895))
     # await channel.send(f"{datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')}")
 
