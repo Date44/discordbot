@@ -329,6 +329,7 @@ async def ban(interaction, пользователь: discord.Member, время:
         all = create_profil(пользователь.id)
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (getTime(время), пользователь.id))
     con.commit()
+    await interaction.response.send_message(text)
 
 
 @tree.command(name="разбан", description="Снять бан", guild=discord.Object(id=guild))
@@ -684,6 +685,7 @@ async def printer(channel):
     cur.execute("SELECT * FROM Users WHERE ban_timeout != 0")
     all = cur.fetchall()
     for i in all:
+        print(i[3])
         current_time_str = datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')
         time_obj = datetime.datetime.strptime(i[3], '%H:%M:%S %d-%m-%Y')
         current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
