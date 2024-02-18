@@ -1,4 +1,3 @@
-import asyncio
 import configparser
 import datetime
 import os
@@ -9,8 +8,8 @@ import tracemalloc
 import discord
 import random2
 from discord import app_commands
-from discord.ui import View, Button
 from discord.ext import tasks
+from discord.ui import View, Button
 
 
 async def menu(
@@ -175,13 +174,6 @@ def getTime(time):
 def getTime2():
     time = datetime.datetime.now()
     return time.strftime("%d-%m-%Y")
-
-
-def getTime3():
-    time = "13:52:24 18-03-2023"
-    time = datetime.datetime.strptime(time, "%H:%M:%S %d-%m-%Y")
-    time1 = datetime.datetime.now() + datetime.timedelta(days=1)
-    time1 = time1.strftime("%Y-%m-%d %H:%M:%S")
 
 
 @Bot.event
@@ -633,83 +625,6 @@ async def casino(interaction, ставка: int):
                 await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-#
-# @Bot.event
-# async def on_button_click(interaction: discord.Interaction):
-#     print(interaction.component.custom_id)
-
-# @tree.command(name="брак", description="брак", guild=discord.Object(id=guild))
-# async def marry(interaction, пользователь: discord.Member):
-#     print(пользователь.id)
-#     if interaction.user.id == пользователь.id:
-#         await interaction.response.send_message('Нельзя выйти за себя 🙅‍♂️', ephemeral=True)
-#     else:
-#         cur.execute("SELECT marry FROM Users WHERE name = ?", (пользователь.id,))
-#         all = cur.fetchone()
-#         cur.execute("SELECT marry FROM Users WHERE name = ?", (interaction.user.id,))
-#         all1 = cur.fetchone()
-#         print(1)
-#         if all[0] == None:
-#             create_profil(пользователь.id)
-#         if all1[0] == None:
-#             create_profil(interaction.user.id)
-#         cur.execute("SELECT marry FROM Users WHERE name = ?", (пользователь.id,))
-#         cur.execute("SELECT marry FROM Users WHERE name = ?", (interaction.user.id,))
-#         all = cur.fetchall()
-#         if all[0][0] != 0:
-#             if all[1][0] != 0:
-#                 await interaction.response.send_message('Пользователь уже замужем/женат', ephemeral=True)
-#             else:
-#                 await interaction.response.send_message('Вы уже замужем/женат', ephemeral=True)
-#         else:
-#             channel = Bot.get_channel(int(interaction.channel.id))
-#             view = View()
-#             button = Button(style=discord.ButtonStyle.primary, label='Подтвердить')
-#
-#             async def button_callback(interaction: discord.Interaction):
-#
-#                 await interaction.response.send_message('Предложение было отпрвлено', ephemeral=True)
-#
-#                 await repit111(пользователь, interaction, channel)
-#
-#             button.callback = button_callback
-#             view.add_item(button)
-#             text = f"Предложение брака.\nВы предложили вступить в брак пользователю {пользователь.name} | <@{пользователь.id}>\nПодтвердите снизу"
-#             await interaction.response.send_message(text, view=view, ephemeral=True)
-#
-#
-# async def repit111(interaction1: discord.Interaction, user1, channel):
-#     user = await Bot.fetch_user(interaction1.id)
-#
-#     view = View()
-#     button1 = Button(style=discord.ButtonStyle.primary, label='Да', custom_id='button1')
-#     button2 = Button(style=discord.ButtonStyle.success, label='Нет', custom_id='button2')
-#
-#     async def callback1(interaction):
-#         print(user1.id, " ", interaction.user.id)
-#         cur.execute("UPDATE Users SET marry = ? WHERE name = ?", (user1.id, interaction.user.id))
-#         cur.execute("UPDATE Users SET marry = ? WHERE name = ?", (interaction.user.id, user1.id))
-#         con.commit()
-#         await message.reply(f'Вы согласились сделать пару с <@{user1.user.id}>')
-#
-#         await channel.send(f"<@{interaction1.id}>|{interaction1.name} || <@{user1.user.id}>|{user1.user.name}")
-#
-#     async def callback2(interaction):
-#         await message.reply(f'Вы отказались сделать пару с <@{user1.user.id}>')
-#
-#     button1.callback = callback1
-#     button2.callback = callback2
-#     view.add_item(button1)
-#     view.add_item(button2)
-#
-#     embed = discord.Embed(
-#         description=f"\nПользователь <@{user1.user.id}> сделал вам предложение руки и сердца.\n\nГотовы ли вы вступить с ним в брак? ❤️‍🔥",
-#         color=0x36393E)
-#     embed.set_author(name="Предложение брака.")
-#     embed.set_image(url="https://cdn.discordapp.com/attachments/1075518862889590895/1125738955250352188/1004.gif")
-#     message = await user.send(embed=embed, view=view)
-
-
 @tree.command(name="магазин", description="магазин", guild=discord.Object(id=guild))
 async def shop1(interaction, лот: int = -1):
     view = View()
@@ -763,10 +678,11 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
     print(error)
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
+
 @tasks.loop(seconds=10)
 async def printer():
     channel = Bot.get_channel(int(1075518862889590895))
-    await channel.send(f"{datetime.datetime.now()}")
+    await channel.send(f"{datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')}")
 
 
 # 1. Во время запуска бота
