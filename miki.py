@@ -695,7 +695,7 @@ async def on_ready():
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
     channel = Bot.get_channel(int(1075518862889590895))
-    printer.start(channel)
+    # printer.start(channel)
 
 
 Bot.run(token)
