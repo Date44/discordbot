@@ -680,9 +680,10 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
 
 
 @tasks.loop(seconds=10)
-async def printer():
-    channel = Bot.get_channel(int(1075518862889590895))
-    await channel.send(f"{datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')}")
+async def printer(channel):
+    print(datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y'))
+    # channel = Bot.get_channel(int(1075518862889590895))
+    # await channel.send(f"{datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')}")
 
 
 # 1. Во время запуска бота
@@ -690,7 +691,8 @@ async def printer():
 async def on_ready():
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
-    printer.start()
+    channel = Bot.get_channel(int(1075518862889590895))
+    printer(channel).start()
 
 
 Bot.run(token)
