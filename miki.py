@@ -327,7 +327,7 @@ async def ban(interaction, пользователь: discord.Member, время:
     all = cur.fetchone()
     if all == None:
         all = create_profil(пользователь.id)
-    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (getTime(время), interaction.user.id))
+    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (getTime(время), пользователь.id))
     con.commit()
 
 
