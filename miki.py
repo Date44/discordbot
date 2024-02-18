@@ -807,7 +807,10 @@ async def on_ready():
     #             r = requests.get(f"https://logs1.shadowcraft.ru/Magic_public_logs/{getTime2()}.txt")
     #             sleep(10)
 
+async def start_check():
+    await Bot.wait_until_ready()
+    Bot.loop.create_task(printer())
 
 # Запуск бота
-Bot.loop.create_task(printer())
+Bot.loop.create_task(start_check())
 Bot.run(token)
