@@ -318,10 +318,10 @@ async def info(interaction):
 @tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild))
 async def ban(interaction, пользователь: discord.Member, время: str, причина: str):
     channel = Bot.get_channel(log_chat)
-    guild1 = Bot.get_guild(1007951389198127195)
-    role_ban = guild1.get_role(1085655121775579187)
+    # guild1 = Bot.get_guild(1007951389198127195)
+    # role_ban = guild1.get_role(1085655121775579187)
     text = f'Пользователь <@{пользователь.id}> | `{пользователь}` был забанен на сервере, время: {время}, причина: {причина}'
-    await пользователь.add_roles(role_ban, reason=причина)
+    # await пользователь.add_roles(role_ban, reason=причина)
     await channel.send(text)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
