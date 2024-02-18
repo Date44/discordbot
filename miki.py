@@ -1,15 +1,15 @@
-import datetime
-import tracemalloc
-import random2
-# from chatterbot import ChatBot
-from discord import app_commands
 import configparser
+import datetime
 import os
-import time
-import discord
 import sqlite3
+import time
+import tracemalloc
 
-from discord.ui import View, button, Button, TextInput
+import discord
+import random2
+from discord import app_commands
+from discord.ui import View, Button
+from discord.ext import tasks
 
 
 async def menu(
@@ -197,7 +197,7 @@ async def on_message(message):
     elif str(message.author.id) not in black_listbot:
         # if message.channel.id == 1075443989089636472:
         # await channel.send(chatbot.get_response(str(message.content)))
-        if message.channel.id == bot_chat or message.channel.id ==  1208500022371557396:
+        if message.channel.id == bot_chat or message.channel.id == 1208500022371557396:
             if text[0:5] == "!stop":
                 await message.delete()
                 exit()
@@ -239,7 +239,8 @@ async def on_message(message):
             elif text[0:18] == "!правила-изменение":
                 text = text.replace("!правила-изменение ", "")
                 text = text.split("\n")
-                text2 = text[0].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')
+                text2 = text[0].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split(
+                    '/')
                 channel = Bot.get_channel(int(text2[0]))
                 del text[0]
 
@@ -286,14 +287,18 @@ class my_modal(discord.ui.Modal, title='Modal'):
     m1 = discord.ui.TextInput(label='Ваш возраст', placeholder="23 года")
     m2 = discord.ui.TextInput(label='Никнейм в игре', placeholder="flowle_")
     m3 = discord.ui.TextInput(label='Чем планируете заняться на сервере?', placeholder="Cтроительством, фермерством")
-    m4 = discord.ui.TextInput(label='Расскажите немного о себе', style=discord.TextStyle.long, placeholder="Я Максим, люблю пиццу", min_length=16, max_length=128)
+    m4 = discord.ui.TextInput(label='Расскажите немного о себе', style=discord.TextStyle.long,
+                              placeholder="Я Максим, люблю пиццу", min_length=16, max_length=128)
 
     async def on_submit(self, interaction: discord.Interaction):
         channel = Bot.get_channel(int(1208052717344399440))
-        embed = discord.Embed(title=self.title, description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}", color = discord. Colour. blue())
-        embed.set_author(name =interaction.user, icon_url=interaction.user.avatar)
+        embed = discord.Embed(title=self.title,
+                              description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}",
+                              color=discord.Colour.blue())
+        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await channel.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
+
 
 @tree.command(name="modal", description="Modal", guild=discord.Object(id=guild))
 async def modal(interaction):
@@ -756,6 +761,12 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
     embed = discord.Embed(description=f"""Со мной что-то случилось\n{error}""", color=0x1)
     print(error)
     await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
+@tasks.loop(seconds=5.0)
+async def printer(self):
+    channel = Bot.get_channel(int(1075518862889590895))
+    channel.send("123")
 
 
 # 1. Во время запуска бота
