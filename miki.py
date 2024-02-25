@@ -668,7 +668,7 @@ async def printer(channel):
         current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
         if current_time_obj >= time_obj:
 
-            member = Bot.get_user(int(i[0]))
+            member = guild1.get_member(int(i[0]))
             await member.remove_roles(role_ban, reason="причина(auto)")
             cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, i[0]))
             con.commit()
