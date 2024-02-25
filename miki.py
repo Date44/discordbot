@@ -23,30 +23,6 @@ async def menu(
         for string in menu if current.lower() in string.lower()
     ]
 
-
-def check123(id, type: str):
-    a = True
-    cur.execute("SELECT ? FROM Users WHERE name = ?", (type, id,))
-    timeban = cur.fetchone()
-    time = datetime.datetime.now()
-    time = time.strftime('%H:%M:%S %d-%m-%Y')
-    time = check_time(str(time))
-    timeban = check_time(str(timeban[0]))
-    i = 0
-    while a:
-        if i < len(time) + 1:
-            if time[i] == timeban[i]:
-                i = i + 1
-            elif time[i] > timeban[i]:
-                cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, id))
-                con.commit()
-                a = False
-            elif time[i] < timeban[i]:
-                a = False
-        else:
-            a = False
-
-
 def check_time(time2):
     # channel = Bot.get_channel(1007954919090831360)
     # 16:49:28 02-04-2023
@@ -336,7 +312,7 @@ async def ban(interaction, пользователь: discord.Member, время:
 async def unban(interaction, пользователь: discord.Member, причина: str):
     channel = Bot.get_channel(log_chat)
     guild1 = Bot.get_guild(1007951389198127195)
-    role_ban = guild1.get_role(1085655121775579187)
+    role_ban = guild1.get_role(1208767887016333363)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
     if all == None:
@@ -682,6 +658,8 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
 
 @tasks.loop(minutes=1)
 async def printer(channel):
+    guild1 = Bot.get_guild(1007951389198127195)
+    role_ban = guild1.get_role(1208767887016333363)
     cur.execute("SELECT * FROM Users WHERE ban_timeout != 0")
     all = cur.fetchall()
     for i in all:
@@ -689,7 +667,9 @@ async def printer(channel):
         time_obj = datetime.datetime.strptime(i[3], '%H:%M:%S %d-%m-%Y')
         current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
         if current_time_obj >= time_obj:
-            print(str(current_time_obj) + " >= " + str(time_obj))
+            guild1.get_member(i[0]).remove_roles(role_ban, reason="причина(auto)")
+            cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, i[0]))
+            con.commit()
         elif current_time_obj < time_obj:
             print(str(current_time_obj) + " >= " + str(time_obj))
 
