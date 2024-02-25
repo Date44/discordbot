@@ -689,9 +689,9 @@ async def printer(channel):
         time_obj = datetime.datetime.strptime(i[3], '%H:%M:%S %d-%m-%Y')
         current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
         if current_time_obj >= time_obj:
-            print(current_time_obj + " >= " + str(time_obj))
+            print(str(current_time_obj) + " >= " + str(time_obj))
         elif current_time_obj < time_obj:
-            print(current_time_obj + " < " + str(time_obj))
+            print(str(current_time_obj) + " >= " + str(time_obj))
 
 
 # 1. Во время запуска бота
