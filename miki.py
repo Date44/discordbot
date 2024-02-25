@@ -330,7 +330,7 @@ async def unban(interaction, пользователь: discord.Member, прич�
 async def mute(interaction, пользователь: discord.Member, время: str, причина: str):
     channel = Bot.get_channel(log_chat)
     guild1 = Bot.get_guild(1007951389198127195)
-    role_mute = guild1.get_role(1085655720311132230)
+    role_mute = guild1.get_role(1211342600204722248)
     text = f'Пользователь <@{пользователь.id}> | `{пользователь}` был замьючен на сервере, время: {время}, причина: {причина}'
     await пользователь.add_roles(role_mute, reason=причина)
     cur.execute("SELECT timeout FROM Users WHERE name = ?", (interaction.user.id,))
@@ -660,11 +660,13 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
 async def printer(channel):
     guild1 = Bot.get_guild(1007951389198127195)
     role_ban = guild1.get_role(1208767887016333363)
+    role_mute = guild1.get_role(1211342600204722248)
     cur.execute("SELECT * FROM Users WHERE ban_timeout != 0")
     all = cur.fetchall()
     for i in all:
         current_time_str = datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')
         time_obj = datetime.datetime.strptime(i[3], '%H:%M:%S %d-%m-%Y')
+        time_obj2 = datetime.datetime.strptime(i[4], '%H:%M:%S %d-%m-%Y')
         current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
         if current_time_obj >= time_obj:
             member = await guild1.fetch_member(int(i[0]))
@@ -675,6 +677,17 @@ async def printer(channel):
             else:
                 print("not found")
         elif current_time_obj < time_obj:
+            pass
+
+        if current_time_obj >= time_obj2:
+            member = await guild1.fetch_member(int(i[0]))
+            if member is not None:
+                await member.remove_roles(role_mute, reason="(auto)")
+                cur.execute("UPDATE Users SET timeout = ? WHERE name = ?", (0, i[0]))
+                con.commit()
+            else:
+                print("not found")
+        elif current_time_obj < time_obj2:
             pass
 
 
