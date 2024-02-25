@@ -674,6 +674,8 @@ async def printer(channel):
                 await member.remove_roles(role_ban, reason="причина(auto)")
                 cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, i[0]))
                 con.commit()
+            else:
+                print("not found")
         elif current_time_obj < time_obj:
             print(str(current_time_obj) + " >= " + str(time_obj))
 
