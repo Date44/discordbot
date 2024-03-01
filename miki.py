@@ -661,13 +661,13 @@ async def printer():
     role_mute = guild1.get_role(1211342600204722248)
     cur.execute("SELECT * FROM Users WHERE ban_timeout != 0 OR mute_timeout != 0")
     all = cur.fetchall()
-    print(all)
+    # print(all)
     current_time_str = datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')
     current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
     for i in all:
         if i[3] != 0:
             time_obj = datetime.datetime.strptime(str(i[3]), '%H:%M:%S %d-%m-%Y')
-            print(time_obj)
+            # print(time_obj)
             if current_time_obj >= time_obj:
                 member = await guild1.fetch_member(int(i[0]))
                 if member is not None:
@@ -680,7 +680,7 @@ async def printer():
                 pass
         if i[4] != 0:
             time_obj2 = datetime.datetime.strptime(str(i[4]), '%H:%M:%S %d-%m-%Y')
-            print(time_obj2)
+            # print(time_obj2)
             if current_time_obj >= time_obj2:
                 member = await guild1.fetch_member(int(i[0]))
                 if member is not None:
