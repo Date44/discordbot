@@ -678,7 +678,7 @@ async def printer():
                     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, i[0]))
                     con.commit()
                 else:
-                    print("not found")
+                    pass
             elif current_time_obj < time_obj:
                 pass
         if i[4] == 0:
@@ -692,7 +692,7 @@ async def printer():
                     cur.execute("UPDATE Users SET timeout = ? WHERE name = ?", (0, i[0]))
                     con.commit()
                 else:
-                    print("not found")
+                    pass
             elif current_time_obj < time_obj2:
                 pass
 
