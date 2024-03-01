@@ -23,6 +23,7 @@ async def menu(
         for string in menu if current.lower() in string.lower()
     ]
 
+
 def check_time(time2):
     # channel = Bot.get_channel(1007954919090831360)
     # 16:49:28 02-04-2023
@@ -657,11 +658,11 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
 
 
 @tasks.loop(minutes=1)
-async def printer(channel):
+async def printer():
     guild1 = Bot.get_guild(1007951389198127195)
     role_ban = guild1.get_role(1208767887016333363)
     role_mute = guild1.get_role(1211342600204722248)
-    cur.execute("SELECT * FROM Users WHERE ban_timeout != 0")
+    cur.execute("SELECT * FROM Users WHERE ban_timeout != 0 OR timeout != 0")
     all = cur.fetchall()
     current_time_str = datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')
     current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
@@ -696,13 +697,11 @@ async def printer(channel):
                 pass
 
 
-# 1. Во время запуска бота
 @Bot.event
 async def on_ready():
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
-    channel = Bot.get_channel(int(1075518862889590895))
-    printer.start(channel)
+    printer.start()
 
 
 Bot.run(token)
