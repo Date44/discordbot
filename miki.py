@@ -329,11 +329,11 @@ async def mute(interaction, пользователь: discord.Member, время
     await channel.send(text)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
-    if all == None:
+    if all is None:
         all = create_profil(пользователь.id)
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (getTime(время), пользователь.id))
     con.commit()
-    await interaction.re   (text, ephemeral=True)
+    await interaction.response.send_message(text, ephemeral=True)
 
 
 
