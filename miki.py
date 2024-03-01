@@ -327,13 +327,13 @@ async def mute(interaction, пользователь: discord.Member, время
     text = f'**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере, время: {время}, причина: {причина}**'
     await пользователь.add_roles(role_mute, reason=причина)
     await channel.send(text)
-    cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (interaction.user.id,))
+    cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
     if all == None:
         all = create_profil(пользователь.id)
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (getTime(время), пользователь.id))
     con.commit()
-    await interaction.response.send_message(text, ephemeral=True)
+    await interaction.re   (text, ephemeral=True)
 
 
 
@@ -663,9 +663,7 @@ async def printer():
     current_time_str = datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')
     current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
     for i in all:
-        if i[3] == 0:
-            pass
-        else:
+        if i[3] != 0:
             time_obj = datetime.datetime.strptime(str(i[3]), '%H:%M:%S %d-%m-%Y')
             if current_time_obj >= time_obj:
                 member = await guild1.fetch_member(int(i[0]))
@@ -674,12 +672,10 @@ async def printer():
                     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, i[0]))
                     con.commit()
                 else:
-                    pass
+                    print("n f b")
             elif current_time_obj < time_obj:
                 pass
-        if i[4] == 0:
-            pass
-        else:
+        elif i[4] != 0:
             time_obj2 = datetime.datetime.strptime(str(i[4]), '%H:%M:%S %d-%m-%Y')
             if current_time_obj >= time_obj2:
                 member = await guild1.fetch_member(int(i[0]))
@@ -688,9 +684,12 @@ async def printer():
                     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, i[0]))
                     con.commit()
                 else:
-                    pass
+                    print("n f m")
             elif current_time_obj < time_obj2:
                 pass
+        else:
+            pass
+
 
 
 @Bot.event
