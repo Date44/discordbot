@@ -21,7 +21,7 @@ intents.message_content = True
 Bot = discord.Client(intents=intents)
 tree = app_commands.CommandTree(Bot)
 tracemalloc.start()
-g = True
+g = False
 
 
 async def menu(
@@ -660,11 +660,13 @@ async def printer():
     role_mute = guild1.get_role(1211342600204722248)
     cur.execute("SELECT * FROM Users WHERE ban_timeout != 0 OR mute_timeout != 0")
     all = cur.fetchall()
+    print(all)
     current_time_str = datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')
     current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
     for i in all:
         if i[3] != 0:
             time_obj = datetime.datetime.strptime(str(i[3]), '%H:%M:%S %d-%m-%Y')
+            print(time_obj)
             if current_time_obj >= time_obj:
                 member = await guild1.fetch_member(int(i[0]))
                 if member is not None:
@@ -675,8 +677,9 @@ async def printer():
                     print("n f b")
             elif current_time_obj < time_obj:
                 pass
-        elif i[4] != 0:
+        if i[4] != 0:
             time_obj2 = datetime.datetime.strptime(str(i[4]), '%H:%M:%S %d-%m-%Y')
+            print(time_obj2)
             if current_time_obj >= time_obj2:
                 member = await guild1.fetch_member(int(i[0]))
                 if member is not None:
@@ -687,8 +690,6 @@ async def printer():
                     print("n f m")
             elif current_time_obj < time_obj2:
                 pass
-        else:
-            pass
 
 
 
