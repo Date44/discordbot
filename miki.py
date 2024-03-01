@@ -326,6 +326,7 @@ async def mute(interaction, пользователь: discord.Member, время
     role_mute = guild1.get_role(1211342600204722248)
     text = f'**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере, время: {время}, причина: {причина}**'
     await пользователь.add_roles(role_mute, reason=причина)
+    await channel.send(text)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     if all == None:
@@ -333,7 +334,7 @@ async def mute(interaction, пользователь: discord.Member, время
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (getTime(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(text, ephemeral=True)
-    await channel.send(text)
+
 
 
 @tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild))
