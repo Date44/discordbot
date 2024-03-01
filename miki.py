@@ -426,7 +426,7 @@ async def reward(interaction):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="наказания", description="просмотр профиля", guild=discord.Object(id=guild))
+@tree.command(name="инфо", description="просмотр профиля", guild=discord.Object(id=guild))
 async def check(interaction, пользователь: discord.Member = None):
     if пользователь == None:
         пользователь = interaction
@@ -441,43 +441,43 @@ async def check(interaction, пользователь: discord.Member = None):
     embed.set_author(name="Пользователь")
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
+#
+# def days_1(data1, data2):
+#     if data2 == "Monday":
+#         return data1 + " - " + "**Понедельник**"
+#
+#     elif data2 == "Tuesday":
+#         return data1 + " - " + "**Вторник**"
+#
+#     elif data2 == "Wednesday":
+#         return data1 + " - " + "**Среда**"
+#
+#     elif data2 == "Thursday":
+#         return data1 + " - " + "**Четверг**"
+#
+#     elif data2 == "Friday":
+#         return data1 + " - " + "**Пятница**"
+#
+#     elif data2 == "Saturday":
+#         return data1 + " - " + "**Суббота**"
+#
+#     elif data2 == "Sunday":
+#         return data1 + " - " + "**Воскресенье**"
+#     else:
+#         return data1 + " - " + data2
 
-def days_1(data1, data2):
-    if data2 == "Monday":
-        return data1 + " - " + "**Понедельник**"
-
-    elif data2 == "Tuesday":
-        return data1 + " - " + "**Вторник**"
-
-    elif data2 == "Wednesday":
-        return data1 + " - " + "**Среда**"
-
-    elif data2 == "Thursday":
-        return data1 + " - " + "**Четверг**"
-
-    elif data2 == "Friday":
-        return data1 + " - " + "**Пятница**"
-
-    elif data2 == "Saturday":
-        return data1 + " - " + "**Суббота**"
-
-    elif data2 == "Sunday":
-        return data1 + " - " + "**Воскресенье**"
-    else:
-        return data1 + " - " + data2
-
-
-@tree.command(name="запланировать-ивент", description="расписание ивентов", guild=discord.Object(id=guild))
-@app_commands.autocomplete(ивент=menu)
-async def event3(interaction, ивент: str, дата: str, время: str):
-    # time_object = datetime.datetime.strptime(дата, '%d.%m')
-    # time_object = time_object.strftime("%d.%m")
-    # time_object1 = datetime.datetime.strptime(время, '%H:%M')
-    # time_object1 = time_object1.strftime("%H:%M")
-    # await event2([ивент, time_object, time_object1])
-
-    await interaction.response.send_message(
-        content=f"Ивент запланирован, дата и время проведения `{дата}` **:** `{время}`", ephemeral=True)
+#
+# @tree.command(name="запланировать-ивент", description="расписание ивентов", guild=discord.Object(id=guild))
+# @app_commands.autocomplete(ивент=menu)
+# async def event3(interaction, ивент: str, дата: str, время: str):
+#     # time_object = datetime.datetime.strptime(дата, '%d.%m')
+#     # time_object = time_object.strftime("%d.%m")
+#     # time_object1 = datetime.datetime.strptime(время, '%H:%M')
+#     # time_object1 = time_object1.strftime("%H:%M")
+#     # await event2([ивент, time_object, time_object1])
+#
+#     await interaction.response.send_message(
+#         content=f"Ивент запланирован, дата и время проведения `{дата}` **:** `{время}`", ephemeral=True)
 
 #
 # async def event2(text: list):
@@ -516,7 +516,7 @@ async def event1(interaction, ивент: str, ссылка: str):
     voice = await guild1.create_voice_channel(name=str(ивент), reason="Начало ивента", user_limit=15, category=category)
     channel = Bot.get_channel(int(event_chat))
     embed = discord.Embed(description=f"""**Event {ивент}**\nНачат ивент `{ивент}`""", color=0x1)
-    # embed1 = discord.Embed(description=f"""**Event {ивент}**\nОкончен ивент `{ивент}`""", color=0x1)
+    embed1 = discord.Embed(description=f"""**Event {ивент}**\nОкончен ивент `{ивент}`""", color=0x1)
     embed2 = discord.Embed(
         description=f"""**Event {ивент}**\nГолосовой канал ивента создан  -  -  -  >  {voice.jump_url} """, color=0x1)
     embed3 = discord.Embed(
@@ -527,7 +527,7 @@ async def event1(interaction, ивент: str, ссылка: str):
     async def callback2(interaction):
         if interaction.user.id == interaction1.user.id:
             await interaction.response.send_message(embed=embed3)
-            # await channel.send(embed=embed1)
+            await channel.send(embed=embed1)
             print(interaction.message.content)
             await voice.delete()
         else:
