@@ -470,42 +470,42 @@ def days_1(data1, data2):
 @tree.command(name="запланировать-ивент", description="расписание ивентов", guild=discord.Object(id=guild))
 @app_commands.autocomplete(ивент=menu)
 async def event3(interaction, ивент: str, дата: str, время: str):
-    time_object = datetime.datetime.strptime(дата, '%d.%m')
-    time_object = time_object.strftime("%d.%m")
-    time_object1 = datetime.datetime.strptime(время, '%H:%M')
-    time_object1 = time_object1.strftime("%H:%M")
-    await event2([ивент, time_object, time_object1])
+    # time_object = datetime.datetime.strptime(дата, '%d.%m')
+    # time_object = time_object.strftime("%d.%m")
+    # time_object1 = datetime.datetime.strptime(время, '%H:%M')
+    # time_object1 = time_object1.strftime("%H:%M")
+    # await event2([ивент, time_object, time_object1])
 
     await interaction.response.send_message(
         content=f"Ивент запланирован, дата и время проведения `{дата}` **:** `{время}`", ephemeral=True)
 
-
-async def event2(text: list):
-    r = 0
-    channel = Bot.get_channel(1143990947949056061)
-    async for i in channel.history():
-        if i.id == int(1146181805167358063):
-            r = i
-    print(r.embeds[0].description)
-    list1 = list()
-    list2 = list()
-    for i in range(0, 7):
-        data = datetime.date.today() + datetime.timedelta(days=i)
-        data2 = data.strftime("%A")
-        data1 = data.strftime("`%d.%m`")
-        data1 = days_1(data1, data2)
-        if text[1] == data.strftime("%d.%m"):
-            list2.append(text[0] + " - " + text[2])
-        else:
-            list2.append("Нет ивентов")
-
-        list1.append(data1)
-    embed = discord.Embed(
-        description=f"**РАСПИСАНИЕ ИВЕНТОВ**\n\n{list1[0]}\n{list2[0]}\n\n{list1[1]}\n{list2[1]}\n\n{list1[2]}\n{list2[2]}\n\n{list1[3]}\n{list2[3]}\n\n{list1[4]}\n{list2[4]}\n\n{list1[5]}\n{list2[5]}\n\n{list1[6]}\n{list2[6]}\n")
-    embed.set_image(
-        url="https://media.discordapp.net/attachments/1143935103962198137/1146180780175937627/21dea55f066d9d29.png?width=1595&height=637")
-    await r.edit(embed=embed)
-
+#
+# async def event2(text: list):
+#     r = 0
+#     channel = Bot.get_channel(1143990947949056061)
+#     async for i in channel.history():
+#         if i.id == int(1146181805167358063):
+#             r = i
+#     print(r.embeds[0].description)
+#     list1 = list()
+#     list2 = list()
+#     for i in range(0, 7):
+#         data = datetime.date.today() + datetime.timedelta(days=i)
+#         data2 = data.strftime("%A")
+#         data1 = data.strftime("`%d.%m`")
+#         data1 = days_1(data1, data2)
+#         if text[1] == data.strftime("%d.%m"):
+#             list2.append(text[0] + " - " + text[2])
+#         else:
+#             list2.append("Нет ивентов")
+#
+#         list1.append(data1)
+#     embed = discord.Embed(
+#         description=f"**РАСПИСАНИЕ ИВЕНТОВ**\n\n{list1[0]}\n{list2[0]}\n\n{list1[1]}\n{list2[1]}\n\n{list1[2]}\n{list2[2]}\n\n{list1[3]}\n{list2[3]}\n\n{list1[4]}\n{list2[4]}\n\n{list1[5]}\n{list2[5]}\n\n{list1[6]}\n{list2[6]}\n")
+#     embed.set_image(
+#         url="https://media.discordapp.net/attachments/1143935103962198137/1146180780175937627/21dea55f066d9d29.png?width=1595&height=637")
+#     await r.edit(embed=embed)
+#
 
 @tree.command(name="ивент-пост", description="старт ивентов", guild=discord.Object(id=guild))
 @app_commands.autocomplete(ивент=menu)
