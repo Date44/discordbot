@@ -12,6 +12,18 @@ from discord.ext import tasks
 from discord.ui import View, Button
 
 
+# Настройка бота
+
+intents = discord.Intents.default()
+intents.typing = False
+intents.presences = False
+intents.message_content = True
+Bot = discord.Client(intents=intents)
+tree = app_commands.CommandTree(Bot)
+tracemalloc.start()
+g = True
+
+
 async def menu(
         interaction: discord.Interaction,
         current: str,
@@ -24,29 +36,16 @@ async def menu(
     ]
 
 
-def check_time(time2):
-    # channel = Bot.get_channel(1007954919090831360)
-    # 16:49:28 02-04-2023
-    H = time2[0:2]
-    M = time2[3:5]
-    S = time2[6:8]
-    d = time2[9:11]
-    m = time2[12:14]
-    Y = time2[15:19]
-    # print(f"123 {H}:{M}:{S} {d}-{m}-{Y}")
-    return [Y, m, d, H, M, S]
-
-
 def create_db():
-    cur.execute("CREATE TABLE Users(name UNIQUE, money, timeout, ban_timeout, mute_timeout, warn, marry)")
+    cur.execute("CREATE TABLE Users(name UNIQUE, money, timeout, ban_timeout, mute_timeout, warn)")
     cur.execute("CREATE TABLE Shop(id INTEGER UNIQUE PRIMARY KEY, name, description, price)")
 
 
-def create_profil(id):
-    data = [((id), 0, 0, 0, 0, 0, 0), ]
-    cur.executemany("INSERT INTO Users VALUES(?, ?, ?, ?, ?, ?, ?)", data)
+def create_profil(id_name):
+    data = [(id_name, 0, 0, 0, 0, 0), ]
+    cur.executemany("INSERT INTO Users VALUES(?, ?, ?, ?, ?, ?)", data)
     con.commit()
-    cur.execute("SELECT * FROM Users WHERE name = ?", (id,))
+    cur.execute("SELECT * FROM Users WHERE name = ?", (id_name,))
     return cur.fetchone()
 
 
@@ -54,6 +53,8 @@ if not os.path.exists('Miki.db'):
     con = sqlite3.connect("Miki.db")
     cur = con.cursor()
     create_db()
+    g = True
+
 else:
     con = sqlite3.connect("Miki.db")
     cur = con.cursor()
@@ -119,16 +120,7 @@ colors = {
     'LimeGreen': 0x32CD32,
     'OrangeRed': 0xFF4500
 }
-# Настройка бота
 
-intents = discord.Intents.default()
-intents.typing = False
-intents.presences = False
-intents.message_content = True
-Bot = discord.Client(intents=intents)
-tree = app_commands.CommandTree(Bot)
-# chatbot = ChatBot("Chatpot")
-tracemalloc.start()
 
 
 # 1. Время логов
@@ -295,7 +287,7 @@ async def info(interaction):
 @tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild))
 async def ban(interaction, пользователь: discord.Member, время: str, причина: str):
     channel = Bot.get_channel(log_chat)
-    guild1 = Bot.get_guild(1007951389198127195)
+    guild1 = Bot.get_guild(guild)
     role_ban = guild1.get_role(1208767887016333363)
     text = f'Пользователь <@{пользователь.id}> | `{пользователь}` был забанен на сервере, время: {время}, причина: {причина}'
     await пользователь.add_roles(role_ban, reason=причина)
@@ -312,7 +304,7 @@ async def ban(interaction, пользователь: discord.Member, время:
 @tree.command(name="разбан", description="Снять бан", guild=discord.Object(id=guild))
 async def unban(interaction, пользователь: discord.Member, причина: str):
     channel = Bot.get_channel(log_chat)
-    guild1 = Bot.get_guild(1007951389198127195)
+    guild1 = Bot.get_guild(guild)
     role_ban = guild1.get_role(1208767887016333363)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
@@ -330,7 +322,7 @@ async def unban(interaction, пользователь: discord.Member, прич�
 @tree.command(name="мут", description="mute user", guild=discord.Object(id=guild))
 async def mute(interaction, пользователь: discord.Member, время: str, причина: str):
     channel = Bot.get_channel(log_chat)
-    guild1 = Bot.get_guild(1007951389198127195)
+    guild1 = Bot.get_guild(guild)
     role_mute = guild1.get_role(1211342600204722248)
     text = f'Пользователь <@{пользователь.id}> | `{пользователь}` был замьючен на сервере, время: {время}, причина: {причина}'
     await пользователь.add_roles(role_mute, reason=причина)
@@ -347,7 +339,7 @@ async def mute(interaction, пользователь: discord.Member, время
 @tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild))
 async def money(interaction):
     channel = Bot.get_channel(int(interaction.channel.id))
-    guild1 = Bot.get_guild(1007951389198127195)
+    guild1 = Bot.get_guild(guild)
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     if all == None:
@@ -705,6 +697,13 @@ async def on_ready():
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
     printer.start()
+    if g:
+        gl = Bot.get_guild(guild)
+        for member in gl.members:
+            if member.id == Bot.user.id:
+                pass
+            else:
+                print(member, member.id)
 
 
 Bot.run(token)
