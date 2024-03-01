@@ -334,10 +334,13 @@ async def mute(interaction, пользователь: discord.Member, время
     role_mute = guild1.get_role(1211342600204722248)
     text = f'Пользователь <@{пользователь.id}> | `{пользователь}` был замьючен на сервере, время: {время}, причина: {причина}'
     await пользователь.add_roles(role_mute, reason=причина)
-    cur.execute("SELECT timeout FROM Users WHERE name = ?", (interaction.user.id,))
+    cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     if all == None:
         all = create_profil(пользователь.id)
+    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (getTime(время), пользователь.id))
+    con.commit()
+    await interaction.response.send_message(text, ephemeral=True)
     await channel.send(text)
 
 
@@ -662,7 +665,7 @@ async def printer():
     guild1 = Bot.get_guild(1007951389198127195)
     role_ban = guild1.get_role(1208767887016333363)
     role_mute = guild1.get_role(1211342600204722248)
-    cur.execute("SELECT * FROM Users WHERE ban_timeout != 0 OR timeout != 0")
+    cur.execute("SELECT * FROM Users WHERE ban_timeout != 0 OR mute_timeout != 0")
     all = cur.fetchall()
     current_time_str = datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')
     current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
@@ -675,7 +678,7 @@ async def printer():
                 member = await guild1.fetch_member(int(i[0]))
                 if member is not None:
                     await member.remove_roles(role_ban, reason="(auto)")
-                    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, i[0]))
+                    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, i[0]))
                     con.commit()
                 else:
                     pass
@@ -689,7 +692,7 @@ async def printer():
                 member = await guild1.fetch_member(int(i[0]))
                 if member is not None:
                     await member.remove_roles(role_mute, reason="(auto)")
-                    cur.execute("UPDATE Users SET timeout = ? WHERE name = ?", (0, i[0]))
+                    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, i[0]))
                     con.commit()
                 else:
                     pass
