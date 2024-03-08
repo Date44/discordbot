@@ -694,6 +694,12 @@ async def on_ready():
 async def on_member_join(member):
     embed = discord.Embed(description=f"{member} присоединился к серверу")
     channel = Bot.get_channel(int(bot_chat))
+
+    cur.execute("SELECT name FROM Users WHERE id = ?", member.id)
+    entrie = cur.fetchone()
+    print(entrie)
+
+
     create_profil(member.id)
     await channel.send(embed=embed)
 
