@@ -689,14 +689,16 @@ async def on_ready():
 
 @Bot.event
 async def on_member_join(member):
+    embed = discord.Embed(description=f"{member} присоединился к серверу")
     channel = Bot.get_channel(int(bot_chat))
     create_profil(member.id)
+    await channel.send(embed=embed)
 
 
 @Bot.event
 async def on_member_remove(member):
-
+    embed = discord.Embed(description=f"{member} покинул сервер")
     channel = Bot.get_channel(int(bot_chat))
-    channel.send()
+    await channel.send(embed=embed)
 
 Bot.run(token)
