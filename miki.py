@@ -12,22 +12,7 @@ from discord.ext import tasks
 from discord.ui import View, Button
 
 
-# Настройка бота
-
-intents = discord.Intents.default()
-intents.typing = False
-intents.presences = False
-intents.message_content = True
-Bot = discord.Client(intents=intents)
-tree = app_commands.CommandTree(Bot)
-tracemalloc.start()
-g = False
-
-
-async def menu(
-        interaction: discord.Interaction,
-        current: str,
-) -> list[app_commands.Choice[str]]:
+async def menu(interaction: discord.Interaction, current: str,) -> list[app_commands.Choice[str]]:
     menu = ["Мафия", "Бункер", "Алиас/Шляпа", "Крокодил", "GarticPhone", "JackBox", "Codenames", "Намёк понял", "Шпион",
             "Кто я?", "Криминалист"]
     return [
@@ -47,17 +32,6 @@ def create_profil(id_name):
     con.commit()
     cur.execute("SELECT * FROM Users WHERE name = ?", (id_name,))
     return cur.fetchone()
-
-
-if not os.path.exists('Miki.db'):
-    con = sqlite3.connect("Miki.db")
-    cur = con.cursor()
-    create_db()
-    g = True
-
-else:
-    con = sqlite3.connect("Miki.db")
-    cur = con.cursor()
 
 
 # config
@@ -95,35 +69,53 @@ def read_config():
     return cfg
 
 
-if not os.path.exists('config.cfg'):
-    create_config()
-    time.sleep(5)
-    cfg = read_config()
-else:
-    cfg = read_config()
-token = cfg["token"]
-bot_chat = int(cfg["command_chat"])
-white_list = cfg["white_list"]
-log_chat = int(cfg["log_chat"])
-guild = int(cfg["guild_id"])
-event_chat = cfg["event_chat"]
-colors = {
-    'DarkRed': 0x8B0000,
-    'Red': 0xFF0000,
-    'DarkOrange': 0xFF8C00,
-    'Yellow': 0xFFFF00,
-    'Gold': 0xFFD700,
-    'DarkBlue': 0x00008B,
-    'Blue': 0x0000FF,
-    'Cyan': 0x00FFFF,
-    'Lime': 0x00FF00,
-    'LimeGreen': 0x32CD32,
-    'OrangeRed': 0xFF4500
-}
+if __name__ == '__main__':
+    intents = discord.Intents.default()
+    intents.typing = False
+    intents.presences = False
+    intents.message_content = True
+    intents.guilds = True
+    Bot = discord.Client(intents=intents)
+    tree = app_commands.CommandTree(Bot)
+    tracemalloc.start()
+
+    if not os.path.exists('Miki.db'):
+        con = sqlite3.connect("Miki.db")
+        cur = con.cursor()
+        create_db()
+        g = True
+
+    else:
+        con = sqlite3.connect("Miki.db")
+        cur = con.cursor()
+
+    if not os.path.exists('config.cfg'):
+        create_config()
+        time.sleep(5)
+        cfg = read_config()
+    else:
+        cfg = read_config()
+    token = cfg["token"]
+    bot_chat = int(cfg["command_chat"])
+    white_list = cfg["white_list"]
+    log_chat = int(cfg["log_chat"])
+    guild = int(cfg["guild_id"])
+    event_chat = cfg["event_chat"]
+    colors = {
+        'DarkRed': 0x8B0000,
+        'Red': 0xFF0000,
+        'DarkOrange': 0xFF8C00,
+        'Yellow': 0xFFFF00,
+        'Gold': 0xFFD700,
+        'DarkBlue': 0x00008B,
+        'Blue': 0x0000FF,
+        'Cyan': 0x00FFFF,
+        'Lime': 0x00FF00,
+        'LimeGreen': 0x32CD32,
+        'OrangeRed': 0xFF4500
+    }
 
 
-
-# 1. Время логов
 def getTime(time):
     if time[-1] == "d" or time[-1] == "D":
         time = datetime.datetime.now() + datetime.timedelta(days=int(time[0:-1]))
@@ -278,8 +270,10 @@ async def info(interaction):
             "    **!text** [цвет] [#канал] - создать пост \n`Заголовок`\n `Текст`\n"
             "    **!edit** [цвет] [ссылка на сообщение] - изменить пост \n`Заголовок` \n`Текст`\n"
             "    **!stop** - перезапустить бота\n"
-            "    **!правила-создание** \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` \n`Текст3` \n`Текст3` \n`Футер` \n"
-            "    **!правила-изменение** [ссылка на сообщение] \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` \n`Текст3` \n`Текст3` \n`Футер` \n")
+            "**!правила-создание** \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` \n`Текст3` \n`Текст3` "
+            "\n`Футер` \n"
+            "**!правила-изменение** [ссылка на сообщение] \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` "
+            "\n`Текст3` \n`Текст3` \n`Футер` \n")
     embed = discord.Embed(title="Инфо", description=info, color=0x1)
     await interaction.response.send_message(embed=embed)
 
@@ -334,7 +328,6 @@ async def mute(interaction, пользователь: discord.Member, время
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (getTime(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(text, ephemeral=True)
-
 
 
 @tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild))
@@ -439,6 +432,7 @@ async def check(interaction, пользователь: discord.Member = None):
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
     await interaction.response.send_message(embed=embed, ephemeral=True)
+
 
 #
 # def days_1(data1, data2):
@@ -624,7 +618,6 @@ async def shop1(interaction, лот: int = -1):
         embed = discord.Embed(
             description=r1,
             color=0x36393E)
-        # print([i[0] for i in all])
         await interaction.response.send_message(embed=embed, ephemeral=True)
     else:
         cur.execute("SELECT * FROM Shop WHERE id = ?", (лот,))
@@ -653,58 +646,57 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tasks.loop(minutes=1)
-async def printer():
-    guild1 = Bot.get_guild(1007951389198127195)
-    role_ban = guild1.get_role(1208767887016333363)
-    role_mute = guild1.get_role(1211342600204722248)
-    cur.execute("SELECT * FROM Users WHERE ban_timeout != 0 OR mute_timeout != 0")
-    all = cur.fetchall()
-    # print(all)
-    current_time_str = datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')
-    current_time_obj = datetime.datetime.strptime(current_time_str, '%H:%M:%S %d-%m-%Y')
-    for i in all:
-        if i[3] != 0:
-            time_obj = datetime.datetime.strptime(str(i[3]), '%H:%M:%S %d-%m-%Y')
-            # print(time_obj)
-            if current_time_obj >= time_obj:
-                member = await guild1.fetch_member(int(i[0]))
-                if member is not None:
-                    await member.remove_roles(role_ban, reason="(auto)")
-                    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, i[0]))
-                    con.commit()
-                else:
-                    print("n f b")
-            elif current_time_obj < time_obj:
-                pass
-        if i[4] != 0:
-            time_obj2 = datetime.datetime.strptime(str(i[4]), '%H:%M:%S %d-%m-%Y')
-            # print(time_obj2)
-            if current_time_obj >= time_obj2:
-                member = await guild1.fetch_member(int(i[0]))
-                if member is not None:
-                    await member.remove_roles(role_mute, reason="(auto)")
-                    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, i[0]))
-                    con.commit()
-                else:
-                    print("n f m")
-            elif current_time_obj < time_obj2:
-                pass
+async def remove_role(guild, member_id, role):
+    member = await guild.fetch_member(member_id)
+    if member:
+        await member.remove_roles(role, reason="(auto)")
+    else:
+        print(f"Member not found for {role.name}.")
 
+
+@tasks.loop(minutes=1)
+async def remove_expired_roles():
+    guild = Bot.get_guild(1007951389198127195)
+    role_ban = guild.get_role(1208767887016333363)
+    role_mute = guild.get_role(1211342600204722248)
+    current_time = datetime.datetime.now()
+
+    cur.execute("SELECT * FROM Users WHERE ban_timeout != 0 OR mute_timeout != 0")
+    all_entries = cur.fetchall()
+
+    for entry in all_entries:
+        member_id = int(entry[0])
+        ban_timeout = datetime.datetime.strptime(str(entry[3]), '%H:%M:%S %d-%m-%Y') if entry[3] != 0 else None
+        mute_timeout = datetime.datetime.strptime(str(entry[4]), '%H:%M:%S %d-%m-%Y') if entry[4] != 0 else None
+
+        if ban_timeout and current_time >= ban_timeout:
+            await remove_role(guild, member_id, role_ban)
+            cur.execute("UPDATE Users SET ban_timeout = 0 WHERE name = ?", (member_id,))
+            con.commit()
+
+        if mute_timeout and current_time >= mute_timeout:
+            await remove_role(guild, member_id, role_mute)
+            cur.execute("UPDATE Users SET mute_timeout = 0 WHERE name = ?", (member_id,))
+            con.commit()
 
 
 @Bot.event
 async def on_ready():
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
-    printer.start()
-    if g:
-        gl = Bot.get_guild(guild)
-        for member in gl.members:
-            if member.id == Bot.user.id:
-                pass
-            else:
-                print(member, member.id)
+    remove_expired_roles.start()
 
+
+@Bot.event
+async def on_member_join(member):
+    channel = Bot.get_channel(int(bot_chat))
+    create_profil(member.id)
+
+
+@Bot.event
+async def on_member_remove(member):
+
+    channel = Bot.get_channel(int(bot_chat))
+    channel.send()
 
 Bot.run(token)
