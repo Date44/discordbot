@@ -75,6 +75,7 @@ if __name__ == '__main__':
     intents.presences = False
     intents.message_content = True
     intents.guilds = True
+    intents.members = True
     Bot = discord.Client(intents=intents)
     tree = app_commands.CommandTree(Bot)
     tracemalloc.start()
