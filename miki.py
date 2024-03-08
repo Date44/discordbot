@@ -643,8 +643,10 @@ async def create_lot(interaction, name: discord.Role, description: str, price: f
 @tree.error
 async def on_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
     embed = discord.Embed(description=f"""Со мной что-то случилось\n{error}""", color=0x1)
-    print(error)
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+    embed1 = discord.Embed(description=f"""Со мной что-то случилось\nобратитесь к администрации""", color=0x1)
+    channel = Bot.get_channel(int(bot_chat))
+    await interaction.response.send_message(embed=embed1, ephemeral=True)
+    await channel.send(embed=embed)
 
 
 async def remove_role(guild, member_id, role):
