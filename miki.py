@@ -96,6 +96,7 @@ if __name__ == '__main__':
         cfg = read_config()
     else:
         cfg = read_config()
+
     token = cfg["token"]
     bot_chat = int(cfg["command_chat"])
     white_list = cfg["white_list"]
@@ -117,125 +118,126 @@ if __name__ == '__main__':
     }
 
 
-def getTime(time):
-    if time[-1] == "d" or time[-1] == "D":
-        time = datetime.datetime.now() + datetime.timedelta(days=int(time[0:-1]))
-    elif time[-1] == "m" or time[-1] == "M":
-        time = datetime.datetime.now() + datetime.timedelta(minutes=int(time[0:-1]))
-    elif time[-1] == "h" or time[-1] == "H":
-        time = datetime.datetime.now() + datetime.timedelta(hours=int(time[0:-1]))
-    elif time[-1] == "s" or time[-1] == "S":
-        time = datetime.datetime.now() + datetime.timedelta(seconds=int(time[0:-1]))
-    elif time[-1] == "w" or time[-1] == "W":
-        time = datetime.datetime.now() + datetime.timedelta(weeks=int(time[0:-1]))
+def get_future_time(delta_str):
+    delta_unit = delta_str[-1].lower()
+    delta_value = int(delta_str[:-1])
+
+    if delta_unit == 'd':
+        delta = datetime.timedelta(days=delta_value)
+    elif delta_unit == 'm':
+        delta = datetime.timedelta(minutes=delta_value)
+    elif delta_unit == 'h':
+        delta = datetime.timedelta(hours=delta_value)
+    elif delta_unit == 's':
+        delta = datetime.timedelta(seconds=delta_value)
+    elif delta_unit == 'w':
+        delta = datetime.timedelta(weeks=delta_value)
     else:
-        time = datetime.datetime.now()
-    return time.strftime('%H:%M:%S %d-%m-%Y')
+        delta = datetime.timedelta()  # Default to 0
+
+    future_time = datetime.datetime.now() + delta
+    return future_time.strftime('%H:%M:%S %d-%m-%Y')
 
 
-def getTime2():
-    time = datetime.datetime.now()
-    return time.strftime("%d-%m-%Y")
+def get_current_date():
+    current_time = datetime.datetime.now()
+    return current_time.strftime("%d-%m-%Y")
+
+
+async def delete_messages(text, channel):
+    num = int(text.split()[1]) + 1
+    async for msg in channel.history(limit=num):
+        await msg.delete()
+
+
+async def process_text_command(message):
+    text = message.content
+    text = text.split("\n")
+    line = text[0].split(' ')
+    del text[0]
+    color = line[1] in colors
+    channel = Bot.get_channel(int(line[2].replace('<#', '').replace('>', '')))
+    content = '\n'.join(text)
+    if color:
+        color = colors[line[1]]
+        embed = discord.Embed(description=content, color=color)
+        if message.attachments:
+            for attach in message.attachments:
+                embed.set_image(url=attach.url)
+        await channel.send(embed=embed)
+    else:
+        await message.reply(f"Нету такого цвета '{line[1]}'")
+
+
+async def edit_embed(message):
+    text = message.content
+    text = text.split("\n")
+    line = text[0].split(' ')
+    del text[0]
+    channel = Bot.get_channel(int(line[2].replace('<#', '').replace('>', '')))
+    content = '\n'.join(text)
+    async for i in channel.history():
+        if i.id == int(line[2]):
+            for embed in i.embeds:
+                embed.description = content
+                if message.attachments:
+                    for attach in message.attachments:
+                        embed.set_image(url=attach.url)
+                await i.edit(embed=embed)
+
+
+async def create_rules(text):
+    channel = Bot.get_channel(int(1008286403068702832))
+    text = text.split("\n")
+    del text[0]
+
+    embed = discord.Embed(color=0x000000)
+    embed.title = f"**{text[0]}**"
+    embed.set_footer(text=f"{text[7]}")
+    embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
+    embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
+    embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
+
+    await channel.send(embed=embed)
+
+
+async def edit_rules(text):
+    text = text.split("\n")
+    line = text[1].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split(
+        '/')[1]
+    del text[0]
+    channel = Bot.get_channel(int(1008286403068702832))
+
+    embed = discord.Embed(color=0x000000)
+    embed.title = f"**{text[0]}**"
+    embed.set_footer(text=f"{text[7]}")
+    embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
+    embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
+    embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
+    async for i in channel.history():
+        if i.id == int(line):
+            await i.edit(embed=embed)
 
 
 @Bot.event
 async def on_message(message):
-    global colors
-    # await channel.send(message.reference) ответ
     black_listbot = [str(Bot.user.id), ]
+    channel = message.channel
     text = message.content
-    channel = Bot.get_channel(int(message.channel.id))
-    if text[0:4] == "!del":
-        text = text.replace("!del ", "")
-        async for i in channel.history(limit=int(text) + 1):
-            await i.delete()
-    elif str(message.author.id) not in black_listbot:
-        # if message.channel.id == 1075443989089636472:
-        # await channel.send(chatbot.get_response(str(message.content)))
-        if message.channel.id == bot_chat or message.channel.id == 1208500022371557396:
-            if text[0:5] == "!stop":
-                await message.delete()
-                exit()
-            elif text[0:5] == "!text":
-                text = text.replace("!text ", "")
-                text = text.split("\n")
-                text2 = text[0].split(' ')
-                color2 = text2[0] in colors
-                channel = Bot.get_channel(int(text2[1].replace('<#', '').replace('>', '')))
-                del text[0]
-                content = '\n'.join(text)
-                if color2:
-                    color = colors[text2[0]]
-                    if message.attachments:
-                        for attach in message.attachments:
-                            await attach.save(f"foto/{attach.filename}")
-                            embed = discord.Embed(description=content, color=color)
-                            embed.set_image(url=attach.url)
-                            await channel.send(embed=embed)
-                    else:
-                        embed = discord.Embed(description=content, color=color)
-                        await channel.send(embed=embed)
-                else:
-                    await message.reply(f"Нету такого цвета '{text2[0]}'")
-            elif text[0:17] == "!правила-создание":
-                text = text.replace("!правила-создание ", "")
-                text = text.split("\n")
-                channel = Bot.get_channel(int(1008286403068702832))
-                del text[0]
-
-                embed = discord.Embed(color=0x000000)
-                embed.title = f"**{text[0]}**"
-                embed.set_footer(text=f"{text[7]}")
-                embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
-                embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
-                embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
-
-                await channel.send(embed=embed)
-            elif text[0:18] == "!правила-изменение":
-                text = text.replace("!правила-изменение ", "")
-                text = text.split("\n")
-                text2 = text[0].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split(
-                    '/')
-                channel = Bot.get_channel(int(text2[0]))
-                del text[0]
-
-                embed = discord.Embed(color=0x000000)
-                embed.title = f"**{text[0]}**"
-                embed.set_footer(text=f"{text[7]}")
-                embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
-                embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
-                embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
-                async for i in channel.history():
-                    if i.id == int(text2[1]):
-                        await i.edit(embed=embed)
-                        break
-                    else:
-                        pass
-
-            elif text[0:5] == "!edit":
-                text = text.replace("!edit ", "").split("\n")
-                color2 = text[0].split(" ")[0] in colors
-                if color2:
-                    color = colors[text[0].split(" ")[0]]
-                    text2 = text[0].split(" ")[1].replace("https://discord.com/channels/1007951389198127195/",
-                                                          "").replace(' ', '').split('/')
-                    channel = Bot.get_channel(int(text2[0]))
-                    del text[0]
-                    async for i in channel.history():
-                        if i.id == int(text2[1]):
-                            content = '\n'.join(text[1:])
-                            embed = discord.Embed(title=text[0], description=content, color=color)
-                            await i.edit(embed=embed)
-                            break
-                        else:
-                            pass
-        if message.channel.id == 1007954919090831360:
-            channel = Bot.get_channel(int(message.channel.id))
-            if str(message.author.id) not in black_listbot:
-                text = message.content
-                channel = message.channel
-                if text == "гей":
-                    await channel.send(text)
+    if str(message.author.id) not in black_listbot:
+        if text.startswith("!del"):
+            await delete_messages(text, channel)
+        elif text.startswith("!stop"):
+            await message.delete()
+            exit()
+        elif text.startswith("!text"):
+            await process_text_command(message)
+        elif text.startswith("!edit"):
+            await edit_embed(message)
+        elif text.startswith("!правила-создание"):
+            await create_rules(text)
+        elif text.startswith("!правила-изменение"):
+            await edit_rules(text)
 
 
 class my_modal(discord.ui.Modal, title='Modal'):
@@ -269,7 +271,7 @@ async def info(interaction):
             "    **Список доступных команд:**\n"
             "    **!del** [количиство] - удаляет сообщения\n"
             "    **!text** [цвет] [#канал] - создать пост \n`Заголовок`\n `Текст`\n"
-            "    **!edit** [цвет] [ссылка на сообщение] - изменить пост \n`Заголовок` \n`Текст`\n"
+            "    **!edit** [ссылка на сообщение] - изменить пост \n`Заголовок` \n`Текст`\n"
             "    **!stop** - перезапустить бота\n"
             "**!правила-создание** \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` \n`Текст3` \n`Текст3` "
             "\n`Футер` \n"
@@ -291,7 +293,7 @@ async def ban(interaction, пользователь: discord.Member, время:
     all = cur.fetchone()
     if all == None:
         all = create_profil(пользователь.id)
-    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (getTime(время), пользователь.id))
+    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(text, ephemeral=True)
 
@@ -326,7 +328,7 @@ async def mute(interaction, пользователь: discord.Member, время
     all = cur.fetchone()
     if all is None:
         all = create_profil(пользователь.id)
-    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (getTime(время), пользователь.id))
+    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(text, ephemeral=True)
 
@@ -399,10 +401,10 @@ async def reward(interaction):
         create_profil(interaction.user.id)
         cur.execute("SELECT money, timeout FROM Users WHERE name = ?", (interaction.user.id,))
         all = cur.fetchone()
-    if all[1] != getTime2() or all[0] == 0:
+    if all[1] != get_current_date() or all[0] == 0:
         new_valui = int(all[0]) + 100
         cur.execute("UPDATE Users SET money = ?, timeout = ? WHERE name = ?",
-                    (new_valui, getTime2(), interaction.user.id))
+                    (new_valui, get_current_date(), interaction.user.id))
         con.commit()
         embed = discord.Embed(
             description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\nВы получили 100 :coin: Следующую награду, можно будет получить завтра.""",
@@ -542,10 +544,6 @@ async def event1(interaction, ивент: str, ссылка: str):
     await interaction.response.send_message(embed=embed2, view=view1)
     await channel.send(embed=embed, view=view)
 
-
-# @tree.command(name="post", description="123", guild=discord.Object(id=guild))
-# async def post(interaction):
-#     await channel.send(interaction.message)
 
 @tree.command(name="казино", description="Казино", guild=discord.Object(id=guild))
 async def casino(interaction, ставка: int):
