@@ -156,17 +156,20 @@ async def process_text_command(message):
     line = text[0].split(' ')
     del text[0]
     color = line[1] in colors
-    channel = Bot.get_channel(int(line[2].replace('<#', '').replace('>', '')))
-    content = '\n'.join(text)
-    if color:
-        color = colors[line[1]]
-        embed = discord.Embed(description=content, color=color)
-        if message.attachments:
-            for attach in message.attachments:
-                embed.set_image(url=attach.url)
-        await channel.send(embed=embed)
+    if line[2]:
+        channel = Bot.get_channel(int(line[2].replace('<#', '').replace('>', '')))
     else:
-        await message.reply(f"Нету такого цвета '{line[1]}'")
+        channel = message.channel
+    content = '\n'.join(text)
+    if not color:
+        color = 0x000000
+    else:
+        color = colors[line[1]]
+    embed = discord.Embed(description=content, color=color)
+    if message.attachments:
+        for attach in message.attachments:
+            embed.set_image(url=attach.url)
+    await channel.send(embed=embed)
 
 
 async def edit_embed(message):
