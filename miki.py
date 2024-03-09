@@ -695,7 +695,7 @@ async def on_member_join(member):
     embed = discord.Embed(description=f"{member} присоединился к серверу")
     channel = Bot.get_channel(int(log_chat))
 
-    cur.execute("SELECT name FROM Users WHERE name = ?", member.id)
+    cur.execute("SELECT name FROM Users WHERE name = ?", (member.id,))
     entrie = cur.fetchone()
     print(entrie)
 
