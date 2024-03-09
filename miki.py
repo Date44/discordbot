@@ -191,7 +191,7 @@ async def edit_embed(message):
 
 
 async def create_rules(text):
-    channel = Bot.get_channel(int(1008286403068702832))
+    channel = Bot.get_channel(int(1075518862889590895))
     text = text.split("\n")
     del text[0]
 
@@ -210,7 +210,7 @@ async def edit_rules(text):
     line = text[1].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split(
         '/')[1]
     del text[0]
-    channel = Bot.get_channel(int(1008286403068702832))
+    channel = Bot.get_channel(int(1075518862889590895))
 
     embed = discord.Embed(color=0x000000)
     embed.title = f"**{text[0]}**"
