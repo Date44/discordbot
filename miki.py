@@ -191,7 +191,7 @@ async def edit_embed(message):
 
 
 async def create_rules(text):
-    channel = Bot.get_channel(int(1075518862889590895))
+    channel = Bot.get_channel(int(1008286403068702832))
     text = text.split("\n")
     del text[0]
 
@@ -210,7 +210,7 @@ async def edit_rules(text):
     line = text[0].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split(
         '/')[1]
     del text[0]
-    channel = Bot.get_channel(int(1075518862889590895))
+    channel = Bot.get_channel(int(1008286403068702832))
 
     embed = discord.Embed(color=0x000000)
     embed.title = f"**{text[0]}**"
@@ -231,7 +231,7 @@ async def on_message(message):
     if str(message.author.id) not in black_listbot:
         if text.startswith("!del"):
             await delete_messages(text, channel)
-        elif text.startswith("!stop"):
+        elif text.startswith("!restart"):
             await message.delete()
             await Bot.close()
             exit()
@@ -277,7 +277,7 @@ async def info(interaction):
             "    **!del** [количиство] - удаляет сообщения\n"
             "    **!text** [цвет] [#канал] - создать пост \n`Заголовок`\n `Текст`\n"
             "    **!edit** [ссылка на сообщение] - изменить пост \n`Заголовок` \n`Текст`\n"
-            "    **!stop** - перезапустить бота\n"
+            "    **!restart** - перезапустить бота\n"
             "**!правила-создание** \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` \n`Текст3` \n`Текст3` "
             "\n`Футер` \n"
             "**!правила-изменение** [ссылка на сообщение] \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` "
