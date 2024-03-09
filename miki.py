@@ -693,7 +693,7 @@ async def on_ready():
 @Bot.event
 async def on_member_join(member):
     embed = discord.Embed(description=f"{member} присоединился к серверу")
-    channel = Bot.get_channel(int(bot_chat))
+    channel = Bot.get_channel(int(log_chat))
 
     cur.execute("SELECT * FROM Users WHERE name = ?", member.id)
     entrie = cur.fetchone()
@@ -706,7 +706,7 @@ async def on_member_join(member):
 @Bot.event
 async def on_member_remove(member):
     embed = discord.Embed(description=f"{member} покинул сервер")
-    channel = Bot.get_channel(int(bot_chat))
+    channel = Bot.get_channel(int(log_chat))
     await channel.send(embed=embed)
 
 Bot.run(token)
