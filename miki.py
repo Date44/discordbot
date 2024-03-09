@@ -229,6 +229,7 @@ async def on_message(message):
             await delete_messages(text, channel)
         elif text.startswith("!stop"):
             await message.delete()
+            await Bot.close()
             exit()
         elif text.startswith("!text"):
             await process_text_command(message)
