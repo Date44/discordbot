@@ -698,7 +698,7 @@ async def on_member_join(member):
     cur.execute("SELECT name FROM Users WHERE name = ?", (member.id,))
     entrie = cur.fetchone()
     print(entrie)
-    if entrie is not None:
+    if entrie is None:
         create_profil(member.id)
     await channel.send(embed=embed)
 
