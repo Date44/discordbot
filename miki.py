@@ -698,7 +698,7 @@ async def on_member_join(member):
     cur.execute("SELECT name FROM Users WHERE name = ?", (member.id,))
     entrie = cur.fetchone()
     if entrie is None:
-        print(1)
+        embed = discord.Embed(description=f"{member} впервые присоединился к серверу")
         create_profil(member.id)
     await channel.send(embed=embed)
 
