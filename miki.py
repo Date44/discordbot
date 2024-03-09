@@ -177,7 +177,7 @@ async def edit_embed(message):
     channel = Bot.get_channel(int(line[1].replace('<#', '').replace('>', '')))
     content = '\n'.join(text)
     async for i in channel.history():
-        if i.id == int(line[1]):
+        if i.id == int(line[2]):
             for embed in i.embeds:
                 embed.description = content
                 if message.attachments:
