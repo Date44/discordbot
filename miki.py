@@ -207,7 +207,7 @@ async def create_rules(text):
 
 async def edit_rules(text):
     text = text.split("\n")
-    line = text[1].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split(
+    line = text[0].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split(
         '/')[1]
     del text[0]
     channel = Bot.get_channel(int(1075518862889590895))
