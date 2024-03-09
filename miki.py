@@ -155,9 +155,8 @@ async def process_text_command(message):
     text = text.split("\n")
     line = text[0].split(' ')
     del text[0]
-    line = line[1].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')
     color = line[1] in colors
-    channel = Bot.get_channel(int(line[0].replace('<#', '').replace('>', '')))
+    channel = Bot.get_channel(int(line[2].replace('<#', '').replace('>', '')))
     content = '\n'.join(text)
     if color:
         color = colors[line[1]]
@@ -174,11 +173,12 @@ async def edit_embed(message):
     text = message.content
     text = text.split("\n")
     line = text[0].split(' ')
+    line = line[1].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')
     del text[0]
-    channel = Bot.get_channel(int(line[1].replace('<#', '').replace('>', '')))
+    channel = Bot.get_channel(int(line[0].replace('<#', '').replace('>', '')))
     content = '\n'.join(text)
     async for i in channel.history():
-        if i.id == int(line[2]):
+        if i.id == int(line[1]):
             for embed in i.embeds:
                 embed.description = content
                 if message.attachments:
