@@ -12,7 +12,7 @@ from discord.ext import tasks
 from discord.ui import View, Button
 
 
-async def menu(interaction: discord.Interaction, current: str,) -> list[app_commands.Choice[str]]:
+async def menu(interaction: discord.Interaction, current: str, ) -> list[app_commands.Choice[str]]:
     menu = ["Мафия", "Бункер", "Алиас/Шляпа", "Крокодил", "GarticPhone", "JackBox", "Codenames", "Намёк понял", "Шпион",
             "Кто я?", "Криминалист"]
     return [
@@ -708,5 +708,6 @@ async def on_member_remove(member):
     embed = discord.Embed(description=f"{member} покинул сервер")
     channel = Bot.get_channel(int(log_chat))
     await channel.send(embed=embed)
+
 
 Bot.run(token)
