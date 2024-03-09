@@ -155,8 +155,9 @@ async def process_text_command(message):
     text = text.split("\n")
     line = text[0].split(' ')
     del text[0]
+    line = line[1].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')
     color = line[1] in colors
-    channel = Bot.get_channel(int(line[2].replace('<#', '').replace('>', '')))
+    channel = Bot.get_channel(int(line[0].replace('<#', '').replace('>', '')))
     content = '\n'.join(text)
     if color:
         color = colors[line[1]]
