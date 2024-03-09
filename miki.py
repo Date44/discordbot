@@ -552,7 +552,7 @@ async def casino(interaction, ставка: int):
     r = random2.randint(0, 1)
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
-    if all == None:
+    if all is None:
         create_profil(interaction.user.id)
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
@@ -698,8 +698,8 @@ async def on_member_join(member):
     cur.execute("SELECT name FROM Users WHERE name = ?", (member.id,))
     entrie = cur.fetchone()
     print(entrie)
-
-    # create_profil(member.id)
+    if entrie is not None:
+        create_profil(member.id)
     await channel.send(embed=embed)
 
 
