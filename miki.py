@@ -699,7 +699,7 @@ async def on_member_join(member):
     entrie = cur.fetchone()
     print(entrie)
 
-    create_profil(member.id)
+    # create_profil(member.id)
     await channel.send(embed=embed)
 
 
