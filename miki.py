@@ -118,6 +118,27 @@ if __name__ == '__main__':
     }
 
 
+def get_future_time2(delta_str):
+    delta_unit = delta_str[-1].lower()
+    delta_value = int(delta_str[:-1])
+
+    if delta_unit == 'd':
+        delta = datetime.timedelta(days=delta_value)
+    elif delta_unit == 'm':
+        delta = datetime.timedelta(minutes=delta_value)
+    elif delta_unit == 'h':
+        delta = datetime.timedelta(hours=delta_value)
+    elif delta_unit == 's':
+        delta = datetime.timedelta(seconds=delta_value)
+    elif delta_unit == 'w':
+        delta = datetime.timedelta(weeks=delta_value)
+    else:
+        delta = datetime.timedelta()  # Default to 0
+
+    future_time = datetime.datetime.now() + delta
+    return future_time
+
+
 def get_future_time(delta_str):
     delta_unit = delta_str[-1].lower()
     delta_value = int(delta_str[:-1])
@@ -290,7 +311,7 @@ async def ban(interaction, пользователь: discord.Member, время:
     channel = Bot.get_channel(log_chat)
     guild1 = Bot.get_guild(guild)
     role_ban = guild1.get_role(1208767887016333363)
-    text = f'**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере, время: {время}, причина: {причина}**'
+    text = f'**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере, время: <t:{get_future_time2(время)}>, причина: {причина}**'
     await пользователь.add_roles(role_ban, reason=причина)
     await channel.send(text)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
