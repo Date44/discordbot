@@ -136,8 +136,8 @@ def get_future_time2(delta_str):
         delta = datetime.timedelta()  # Default to 0
 
     future_time = datetime.datetime.now() + delta
-    print(future_time.timestamp())
-    return future_time.timestamp()
+    print(future_time.ctime())
+    return future_time.ctime()
 
 
 def get_future_time(delta_str):
