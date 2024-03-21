@@ -13,7 +13,7 @@ from discord.ui import View, Button
 
 
 async def menu(interaction: discord.Interaction, current: str, ) -> list[app_commands.Choice[str]]:
-    menu = ["Мафия", "Бункер", "Алиас/Шляпа", "Крокодил", "GarticPhone", "JackBox", "Codenames", "Намёк понял", "Шпион",
+    menu = ["Мафия", "Бункер", "Алиас/Шляпа", "Крокодил", "GarlicPhone", "JackBox", "Codenames", "Намёк понял", "Шпион",
             "Кто я?", "Криминалист"]
     return [
         app_commands.Choice(name=string, value=string)
@@ -133,7 +133,7 @@ def get_future_time2(delta_str):
     elif delta_unit == 'w':
         delta = datetime.timedelta(weeks=delta_value)
     else:
-        delta = datetime.timedelta()  # Default to 0
+        delta = datetime.timedelta()
 
     future_time = datetime.datetime.now() + delta
     return int(future_time.timestamp())
@@ -369,7 +369,7 @@ async def money(interaction):
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     embed = discord.Embed(
-        description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\nНа вашем счету: {all[0]} :coin:""",
+        description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nНа вашем счету: {all[0]} :coin:",
         color=0x1)
     embed.set_thumbnail(url=interaction.user.avatar)
     embed.set_author(name="Пользователь")
@@ -391,15 +391,17 @@ async def move(interaction, пользователь: discord.Member, сумма
     if all[0] >= сумма:
         if сумма == 0:
             embed = discord.Embed(
-                description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\nКак мне кажется от нуля нечего не изменится""",
+                description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nКак мне кажется от нуля нечего не "
+                            f"изменится",
                 color=0x1)
         elif сумма < 0:
             embed = discord.Embed(
-                description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\nЧисло должно быть положительным""",
+                description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nЧисло должно быть положительным",
                 color=0x1)
         else:
             embed = discord.Embed(
-                description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\nВы перевели {сумма} :coin: пользователю <@{пользователь.id}>| `{пользователь}`""",
+                description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nВы перевели {сумма} :coin: "
+                            f"пользователю <@{пользователь.id}>| `{пользователь}`",
                 color=0x1)
         cur.execute("UPDATE Users SET money = ? WHERE name = ?", (all[0] - сумма, interaction.user.id))
         con.commit()
@@ -410,7 +412,7 @@ async def move(interaction, пользователь: discord.Member, сумма
         await interaction.response.send_message(embed=embed, ephemeral=True)
     else:
         embed = discord.Embed(
-            description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\nу вас недостаточно средств """,
+            description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nу вас недостаточно средств ",
             color=0x1)
         embed.set_thumbnail(url=interaction.user.avatar)
         embed.set_author(name="Пользователь")
@@ -432,14 +434,16 @@ async def reward(interaction):
                     (new_valui, get_current_date(), interaction.user.id))
         con.commit()
         embed = discord.Embed(
-            description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\nВы получили 100 :coin: Следующую награду, можно будет получить завтра.""",
+            description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nВы получили 100 :coin: Следующую "
+            "награду, можно будет получить завтра.",
             color=0x1)
         embed.set_thumbnail(url=interaction.user.avatar)
         embed.set_author(name="Пользователь")
         await interaction.response.send_message(embed=embed, ephemeral=True)
     else:
         embed = discord.Embed(
-            description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\nНаграда была уже получена, следующую награду, можно будет получить завтра.""",
+            description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nНаграда была уже получена, следующую "
+            "награду, можно будет получить завтра.",
             color=0x1)
         embed.set_thumbnail(url=interaction.user.avatar)
         embed.set_author(name="Пользователь")
@@ -455,7 +459,7 @@ async def check(interaction, пользователь: discord.Member = None):
     if all == None:
         all = create_profil(пользователь.id)
     embed = discord.Embed(
-        description=f"""<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя до разбана: {all[3]}\nВремя до размута: {all[4]}\nКоличиство предупреждений: {all[5]}""",
+        description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя до разбана: {all[3]}\nВремя до размута: {all[4]}\nКоличиство предупреждений: {all[5]}",
         color=0x1)
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
@@ -536,13 +540,14 @@ async def event1(interaction, ивент: str, ссылка: str):
     category = guild1.get_channel(1086041654005354689)
     voice = await guild1.create_voice_channel(name=str(ивент), reason="Начало ивента", user_limit=15, category=category)
     channel = Bot.get_channel(int(event_chat))
-    embed = discord.Embed(description=f"""**Event {ивент}**\nНачат ивент `{ивент}`""", color=0x1)
-    embed1 = discord.Embed(description=f"""**Event {ивент}**\nОкончен ивент `{ивент}`""", color=0x1)
+    embed = discord.Embed(description=f"**Event {ивент}**\nНачат ивент `{ивент}`", color=0x1)
+    embed1 = discord.Embed(description=f"**Event {ивент}**\nОкончен ивент `{ивент}`", color=0x1)
     embed2 = discord.Embed(
-        description=f"""**Event {ивент}**\nГолосовой канал ивента создан  -  -  -  >  {voice.jump_url} """, color=0x1)
+        description=f"**Event {ивент}**\nГолосовой канал ивента создан  -  -  -  >  {voice.jump_url} ", color=0x1)
     embed3 = discord.Embed(
-        description=f"""**Event {ивент}**\nИвент был завершён\n\nP.S Не забудьте выписать в канал <#1143981422097481778>\
-         награды пользователей + скриншоты за каждую проведённую игру данного ивента (Скриншот конца каждой игры).""",
+        description=f"**Event {ивент}**\nИвент был завершён\n\nP.S Не забудьте выписать в канал "
+                    f"<#1143981422097481778> награды пользователей + скриншоты за каждую проведённую игру данного "
+                    f"ивента (Скриншот конца каждой игры).",
         color=0x1)
 
     async def callback2(interaction):
@@ -573,15 +578,17 @@ async def event1(interaction, ивент: str, ссылка: str):
 @tree.command(name="казино", description="Казино", guild=discord.Object(id=guild))
 async def casino(interaction, ставка: int):
     r = random2.randint(0, 1)
+    max = 1000
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     if all is None:
         create_profil(interaction.user.id)
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
-    if ставка > 1000:
+    if ставка > max:
         embed = discord.Embed(
-            description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\n Ваша ставка привышает лимит, максимальная ставка 1000 :coin:""",
+            description=f"<@{interaction.user.id}> | `{interaction.user}`\n\n Ваша ставка привышает лимит, "
+                        f"максимальная ставка {max} :coin:",
             color=0x1)
         embed.set_thumbnail(url=interaction.user.avatar)
         embed.set_author(name="Пользователь")
@@ -589,7 +596,7 @@ async def casino(interaction, ставка: int):
     else:
         if int(all[0]) < ставка:
             embed = discord.Embed(
-                description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\n У Вас не достаточно средств""",
+                description=f"<@{interaction.user.id}> | `{interaction.user}`\n\n У Вас не достаточно средств",
                 color=0x1)
             embed.set_thumbnail(url=interaction.user.avatar)
             embed.set_author(name="Пользователь")
@@ -600,7 +607,8 @@ async def casino(interaction, ставка: int):
                 cur.execute("UPDATE Users SET money = ? WHERE name = ?", (new_valui, interaction.user.id))
                 con.commit()
                 embed = discord.Embed(
-                    description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\n Ваша ставка выйграла, Вы получили: {int(ставка * 2)} :coin:""",
+                    description=f"<@{interaction.user.id}> | `{interaction.user}`\n\n Ваша ставка выйграла, Вы "
+                                f"получили: {int(ставка * 2)} :coin:",
                     color=0x1)
                 embed.set_thumbnail(url=interaction.user.avatar)
                 embed.set_author(name="Пользователь")
@@ -610,7 +618,8 @@ async def casino(interaction, ставка: int):
                 cur.execute("UPDATE Users SET money = ? WHERE name = ?", (new_valui, interaction.user.id))
                 con.commit()
                 embed = discord.Embed(
-                    description=f"""<@{interaction.user.id}> | `{interaction.user}`\n\n Ваша ставка проиграла, Вы потеряли: {ставка} :coin:""",
+                    description=f"<@{interaction.user.id}> | `{interaction.user}`\n\n Ваша ставка проиграла, Вы "
+                                f"потеряли: {ставка} :coin:",
                     color=0x1)
                 embed.set_thumbnail(url=interaction.user.avatar)
                 embed.set_author(name="Пользователь")
@@ -665,8 +674,8 @@ async def create_lot(interaction, name: discord.Role, description: str, price: f
 
 @tree.error
 async def on_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
-    embed = discord.Embed(description=f"""Со мной что-то случилось\n{error}""", color=0x1)
-    embed1 = discord.Embed(description=f"""Со мной что-то случилось\nобратитесь к администрации""", color=0x1)
+    embed = discord.Embed(description=f"Со мной что-то случилось\n{error}", color=0x1)
+    embed1 = discord.Embed(description=f"Со мной что-то случилось\nобратитесь к администрации", color=0x1)
     channel = Bot.get_channel(int(bot_chat))
     await interaction.response.send_message(embed=embed1, ephemeral=True)
     await channel.send(embed=embed)
