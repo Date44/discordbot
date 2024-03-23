@@ -212,8 +212,10 @@ async def edit_embed(message):
 
 
 async def create_rules(text):
-    channel = Bot.get_channel(int(1008286403068702832))
+
     text = text.split("\n")
+    line = text[0].replace("!правила-создание <#", "").replace(">", "")
+    channel = Bot.get_channel(int(line))
     del text[0]
 
     embed = discord.Embed(color=0x000000)
@@ -228,9 +230,9 @@ async def create_rules(text):
 
 async def edit_rules(text):
     text = text.split("\n")
-    line = text[0].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')[1]
+    line = text[0].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')
     del text[0]
-    channel = Bot.get_channel(int(1008286403068702832))
+    channel = Bot.get_channel(line[0])
 
     embed = discord.Embed(color=0x000000)
     embed.title = f"**{text[0]}**"
@@ -239,7 +241,7 @@ async def edit_rules(text):
     embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
     embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
     async for i in channel.history():
-        if i.id == int(line):
+        if i.id == int(line[1]):
             await i.edit(embed=embed)
 
 
