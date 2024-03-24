@@ -211,8 +211,8 @@ async def edit_embed(message):
                 await i.edit(embed=embed)
 
 
-async def create_rules(text):
-
+async def create_rules(message):
+    text = message.content
     text = text.split("\n")
     line = (text[0]
             .replace("!правила-создание", "")
@@ -220,7 +220,11 @@ async def create_rules(text):
             .replace(">", "")
             .replace(" ", "")
             )
-    channel = Bot.get_channel(int(line))
+    if line == "":
+        channel = message.channel
+    else:
+        channel = Bot.get_channel(int(line))
+
     del text[0]
 
     embed = discord.Embed(color=0x000000)
@@ -233,7 +237,8 @@ async def create_rules(text):
     await channel.send(embed=embed)
 
 
-async def edit_rules(text):
+async def edit_rules(message):
+    text = message.content
     text = text.split("\n")
     line = (text[0].replace("https://discord.com/channels/1007951389198127195/", "")
             .replace("!правила-изменение", "")
@@ -270,9 +275,9 @@ async def on_message(message):
         elif text.startswith("!edit"):
             await edit_embed(message)
         elif text.startswith("!правила-создание"):
-            await create_rules(text)
+            await create_rules(message)
         elif text.startswith("!правила-изменение"):
-            await edit_rules(text)
+            await edit_rules(message)
 
 
 class my_modal(discord.ui.Modal, title='Modal'):
