@@ -345,8 +345,8 @@ async def unban(interaction, пользователь: discord.Member, прич�
     role_ban = guild1.get_role(1208767887016333363)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
-    if all == None:
-        all = create_profil(interaction.user.id)
+    if all is None:
+        create_profil(interaction.user.id)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     await пользователь.remove_roles(role_ban, reason=причина)
@@ -361,16 +361,18 @@ async def mute(interaction, пользователь: discord.Member, время
     channel = Bot.get_channel(log_chat)
     guild1 = Bot.get_guild(guild)
     role_mute = guild1.get_role(1211342600204722248)
-    text = f'**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере, время: {время}, причина: {причина}**'
+    embed = discord.Embed(
+        description=f"**Пользователь**\n <@{пользователь.id}> | `{пользователь}`\n **Был замьючен на сервере, время "
+                    f"окончания: {время}\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
-    await channel.send(text)
+    await channel.send(embed=embed)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
     if all is None:
-        all = create_profil(пользователь.id)
+        create_profil(пользователь.id)
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
     con.commit()
-    await interaction.response.send_message(text, ephemeral=True)
+    await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 @tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild))
@@ -450,7 +452,7 @@ async def reward(interaction):
         con.commit()
         embed = discord.Embed(
             description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nВы получили 100 :coin: Следующую "
-            "награду, можно будет получить завтра.",
+                        "награду, можно будет получить завтра.",
             color=0x1)
         embed.set_thumbnail(url=interaction.user.avatar)
         embed.set_author(name="Пользователь")
@@ -458,7 +460,7 @@ async def reward(interaction):
     else:
         embed = discord.Embed(
             description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nНаграда была уже получена, следующую "
-            "награду, можно будет получить завтра.",
+                        "награду, можно будет получить завтра.",
             color=0x1)
         embed.set_thumbnail(url=interaction.user.avatar)
         embed.set_author(name="Пользователь")
