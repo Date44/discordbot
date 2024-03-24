@@ -230,9 +230,12 @@ async def create_rules(text):
 
 async def edit_rules(text):
     text = text.split("\n")
-    line = text[0].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')
+    line = (text[0].replace("https://discord.com/channels/1007951389198127195/", "")
+            .replace("!правила-изменение", "")
+            .replace(" ", "")
+            .split('/'))
     del text[0]
-    channel = Bot.get_channel(line[0])
+    channel = Bot.get_channel(int(line[0]))
 
     embed = discord.Embed(color=0x000000)
     embed.title = f"**{text[0]}**"
