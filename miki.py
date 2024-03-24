@@ -214,7 +214,12 @@ async def edit_embed(message):
 async def create_rules(text):
 
     text = text.split("\n")
-    line = text[0].replace("!правила-создание <#", "").replace(">", "")
+    line = (text[0]
+            .replace("!правила-создание", "")
+            .replace("<#", "")
+            .replace(">", "")
+            .replace(" ", "")
+            )
     channel = Bot.get_channel(int(line))
     del text[0]
 
