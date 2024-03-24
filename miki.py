@@ -363,7 +363,7 @@ async def mute(interaction, пользователь: discord.Member, время
     role_mute = guild1.get_role(1211342600204722248)
     embed = discord.Embed(
         description=f"**Пользователь**\n <@{пользователь.id}> | `{пользователь}`\n **Был замьючен на сервере, время "
-                    f"окончания: {время}\n Причина: {причина}**", color=0x000000)
+                    f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
     await channel.send(embed=embed)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (пользователь.id,))
