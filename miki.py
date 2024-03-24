@@ -345,20 +345,26 @@ async def unban(interaction, пользователь: discord.Member, прич�
     channel = Bot.get_channel(log_chat)
     guild1 = Bot.get_guild(guild)
     role_ban = guild1.get_role(1208767887016333363)
+    text = "Пользователь не забанен"
+    embed = discord.Embed(
+        description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с "
+                    f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
+        color=0x000000)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
     if all is None:
         create_profil(interaction.user.id)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
-    await пользователь.remove_roles(role_ban, reason=причина)
-    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, interaction.user.id))
-    con.commit()
-    embed = discord.Embed(
-        description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
-        color=0x000000)
-    await channel.send(embed=embed)
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+    if all[0] == 0:
+        await interaction.response.send_message(text, ephemeral=True)
+    else:
+        await пользователь.remove_roles(role_ban, reason=причина)
+        cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, interaction.user.id))
+        con.commit()
+
+        await channel.send(embed=embed)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 @tree.command(name="мут", description="mute user", guild=discord.Object(id=guild))
@@ -385,20 +391,25 @@ async def unban(interaction, пользователь: discord.Member, прич�
     channel = Bot.get_channel(log_chat)
     guild1 = Bot.get_guild(guild)
     role_mute = guild1.get_role(1211342600204722248)
+    text = "Пользователь не замьючен"
+    embed = discord.Embed(
+        description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
+        color=0x000000)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
     if all is None:
         create_profil(interaction.user.id)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
-    await пользователь.remove_roles(role_mute, reason=причина)
-    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, interaction.user.id))
-    con.commit()
-    embed = discord.Embed(
-        description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
-        color=0x000000)
-    await channel.send(embed=embed)
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+    if all[0] == 0:
+        await interaction.response.send_message(text, ephemeral=True)
+    else:
+        await пользователь.remove_roles(role_mute, reason=причина)
+        cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, interaction.user.id))
+        con.commit()
+
+        await channel.send(embed=embed)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 @tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild))
