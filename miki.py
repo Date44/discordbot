@@ -358,6 +358,7 @@ async def unban(interaction, пользователь: discord.Member, прич�
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
     await channel.send(embed=embed)
+    await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 @tree.command(name="мут", description="mute user", guild=discord.Object(id=guild))
@@ -397,6 +398,7 @@ async def unban(interaction, пользователь: discord.Member, прич�
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
     await channel.send(embed=embed)
+    await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 @tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild))
