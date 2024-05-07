@@ -5,9 +5,10 @@ import sqlite3
 import time
 import tracemalloc
 
+import aiohttp
 import discord
 import random2
-from discord import app_commands
+from discord import app_commands, webhook, Webhook
 from discord.ext import tasks
 from discord.ui import View, Button
 
@@ -782,6 +783,10 @@ async def on_ready():
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
     remove_expired_roles.start()
+    async with aiohttp.ClientSession() as session:
+        webhook = Webhook.from_url('url-here', session=session)
+        await webhook.send('Hello World', username=Bot.user.name, avatar_url=Bot.user.avatar.url)
+
 
 
 @Bot.event
