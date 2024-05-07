@@ -780,12 +780,15 @@ async def remove_expired_roles():
 
 @Bot.event
 async def on_ready():
+    global webhook
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
     remove_expired_roles.start()
-    async with aiohttp.ClientSession() as session:
-        webhook = Webhook.from_url('https://discord.com/api/webhooks/1237549176368398406/s_RiRzmTjZ_mCGl9tGycB02lOSeuTqYlA9y0L_yDSpPjGYRtof4oXTM0VltrleJO5B_W', session=session)
-        await webhook.send('Hello World', username=Bot.user.name, avatar_url=Bot.user.avatar.url)
+    # async with aiohttp.ClientSession() as session: webhook = Webhook.from_url(
+    # 'https://discord.com/api/webhooks/1237549176368398406
+    # /s_RiRzmTjZ_mCGl9tGycB02lOSeuTqYlA9y0L_yDSpPjGYRtof4oXTM0VltrleJO5B_W', session=session) await webhook.send(
+    # 'Hello World', username=Bot.user.name, avatar_url=Bot.user.avatar.url)
+
 
 
 
