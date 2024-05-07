@@ -258,6 +258,11 @@ async def edit_rules(message):
             await i.edit(embed=embed)
 
 
+async def test(message):
+    channel = Bot.get_channel(1232417232571727933)
+    await channel.send("123")
+
+
 @Bot.event
 async def on_message(message):
     black_listbot = [str(Bot.user.id), ]
@@ -278,6 +283,8 @@ async def on_message(message):
             await create_rules(message)
         elif text.startswith("!правила-изменение"):
             await edit_rules(message)
+        elif text.startswith("!123"):
+            await test(message)
 
 
 class my_modal(discord.ui.Modal, title='Modal'):
@@ -313,7 +320,8 @@ async def info(interaction):
             "    **!text** [цвет] [#канал] - создать пост \n`Заголовок`\n `Текст`\n"
             "    **!edit** [ссылка на сообщение] - изменить пост \n`Заголовок` \n`Текст`\n"
             "    **!restart** - перезапустить бота\n"
-            "**!правила-создание** [#канал] \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` \n`Текст3` \n`Текст3` "
+            "**!правила-создание** [#канал] \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` \n`Текст3`"
+            "\n`Текст3`"
             "\n`Футер` \n"
             "**!правила-изменение** [ссылка на сообщение] \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` "
             "\n`Текст3` \n`Текст3` \n`Футер` \n")
