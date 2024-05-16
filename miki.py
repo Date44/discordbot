@@ -107,9 +107,9 @@ if __name__ == '__main__':
     white_list = cfg["white_list"]
     log_chat = int(cfg["log_chat"])
     guild_id = int(cfg["guild_id"])
-    event_chat = cfg["event_chat"]
-    role_ban_id = cfg["role_ban"]
-    role_mute_id = cfg["role_mute"]
+    event_chat = int(cfg["event_chat"])
+    role_ban_id = int(cfg["role_ban"])
+    role_mute_id = int(cfg["role_mute"])
     colors = {
         'DarkRed': 0x8B0000,
         'Red': 0xFF0000,
@@ -677,9 +677,9 @@ async def on_ready():
     await tree.sync(guild=discord.Object(id=guild_id))
     remove_expired_roles.start()
 
-    guild = Bot.get_guild(id=guild_id)
-    role_ban = guild.get_role(id=role_ban_id)
-    role_mute = guild.get_role(id=role_mute_id)
+    guild = Bot.get_guild(guild_id)
+    role_ban = guild.get_role(role_ban_id)
+    role_mute = guild.get_role(role_mute_id)
 
     for member in guild.members:
         if not member.bot:
