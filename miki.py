@@ -787,7 +787,7 @@ async def on_ready():
     guild1 = Bot.get_guild(1007951389198127195)
     l = guild1.members
     for i in l:
-        print(i.name + " " + str(i.status))
+        print(i.name, i.status)
     # async with aiohttp.ClientSession() as session: webhook = Webhook.from_url(
     # 'https://discord.com/api/webhooks/1237549176368398406
     # /s_RiRzmTjZ_mCGl9tGycB02lOSeuTqYlA9y0L_yDSpPjGYRtof4oXTM0VltrleJO5B_W', session=session) await webhook.send(
