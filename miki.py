@@ -5,10 +5,9 @@ import sqlite3
 import time
 import tracemalloc
 
-import aiohttp
 import discord
 import random2
-from discord import app_commands, webhook, Webhook, Game
+from discord import app_commands
 from discord.ext import tasks
 from discord.ui import View, Button
 
@@ -342,10 +341,6 @@ async def ban(interaction, пользователь: discord.Member, время:
                     f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_ban, reason=причина)
     await channel.send(embed=embed)
-    cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
-    all = cur.fetchone()
-    if all is None:
-        create_profil(пользователь.id)
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -361,10 +356,6 @@ async def unban(interaction, пользователь: discord.Member, прич�
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с "
                     f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
-    cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
-    all = cur.fetchone()
-    if all is None:
-        create_profil(interaction.user.id)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     if all[0] == 0:
@@ -388,10 +379,6 @@ async def mute(interaction, пользователь: discord.Member, время
                     f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
     await channel.send(embed=embed)
-    cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (пользователь.id,))
-    all = cur.fetchone()
-    if all is None:
-        create_profil(пользователь.id)
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -404,12 +391,9 @@ async def unban(interaction, пользователь: discord.Member, прич�
     role_mute = guild1.get_role(1211342600204722248)
     text = "Пользователь не замьючен"
     embed = discord.Embed(
-        description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
+        description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с "
+        "пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
-    cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (пользователь.id,))
-    all = cur.fetchone()
-    if all is None:
-        create_profil(interaction.user.id)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     if all[0] == 0:
@@ -425,12 +409,6 @@ async def unban(interaction, пользователь: discord.Member, прич�
 
 @tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild))
 async def money(interaction):
-    channel = Bot.get_channel(int(interaction.channel.id))
-    guild1 = Bot.get_guild(guild)
-    cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
-    all = cur.fetchone()
-    if all == None:
-        all = create_profil(interaction.user.id)
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     embed = discord.Embed(
@@ -449,10 +427,6 @@ async def move(interaction, пользователь: discord.Member, сумма
     all = cur.fetchone()
     cur.execute("SELECT money FROM Users WHERE name = ?", (пользователь.id,))
     all1 = cur.fetchone()
-    if all is None:
-        all = create_profil(interaction.user.id)
-    if all1 is None:
-        all1 = create_profil(пользователь.id)
     if all[0] >= сумма:
         if сумма == 0:
             embed = discord.Embed(
@@ -486,13 +460,8 @@ async def move(interaction, пользователь: discord.Member, сумма
 
 @tree.command(name="награда", description="Ежедневная награда", guild=discord.Object(id=guild))
 async def reward(interaction):
-    data = [((interaction.user.id), 0, 0, 0, 0, 0), ]
     cur.execute("SELECT money, timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
-    if all == None:
-        create_profil(interaction.user.id)
-        cur.execute("SELECT money, timeout FROM Users WHERE name = ?", (interaction.user.id,))
-        all = cur.fetchone()
     if all[1] != get_current_date() or all[0] == 0:
         new_valui = int(all[0]) + 100
         cur.execute("UPDATE Users SET money = ?, timeout = ? WHERE name = ?",
@@ -521,8 +490,6 @@ async def check(interaction, пользователь: discord.Member = None):
         пользователь = interaction
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
-    if all == None:
-        all = create_profil(пользователь.id)
     embed = discord.Embed(
         description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя до разбана: {all[3]}\nВремя до размута: {all[4]}\nКоличиство предупреждений: {all[5]}",
         color=0x1)
@@ -646,10 +613,6 @@ async def casino(interaction, ставка: int):
     max = 1000
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
-    if all is None:
-        create_profil(interaction.user.id)
-    cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
-    all = cur.fetchone()
     if ставка > max:
         embed = discord.Embed(
             description=f"<@{interaction.user.id}> | `{interaction.user}`\n\n Ваша ставка привышает лимит, "
@@ -698,18 +661,16 @@ async def shop1(interaction, лот: int = -1):
 
     async def button_callback(interaction: discord.Interaction, price):
         cur.execute("SELECT money FROM Users WHERE name = ?", (interaction,))
-        all = cur.fetchone()
-        if price[3] > all:
+        if price[3] > cur.fetchone():
             await interaction.response.send_message('Не достаточно средств', ephemeral=True)
         else:
             await interaction.response.send_message('Вы купили товар', ephemeral=True)
 
     if лот == -1:
-        cur.execute("SELECT * FROM Shop")
-        all = cur.fetchall()
         r = []
         r1 = ""
-        for i in all:
+        cur.execute("SELECT * FROM Shop")
+        for i in cur.fetchall():
             r.append("лот: " + str(i[0]) + " Название: " + str(i[1]) + " Цена: " + str(i[3]) + " :coin:" + "\n")
         for i in range(len(r)):
             r1 += r[i]
@@ -782,14 +743,17 @@ async def remove_expired_roles():
 
 @Bot.event
 async def on_ready():
-    global webhook
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
     remove_expired_roles.start()
-    # async with aiohttp.ClientSession() as session: webhook = Webhook.from_url(
-    # 'https://discord.com/api/webhooks/1237549176368398406
-    # /s_RiRzmTjZ_mCGl9tGycB02lOSeuTqYlA9y0L_yDSpPjGYRtof4oXTM0VltrleJO5B_W', session=session) await webhook.send(
-    # 'Hello World', username=Bot.user.name, avatar_url=Bot.user.avatar.url)
+
+    for member in Bot.get_guild(guild).members:
+        if not member.bot:
+            cur.execute("SELECT money FROM Users WHERE name = ?", (member.id,))
+            if cur.fetchone() is None:
+                create_profil(member.id)
+                print(member.name)
+
 
 
 
