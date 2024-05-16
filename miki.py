@@ -260,13 +260,10 @@ async def edit_rules(message):
 
 
 async def test(message):
-    # channel = Bot.get_channel(1232417232571727933)
-    # await channel.send("123")
     guild1 = Bot.get_guild(1007951389198127195)
-    l1 = list()
-    l = guild1.members
-    for i in l:
-        print(i.status)
+
+    for member in guild1.members:
+        print(member.name, member.status)
 
 
 @Bot.event
