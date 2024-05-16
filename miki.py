@@ -26,7 +26,7 @@ def create_db():
     cur.execute("CREATE TABLE Shop(id INTEGER UNIQUE PRIMARY KEY, name, description, price)")
 
 
-def create_profil(id_name):
+def create_profile(id_name):
     data = [(id_name, 0, 0, 0, 0, 0), ]
     cur.executemany("INSERT INTO Users VALUES(?, ?, ?, ?, ?, ?)", data)
     con.commit()
@@ -43,6 +43,7 @@ def create_config():
     config.add_section('Protect')
     config.add_section('Log')
     config.add_section('Event')
+    config.add_section('Roles')
 
     config.set('Login', 'token', '')
     config.set('Login', 'command_chat', id_chat)
@@ -50,6 +51,8 @@ def create_config():
     config.set('Protect', 'white_list', "[281772955690860544, ]")
     config.set('Log', 'log_chat', id_chat)
     config.set('Event', 'event_chat', id_chat)
+    config.set('Roles', 'role_ban', id_chat)
+    config.set('Roles', 'role_mute', id_chat)
 
     with open('config.cfg', 'w') as configfile:
         config.write(configfile)
@@ -58,15 +61,17 @@ def create_config():
 def read_config():
     config = configparser.ConfigParser()
     config.read('config.cfg')
-    cfg = {
+    config = {
         "token": config.get('Login', 'token'),
         "command_chat": config.get('Login', 'command_chat'),
         "guild_id": config.get('Login', 'guild_id'),
         "white_list": config.get('Protect', 'white_list'),
         "log_chat": config.get('Log', 'log_chat'),
-        "event_chat": config.get('Event', 'event_chat')
+        "event_chat": config.get('Event', 'event_chat'),
+        "role_ban": config.get('Roles', 'role_ban'),
+        "role_mute": config.get('Roles', 'role_mute'),
     }
-    return cfg
+    return config
 
 
 if __name__ == '__main__':
@@ -101,8 +106,10 @@ if __name__ == '__main__':
     bot_chat = int(cfg["command_chat"])
     white_list = cfg["white_list"]
     log_chat = int(cfg["log_chat"])
-    guild = int(cfg["guild_id"])
+    guild_id = int(cfg["guild_id"])
     event_chat = cfg["event_chat"]
+    role_ban_id = cfg["role_ban"]
+    role_mute_id = cfg["role_mute"]
     colors = {
         'DarkRed': 0x8B0000,
         'Red': 0xFF0000,
@@ -258,10 +265,8 @@ async def edit_rules(message):
             await i.edit(embed=embed)
 
 
-async def test(message):
-    guild1 = Bot.get_guild(1007951389198127195)
-
-    for member in guild1.members:
+async def test():
+    for member in guild.members:
         print(member.name, member.status)
 
 
@@ -286,7 +291,7 @@ async def on_message(message):
         elif text.startswith("!правила-изменение"):
             await edit_rules(message)
         elif text.startswith("!123"):
-            await test(message)
+            await test()
 
 
 class my_modal(discord.ui.Modal, title='Modal'):
@@ -299,43 +304,45 @@ class my_modal(discord.ui.Modal, title='Modal'):
     async def on_submit(self, interaction: discord.Interaction):
         channel = Bot.get_channel(int(1075471916204306535))
         embed = discord.Embed(title=self.title,
-                              description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}",
+                              description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n"
+                                          f"**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}",
                               color=discord.Colour.blue())
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await channel.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="modal", description="Modal", guild=discord.Object(id=guild))
+@tree.command(name="modal", description="Modal", guild=discord.Object(id=guild_id))
 async def modal(interaction):
     await interaction.response.send_modal(my_modal())
 
 
-@tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild))
+@tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild_id))
 async def info(interaction):
-    info = ("\n"
-            "    **Список доступных цветов:**\n"
-            "    DarkRed, Red, DarkOrange, Yellow, Gold, DarkBlue, Blue, Cyan, Lime, LimeGreen, OrangeRed\n"
-            "\n"
-            "    **Список доступных команд:**\n"
-            "    **!del** [количиство] - удаляет сообщения\n"
-            "    **!text** [цвет] [#канал] - создать пост \n`Заголовок`\n `Текст`\n"
-            "    **!edit** [ссылка на сообщение] - изменить пост \n`Заголовок` \n`Текст`\n"
-            "    **!restart** - перезапустить бота\n"
-            "**!правила-создание** [#канал] \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` \n`Текст3`"
-            "\n`Текст3`"
-            "\n`Футер` \n"
-            "**!правила-изменение** [ссылка на сообщение] \n `Заголовок` \n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` "
-            "\n`Текст3` \n`Текст3` \n`Футер` \n")
-    embed = discord.Embed(title="Инфо", description=info, color=0x1)
+    Infomercial = ("\n"
+                   "    **Список доступных цветов:**\n"
+                   "    DarkRed, Red, DarkOrange, Yellow, Gold, DarkBlue, Blue, Cyan, Lime, LimeGreen, OrangeRed\n"
+                   "\n"
+                   "    **Список доступных команд:**\n"
+                   "    **!del** [количиство] - удаляет сообщения\n"
+                   "    **!text** [цвет] [#канал] - создать пост \n`Заголовок`\n `Текст`\n"
+                   "    **!edit** [ссылка на сообщение] - изменить пост \n`Заголовок` \n`Текст`\n"
+                   "    **!restart** - перезапустить бота\n"
+                   "**!правила-создание** [#канал] \n `Заголовок` \n`Текст1` "
+                   "\n`Текст1` \n`Текст2` \n`Текст2` \n`Текст3`"
+                   "\n`Текст3`"
+                   "\n`Футер` \n"
+                   "**!правила-изменение** [ссылка на сообщение] \n `Заголовок` "
+                   "\n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` "
+                   "\n`Текст3` \n`Текст3` \n`Футер` \n")
+    embed = discord.Embed(title="Инфо", description=Infomercial, color=0x1)
     await interaction.response.send_message(embed=embed)
 
 
-@tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild))
+@tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild_id))
 async def ban(interaction, пользователь: discord.Member, время: str, причина: str):
     channel = Bot.get_channel(log_chat)
-    guild1 = Bot.get_guild(guild)
-    role_ban = guild1.get_role(1208767887016333363)
+
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был забанен на сервере, время "
                     f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
@@ -346,19 +353,16 @@ async def ban(interaction, пользователь: discord.Member, время:
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="разбан", description="Снять бан", guild=discord.Object(id=guild))
+@tree.command(name="разбан", description="Снять бан", guild=discord.Object(id=guild_id))
 async def unban(interaction, пользователь: discord.Member, причина: str):
     channel = Bot.get_channel(log_chat)
-    guild1 = Bot.get_guild(guild)
-    role_ban = guild1.get_role(1208767887016333363)
     text = "Пользователь не забанен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с "
                     f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (interaction.user.id,))
-    all = cur.fetchone()
-    if all[0] == 0:
+    if cur.fetchone()[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
         await пользователь.remove_roles(role_ban, reason=причина)
@@ -369,11 +373,9 @@ async def unban(interaction, пользователь: discord.Member, прич�
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="мут", description="mute user", guild=discord.Object(id=guild))
+@tree.command(name="мут", description="mute user", guild=discord.Object(id=guild_id))
 async def mute(interaction, пользователь: discord.Member, время: str, причина: str):
     channel = Bot.get_channel(log_chat)
-    guild1 = Bot.get_guild(guild)
-    role_mute = guild1.get_role(1211342600204722248)
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был замьючен на сервере, время "
                     f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
@@ -384,19 +386,17 @@ async def mute(interaction, пользователь: discord.Member, время
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="размут", description="Снять мьют", guild=discord.Object(id=guild))
+@tree.command(name="размут", description="Снять мьют", guild=discord.Object(id=guild_id))
 async def unban(interaction, пользователь: discord.Member, причина: str):
     channel = Bot.get_channel(log_chat)
-    guild1 = Bot.get_guild(guild)
-    role_mute = guild1.get_role(1211342600204722248)
+
     text = "Пользователь не замьючен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с "
-        "пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
+                    "пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (interaction.user.id,))
-    all = cur.fetchone()
-    if all[0] == 0:
+    if cur.fetchone()[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
         await пользователь.remove_roles(role_mute, reason=причина)
@@ -407,7 +407,7 @@ async def unban(interaction, пользователь: discord.Member, прич�
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild))
+@tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild_id))
 async def money(interaction):
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
@@ -419,10 +419,8 @@ async def money(interaction):
     await interaction.response.send_message(embed=embed)
 
 
-@tree.command(name="перевести", description="перевести коины", guild=discord.Object(id=guild))
+@tree.command(name="перевести", description="перевести коины", guild=discord.Object(id=guild_id))
 async def move(interaction, пользователь: discord.Member, сумма: int):
-    data = [((interaction.user.id), 0, 0, 0, 0, 0), ]
-    data1 = [((пользователь.id), 0, 0, 0, 0, 0), ]
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     cur.execute("SELECT money FROM Users WHERE name = ?", (пользователь.id,))
@@ -458,7 +456,7 @@ async def move(interaction, пользователь: discord.Member, сумма
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="награда", description="Ежедневная награда", guild=discord.Object(id=guild))
+@tree.command(name="награда", description="Ежедневная награда", guild=discord.Object(id=guild_id))
 async def reward(interaction):
     cur.execute("SELECT money, timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
@@ -484,93 +482,27 @@ async def reward(interaction):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="инфо", description="просмотр профиля", guild=discord.Object(id=guild))
+@tree.command(name="инфо", description="просмотр профиля", guild=discord.Object(id=guild_id))
 async def check(interaction, пользователь: discord.Member = None):
-    if пользователь == None:
+    if пользователь is None:
         пользователь = interaction
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
     embed = discord.Embed(
-        description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя до разбана: {all[3]}\nВремя до размута: {all[4]}\nКоличиство предупреждений: {all[5]}",
+        description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя до разбана:"
+                    f" {all[3]}\nВремя до размута: {all[4]}\nКоличиство предупреждений: {all[5]}",
         color=0x1)
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-#
-# def days_1(data1, data2):
-#     if data2 == "Monday":
-#         return data1 + " - " + "**Понедельник**"
-#
-#     elif data2 == "Tuesday":
-#         return data1 + " - " + "**Вторник**"
-#
-#     elif data2 == "Wednesday":
-#         return data1 + " - " + "**Среда**"
-#
-#     elif data2 == "Thursday":
-#         return data1 + " - " + "**Четверг**"
-#
-#     elif data2 == "Friday":
-#         return data1 + " - " + "**Пятница**"
-#
-#     elif data2 == "Saturday":
-#         return data1 + " - " + "**Суббота**"
-#
-#     elif data2 == "Sunday":
-#         return data1 + " - " + "**Воскресенье**"
-#     else:
-#         return data1 + " - " + data2
-
-#
-# @tree.command(name="запланировать-ивент", description="расписание ивентов", guild=discord.Object(id=guild))
-# @app_commands.autocomplete(ивент=menu)
-# async def event3(interaction, ивент: str, дата: str, время: str):
-#     # time_object = datetime.datetime.strptime(дата, '%d.%m')
-#     # time_object = time_object.strftime("%d.%m")
-#     # time_object1 = datetime.datetime.strptime(время, '%H:%M')
-#     # time_object1 = time_object1.strftime("%H:%M")
-#     # await event2([ивент, time_object, time_object1])
-#
-#     await interaction.response.send_message(
-#         content=f"Ивент запланирован, дата и время проведения `{дата}` **:** `{время}`", ephemeral=True)
-
-#
-# async def event2(text: list):
-#     r = 0
-#     channel = Bot.get_channel(1143990947949056061)
-#     async for i in channel.history():
-#         if i.id == int(1146181805167358063):
-#             r = i
-#     print(r.embeds[0].description)
-#     list1 = list()
-#     list2 = list()
-#     for i in range(0, 7):
-#         data = datetime.date.today() + datetime.timedelta(days=i)
-#         data2 = data.strftime("%A")
-#         data1 = data.strftime("`%d.%m`")
-#         data1 = days_1(data1, data2)
-#         if text[1] == data.strftime("%d.%m"):
-#             list2.append(text[0] + " - " + text[2])
-#         else:
-#             list2.append("Нет ивентов")
-#
-#         list1.append(data1)
-#     embed = discord.Embed(
-#         description=f"**РАСПИСАНИЕ ИВЕНТОВ**\n\n{list1[0]}\n{list2[0]}\n\n{list1[1]}\n{list2[1]}\n\n{list1[2]}\n{list2[2]}\n\n{list1[3]}\n{list2[3]}\n\n{list1[4]}\n{list2[4]}\n\n{list1[5]}\n{list2[5]}\n\n{list1[6]}\n{list2[6]}\n")
-#     embed.set_image(
-#         url="https://media.discordapp.net/attachments/1143935103962198137/1146180780175937627/21dea55f066d9d29.png?width=1595&height=637")
-#     await r.edit(embed=embed)
-#
-
-@tree.command(name="ивент-пост", description="старт ивентов", guild=discord.Object(id=guild))
+@tree.command(name="ивент-пост", description="старт ивентов", guild=discord.Object(id=guild_id))
 @app_commands.autocomplete(ивент=menu)
 async def event1(interaction, ивент: str, ссылка: str):
     interaction1 = interaction
-    guild1 = Bot.get_guild(guild)
-    category = guild1.get_channel(1086041654005354689)
-    voice = await guild1.create_voice_channel(name=str(ивент), reason="Начало ивента", user_limit=15, category=category)
+    category = guild.get_channel(1086041654005354689)
+    voice = await guild.create_voice_channel(name=str(ивент), reason="Начало ивента", user_limit=15, category=category)
     channel = Bot.get_channel(int(event_chat))
     embed = discord.Embed(description=f"**Event {ивент}**\nНачат ивент `{ивент}`", color=0x1)
     embed1 = discord.Embed(description=f"**Event {ивент}**\nОкончен ивент `{ивент}`", color=0x1)
@@ -607,7 +539,7 @@ async def event1(interaction, ивент: str, ссылка: str):
     await channel.send(embed=embed, view=view)
 
 
-@tree.command(name="казино", description="Казино", guild=discord.Object(id=guild))
+@tree.command(name="казино", description="Казино", guild=discord.Object(id=guild_id))
 async def casino(interaction, ставка: int):
     r = random2.randint(0, 1)
     max = 1000
@@ -654,7 +586,7 @@ async def casino(interaction, ставка: int):
                 await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="магазин", description="магазин", guild=discord.Object(id=guild))
+@tree.command(name="магазин", description="магазин", guild=discord.Object(id=guild_id))
 async def shop1(interaction, лот: int = -1):
     view = View()
     button = Button(style=discord.ButtonStyle.primary, label='Подтвердить')
@@ -689,7 +621,7 @@ async def shop1(interaction, лот: int = -1):
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
 
-@tree.command(name="createl", description="123", guild=discord.Object(id=guild))
+@tree.command(name="createl", description="123", guild=discord.Object(id=guild_id))
 async def create_lot(interaction, name: discord.Role, description: str, price: float):
     data = [None, name, description, price]
 
@@ -717,9 +649,6 @@ async def remove_role(guild, member_id, role):
 
 @tasks.loop(minutes=1)
 async def remove_expired_roles():
-    guild = Bot.get_guild(1007951389198127195)
-    role_ban = guild.get_role(1208767887016333363)
-    role_mute = guild.get_role(1211342600204722248)
     current_time = datetime.datetime.now()
 
     cur.execute("SELECT * FROM Users WHERE ban_timeout != 0 OR mute_timeout != 0")
@@ -743,19 +672,21 @@ async def remove_expired_roles():
 
 @Bot.event
 async def on_ready():
+    global guild, role_ban, role_mute
     await Bot.change_presence(status=discord.Status.online)
-    await tree.sync(guild=discord.Object(id=guild))
+    await tree.sync(guild=discord.Object(id=guild_id))
     remove_expired_roles.start()
 
-    for member in Bot.get_guild(guild).members:
+    guild = Bot.get_guild(id=guild_id)
+    role_ban = guild.get_role(id=role_ban_id)
+    role_mute = guild.get_role(id=role_mute_id)
+
+    for member in guild.members:
         if not member.bot:
             cur.execute("SELECT money FROM Users WHERE name = ?", (member.id,))
             if cur.fetchone() is None:
-                create_profil(member.id)
+                create_profile(member.id)
                 print(member.name)
-
-
-
 
 
 @Bot.event
@@ -767,7 +698,7 @@ async def on_member_join(member):
     entrie = cur.fetchone()
     if entrie is None:
         embed = discord.Embed(description=f"{member} впервые присоединился к серверу")
-        create_profil(member.id)
+        create_profile(member.id)
     await channel.send(embed=embed)
 
 
