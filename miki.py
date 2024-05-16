@@ -73,7 +73,7 @@ def read_config():
 if __name__ == '__main__':
     intents = discord.Intents.default()
     intents.typing = False
-    intents.presences = False
+    intents.presences = True
     intents.message_content = True
     intents.guilds = True
     intents.members = True
