@@ -266,7 +266,7 @@ async def test(message):
     l1 = list()
     l = guild1.members
     for i in l:
-        print(i.raw_status)
+        print(i.status)
 
 
 @Bot.event
