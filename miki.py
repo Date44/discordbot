@@ -8,7 +8,7 @@ import tracemalloc
 import aiohttp
 import discord
 import random2
-from discord import app_commands, webhook, Webhook
+from discord import app_commands, webhook, Webhook, Game
 from discord.ext import tasks
 from discord.ui import View, Button
 
@@ -784,6 +784,8 @@ async def on_ready():
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
     remove_expired_roles.start()
+    guild1 = Bot.get_guild(1007951389198127195)
+    await Bot.change_presence(activity=Game(guild1.member_count.real))
     # async with aiohttp.ClientSession() as session: webhook = Webhook.from_url(
     # 'https://discord.com/api/webhooks/1237549176368398406
     # /s_RiRzmTjZ_mCGl9tGycB02lOSeuTqYlA9y0L_yDSpPjGYRtof4oXTM0VltrleJO5B_W', session=session) await webhook.send(
