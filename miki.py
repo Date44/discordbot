@@ -260,8 +260,14 @@ async def edit_rules(message):
 
 
 async def test(message):
-    channel = Bot.get_channel(1232417232571727933)
-    await channel.send("123")
+    # channel = Bot.get_channel(1232417232571727933)
+    # await channel.send("123")
+    guild1 = Bot.get_guild(1007951389198127195)
+    l1 = list()
+    l = guild1.members
+    for i in l:
+        l1.append(f"{i.name} {i.status}")
+    print(l1)
 
 
 @Bot.event
@@ -784,10 +790,6 @@ async def on_ready():
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild))
     remove_expired_roles.start()
-    guild1 = Bot.get_guild(1007951389198127195)
-    l = guild1.members
-    for i in l:
-        print(i.name, i.status)
     # async with aiohttp.ClientSession() as session: webhook = Webhook.from_url(
     # 'https://discord.com/api/webhooks/1237549176368398406
     # /s_RiRzmTjZ_mCGl9tGycB02lOSeuTqYlA9y0L_yDSpPjGYRtof4oXTM0VltrleJO5B_W', session=session) await webhook.send(
