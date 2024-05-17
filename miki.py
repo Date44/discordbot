@@ -51,6 +51,7 @@ def create_config():
     config.set('Protect', 'white_list', "[281772955690860544, ]")
     config.set('Log', 'log_chat', id_chat)
     config.set('Event', 'event_chat', id_chat)
+    config.set('Event', 'event_categorize', id_chat)
     config.set('Roles', 'role_ban', id_chat)
     config.set('Roles', 'role_mute', id_chat)
 
@@ -68,6 +69,7 @@ def read_config():
         "white_list": config.get('Protect', 'white_list'),
         "log_chat": config.get('Log', 'log_chat'),
         "event_chat": config.get('Event', 'event_chat'),
+        "event_categorize": config.get('Event', 'event_categorize'),
         "role_ban": config.get('Roles', 'role_ban'),
         "role_mute": config.get('Roles', 'role_mute'),
     }
@@ -89,7 +91,6 @@ if __name__ == '__main__':
         con = sqlite3.connect("Miki.db")
         cur = con.cursor()
         create_db()
-        g = True
 
     else:
         con = sqlite3.connect("Miki.db")
@@ -105,9 +106,10 @@ if __name__ == '__main__':
     token = cfg["token"]
     bot_chat = int(cfg["command_chat"])
     white_list = cfg["white_list"]
-    log_chat = int(cfg["log_chat"])
+    log_chat_id = int(cfg["log_chat"])
     guild_id = int(cfg["guild_id"])
     event_chat = int(cfg["event_chat"])
+    event_categorize = int(cfg["event_categorize"])
     role_ban_id = int(cfg["role_ban"])
     role_mute_id = int(cfg["role_mute"])
     colors = {
@@ -204,7 +206,9 @@ async def edit_embed(message):
     text = message.content
     text = text.split("\n")
     line = text[0].split(' ')
-    line = line[1].replace("https://discord.com/channels/1007951389198127195/", "").replace(' ', '').split('/')
+    line = (line[1].replace(f"https://discord.com/channels/{guild_id}/", "")
+            .replace(' ', '')
+            .split('/'))
     del text[0]
     channel = Bot.get_channel(int(line[0].replace('<#', '').replace('>', '')))
     content = '\n'.join(text)
@@ -247,7 +251,7 @@ async def create_rules(message):
 async def edit_rules(message):
     text = message.content
     text = text.split("\n")
-    line = (text[0].replace("https://discord.com/channels/1007951389198127195/", "")
+    line = (text[0].replace(f"https://discord.com/channels/{guild_id}/", "")
             .replace("!правила-изменение", "")
             .replace(" ", "")
             .split('/'))
@@ -302,13 +306,12 @@ class my_modal(discord.ui.Modal, title='Modal'):
                               placeholder="Я Максим, люблю пиццу", min_length=16, max_length=128)
 
     async def on_submit(self, interaction: discord.Interaction):
-        channel = Bot.get_channel(int(1075471916204306535))
         embed = discord.Embed(title=self.title,
                               description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n"
                                           f"**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}",
                               color=discord.Colour.blue())
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        await channel.send(embed=embed)
+        await log_chat.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
@@ -341,13 +344,11 @@ async def info(interaction):
 
 @tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild_id))
 async def ban(interaction, пользователь: discord.Member, время: str, причина: str):
-    channel = Bot.get_channel(log_chat)
-
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был забанен на сервере, время "
                     f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_ban, reason=причина)
-    await channel.send(embed=embed)
+    await log_chat.send(embed=embed)
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -355,7 +356,6 @@ async def ban(interaction, пользователь: discord.Member, время:
 
 @tree.command(name="разбан", description="Снять бан", guild=discord.Object(id=guild_id))
 async def unban(interaction, пользователь: discord.Member, причина: str):
-    channel = Bot.get_channel(log_chat)
     text = "Пользователь не забанен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с "
@@ -369,18 +369,17 @@ async def unban(interaction, пользователь: discord.Member, прич�
         cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, interaction.user.id))
         con.commit()
 
-        await channel.send(embed=embed)
+        await log_chat.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
 @tree.command(name="мут", description="mute user", guild=discord.Object(id=guild_id))
 async def mute(interaction, пользователь: discord.Member, время: str, причина: str):
-    channel = Bot.get_channel(log_chat)
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был замьючен на сервере, время "
                     f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
-    await channel.send(embed=embed)
+    await log_chat.send(embed=embed)
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -388,8 +387,6 @@ async def mute(interaction, пользователь: discord.Member, время
 
 @tree.command(name="размут", description="Снять мьют", guild=discord.Object(id=guild_id))
 async def unban(interaction, пользователь: discord.Member, причина: str):
-    channel = Bot.get_channel(log_chat)
-
     text = "Пользователь не замьючен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с "
@@ -403,7 +400,7 @@ async def unban(interaction, пользователь: discord.Member, прич�
         cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, interaction.user.id))
         con.commit()
 
-        await channel.send(embed=embed)
+        await log_chat.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
@@ -501,9 +498,9 @@ async def check(interaction, пользователь: discord.Member = None):
 @app_commands.autocomplete(ивент=menu)
 async def event1(interaction, ивент: str, ссылка: str):
     interaction1 = interaction
-    category = guild.get_channel(1086041654005354689)
+    category = guild.get_channel(event_categorize)
     voice = await guild.create_voice_channel(name=str(ивент), reason="Начало ивента", user_limit=15, category=category)
-    channel = Bot.get_channel(int(event_chat))
+    channel = Bot.get_channel(event_chat)
     embed = discord.Embed(description=f"**Event {ивент}**\nНачат ивент `{ивент}`", color=0x1)
     embed1 = discord.Embed(description=f"**Event {ивент}**\nОкончен ивент `{ивент}`", color=0x1)
     embed2 = discord.Embed(
@@ -634,7 +631,7 @@ async def create_lot(interaction, name: discord.Role, description: str, price: f
 async def on_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
     embed = discord.Embed(description=f"Со мной что-то случилось\n{error}", color=0x1)
     embed1 = discord.Embed(description=f"Со мной что-то случилось\nобратитесь к администрации", color=0x1)
-    channel = Bot.get_channel(int(bot_chat))
+    channel = Bot.get_channel(bot_chat)
     await interaction.response.send_message(embed=embed1, ephemeral=True)
     await channel.send(embed=embed)
 
@@ -672,7 +669,7 @@ async def remove_expired_roles():
 
 @Bot.event
 async def on_ready():
-    global guild, role_ban, role_mute
+    global guild, role_ban, role_mute, log_chat
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild_id))
     remove_expired_roles.start()
@@ -680,6 +677,7 @@ async def on_ready():
     guild = Bot.get_guild(guild_id)
     role_ban = guild.get_role(role_ban_id)
     role_mute = guild.get_role(role_mute_id)
+    log_chat = Bot.get_channel(log_chat_id)
 
     for member in guild.members:
         if not member.bot:
@@ -692,21 +690,19 @@ async def on_ready():
 @Bot.event
 async def on_member_join(member):
     embed = discord.Embed(description=f"{member} присоединился к серверу")
-    channel = Bot.get_channel(int(log_chat))
 
     cur.execute("SELECT name FROM Users WHERE name = ?", (member.id,))
     entrie = cur.fetchone()
     if entrie is None:
         embed = discord.Embed(description=f"{member} впервые присоединился к серверу")
         create_profile(member.id)
-    await channel.send(embed=embed)
+    await log_chat.send(embed=embed)
 
 
 @Bot.event
 async def on_member_remove(member):
     embed = discord.Embed(description=f"{member} покинул сервер")
-    channel = Bot.get_channel(int(log_chat))
-    await channel.send(embed=embed)
+    await log_chat.send(embed=embed)
 
 
 Bot.run(token)
