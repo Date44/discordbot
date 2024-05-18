@@ -338,6 +338,7 @@ async def info(interaction):
                    "**!правила-изменение** [ссылка на сообщение] \n `Заголовок` "
                    "\n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` "
                    "\n`Текст3` \n`Текст3` \n`Футер` \n")
+
     embed = discord.Embed(title="Инфо", description=Infomercial, color=0x1)
     await interaction.response.send_message(embed=embed)
 
@@ -673,7 +674,6 @@ async def on_ready():
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild_id))
     remove_expired_roles.start()
-
     guild = Bot.get_guild(guild_id)
     role_ban = guild.get_role(role_ban_id)
     role_mute = guild.get_role(role_mute_id)
