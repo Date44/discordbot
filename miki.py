@@ -434,10 +434,16 @@ async def move(interaction, пользователь: discord.Member, сумма
                 description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nЧисло должно быть положительным",
                 color=0x1)
         else:
-            embed = discord.Embed(
-                description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nВы перевели {сумма} :coin: "
-                            f"пользователю <@{пользователь.id}>| `{пользователь}`",
-                color=0x1)
+            if interaction.user == пользователь:
+                embed = discord.Embed(
+                    description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nПеревести самому себе"
+                                f" интересно конечно но зачем ?",
+                    color=0x1)
+            else:
+                embed = discord.Embed(
+                    description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nВы перевели {сумма} :coin: "
+                                f"пользователю <@{пользователь.id}>| `{пользователь}`",
+                    color=0x1)
         cur.execute("UPDATE Users SET money = ? WHERE name = ?", (all[0] - сумма, interaction.user.id))
         con.commit()
         cur.execute("UPDATE Users SET money = ? WHERE name = ?", (all1[0] + сумма, пользователь.id))
