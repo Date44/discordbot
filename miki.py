@@ -270,7 +270,8 @@ async def edit_rules(message):
 
 
 async def test(message):
-    await bot_chat.send(content=message.content)
+
+    await bot_chat.send(content=message.content.replace("!123", ""))
 
 
 @Bot.event
