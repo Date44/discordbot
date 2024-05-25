@@ -104,7 +104,7 @@ if __name__ == '__main__':
         cfg = read_config()
 
     token = cfg["token"]
-    bot_chat = int(cfg["command_chat"])
+    bot_chat_id = int(cfg["command_chat"])
     white_list = cfg["white_list"]
     log_chat_id = int(cfg["log_chat"])
     guild_id = int(cfg["guild_id"])
@@ -269,9 +269,8 @@ async def edit_rules(message):
             await i.edit(embed=embed)
 
 
-async def test():
-    for member in guild.members:
-        print(member.name, member.status)
+async def test(message):
+    await bot_chat.send(content='<:nuok:818905941860155532>')
 
 
 @Bot.event
@@ -295,7 +294,7 @@ async def on_message(message):
         elif text.startswith("!правила-изменение"):
             await edit_rules(message)
         elif text.startswith("!123"):
-            await test()
+            await test(message)
 
 
 class my_modal(discord.ui.Modal, title='Modal'):
@@ -408,9 +407,8 @@ async def unban(interaction, пользователь: discord.Member, прич�
 @tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild_id))
 async def money(interaction):
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
-    all = cur.fetchone()
     embed = discord.Embed(
-        description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nНа вашем счету: {all[0]} :coin:",
+        description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nНа вашем счету: {cur.fetchone()[0]} :coin:",
         color=0x1)
     embed.set_thumbnail(url=interaction.user.avatar)
     embed.set_author(name="Пользователь")
@@ -420,10 +418,10 @@ async def money(interaction):
 @tree.command(name="перевести", description="перевести коины", guild=discord.Object(id=guild_id))
 async def move(interaction, пользователь: discord.Member, сумма: int):
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
-    all = cur.fetchone()
+    result1 = cur.fetchone()
     cur.execute("SELECT money FROM Users WHERE name = ?", (пользователь.id,))
-    all1 = cur.fetchone()
-    if all[0] >= сумма:
+    result2 = cur.fetchone()
+    if result1[0] >= сумма:
         if сумма == 0:
             embed = discord.Embed(
                 description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nКак мне кажется от нуля нечего не "
@@ -444,9 +442,9 @@ async def move(interaction, пользователь: discord.Member, сумма
                     description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nВы перевели {сумма} :coin: "
                                 f"пользователю <@{пользователь.id}>| `{пользователь}`",
                     color=0x1)
-        cur.execute("UPDATE Users SET money = ? WHERE name = ?", (all[0] - сумма, interaction.user.id))
+        cur.execute("UPDATE Users SET money = ? WHERE name = ?", (result1[0] - сумма, interaction.user.id))
         con.commit()
-        cur.execute("UPDATE Users SET money = ? WHERE name = ?", (all1[0] + сумма, пользователь.id))
+        cur.execute("UPDATE Users SET money = ? WHERE name = ?", (result2[0] + сумма, пользователь.id))
         con.commit()
         embed.set_thumbnail(url=interaction.user.avatar)
         embed.set_author(name="Пользователь")
@@ -638,9 +636,9 @@ async def create_lot(interaction, name: discord.Role, description: str, price: f
 async def on_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
     embed = discord.Embed(description=f"Со мной что-то случилось\n{error}", color=0x1)
     embed1 = discord.Embed(description=f"Со мной что-то случилось\nобратитесь к администрации", color=0x1)
-    channel = Bot.get_channel(bot_chat)
+
     await interaction.response.send_message(embed=embed1, ephemeral=True)
-    await channel.send(embed=embed)
+    await bot_chat.send(embed=embed)
 
 
 async def remove_role(guild, member_id, role):
@@ -676,7 +674,7 @@ async def remove_expired_roles():
 
 @Bot.event
 async def on_ready():
-    global guild, role_ban, role_mute, log_chat
+    global guild, role_ban, role_mute, log_chat, bot_chat
     await Bot.change_presence(status=discord.Status.online)
     await tree.sync(guild=discord.Object(id=guild_id))
     remove_expired_roles.start()
@@ -684,7 +682,7 @@ async def on_ready():
     role_ban = guild.get_role(role_ban_id)
     role_mute = guild.get_role(role_mute_id)
     log_chat = Bot.get_channel(log_chat_id)
-
+    bot_chat = Bot.get_channel(bot_chat_id)
     for member in guild.members:
         if not member.bot:
             cur.execute("SELECT money FROM Users WHERE name = ?", (member.id,))
