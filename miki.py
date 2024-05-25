@@ -270,7 +270,7 @@ async def edit_rules(message):
 
 
 async def test(message):
-    await bot_chat.send(content='<:nuok:818905941860155532>')
+    await bot_chat.send(content=message.content)
 
 
 @Bot.event
