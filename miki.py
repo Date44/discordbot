@@ -270,7 +270,6 @@ async def edit_rules(message):
 
 
 async def test(message):
-
     await bot_chat.send(content=message.content.replace("!123", ""))
 
 
@@ -315,10 +314,9 @@ class my_modal(discord.ui.Modal, title='Modal'):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="modal", description="Modal", guild=discord.Object(id=guild_id))
-async def modal(interaction):
-    await interaction.response.send_modal(my_modal())
-
+# @tree.command(name="modal", description="Modal", guild=discord.Object(id=guild_id))
+# async def modal(interaction):
+#     await interaction.response.send_modal(my_modal())
 
 @tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild_id))
 async def info(interaction):
@@ -631,6 +629,12 @@ async def create_lot(interaction, name: discord.Role, description: str, price: f
     cur.execute("INSERT INTO Shop VALUES(?, ?, ?, ?)", data)
     con.commit()
     await interaction.response.send_message(f"{name} \n {description} \n {price}", ephemeral=True)
+
+
+@tree.command()
+async def echo(interaction: discord.Interaction, message: str) -> None:
+    await interaction.response.send_message(message)
+    await interaction.followup.send("This is a followup message.")
 
 
 @tree.error
