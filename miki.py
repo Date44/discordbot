@@ -282,6 +282,8 @@ async def restart(message):
     else:
         print(result.stderr)
 
+    time.sleep(1)
+
     await message.delete()
     await Bot.close()
     exit()
