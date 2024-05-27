@@ -4,6 +4,7 @@ import os
 import sqlite3
 import time
 import tracemalloc
+import subprocess
 
 import discord
 import random2
@@ -273,6 +274,22 @@ async def test(message):
     await bot_chat.send(content=message.content.replace("!123", ""))
 
 
+async def restart(message):
+
+    bot_directory = '.'
+
+    result = subprocess.run(['git', 'pull'], cwd=bot_directory, capture_output=True, text=True)
+
+    if result.returncode == 0:
+        print(result.stdout)
+    else:
+        print(result.stderr)
+
+    await message.delete()
+    await Bot.close()
+    exit()
+
+
 @Bot.event
 async def on_message(message):
     black_listbot = [str(Bot.user.id), ]
@@ -282,9 +299,7 @@ async def on_message(message):
         if text.startswith("!del"):
             await delete_messages(text, channel)
         elif text.startswith("!restart"):
-            await message.delete()
-            await Bot.close()
-            exit()
+            await restart(message)
         elif text.startswith("!text"):
             await process_text_command(message)
         elif text.startswith("!edit"):
