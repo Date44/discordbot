@@ -328,10 +328,6 @@ class my_modal(discord.ui.Modal, title='Modal'):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="rrr", description="Modal", guild=discord.Object(id=guild_id))
-async def modal(interaction):
-    await interaction.response.send_modal(my_modal())
-
 @tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild_id))
 async def info(interaction):
     Infomercial = ("\n"
