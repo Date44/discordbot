@@ -275,10 +275,7 @@ async def test(message):
 
 
 async def restart(message):
-
-    bot_directory = '.'
-
-    result = subprocess.run(['git', 'pull'], cwd=bot_directory, capture_output=True, text=True)
+    result = subprocess.run(['git', 'pull'], cwd='.', capture_output=True, text=True)
 
     if result.returncode == 0:
         print(result.stdout)
