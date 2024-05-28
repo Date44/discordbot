@@ -497,7 +497,7 @@ async def reward(interaction):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="инфо", description="просмотр профиля", guild=discord.Object(id=guild_id))
+@tree.command(name="Мод.меню", description="просмотр профиля", guild=discord.Object(id=guild_id))
 async def check(interaction, пользователь: discord.Member):
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label='Бан')
