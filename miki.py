@@ -634,7 +634,7 @@ async def shop1(interaction, лот: int = -1):
 
 @tree.command(name="createl", description="123", guild=discord.Object(id=guild_id))
 async def create_lot(interaction, name: discord.Role, description: str, price: float):
-    data = [None, name, description, price]
+    data = [None, name.id, description, price]
 
     cur.execute("INSERT INTO Shop VALUES(?, ?, ?, ?)", data)
     con.commit()
