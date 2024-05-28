@@ -374,14 +374,12 @@ async def unban(interaction, пользователь: discord.Member, прич�
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с "
                     f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
-    cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (interaction.user.id,))
-    etry = cur.fetchone()
-    print(etry)
-    if etry[0] == 0:
+    cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
+    if cur.fetchone()[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
         await пользователь.remove_roles(role_ban, reason=причина)
-        cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, interaction.user.id))
+        cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, пользователь.id))
         con.commit()
 
         await log_chat.send(embed=embed)
@@ -408,8 +406,7 @@ async def unban(interaction, пользователь: discord.Member, прич�
                     "пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (interaction.user.id,))
-    enty = cur.fetchone()
-    if enty[0] == 0:
+    if cur.fetchone()[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
         await пользователь.remove_roles(role_mute, reason=причина)
