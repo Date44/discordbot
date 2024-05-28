@@ -510,9 +510,17 @@ async def check(interaction, пользователь: discord.Member):
     view.add_item(button4)
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
+    if all[3] == 0:
+        ban = None
+    else:
+        ban = f"<t:{all[3]}>"
+    if all[4] == 0:
+        mute = None
+    else:
+        mute = f"<t:{all[4]}>"
     embed = discord.Embed(
-        description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя до разбана:"
-                    f" <t:{all[3]}>\nВремя размута: <t:{all[4]}>\nКоличиство предупреждений: {all[5]}",
+        description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя разбана:"
+                    f" {ban}\nВремя размута: {mute}\n",
         color=0x1)
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
