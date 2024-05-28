@@ -614,7 +614,7 @@ async def shop1(interaction, лот: int = -1):
         r1 = ""
         cur.execute("SELECT * FROM Shop")
         for i in cur.fetchall():
-            r.append("лот: " + str(i[0]) + " Название: " + str(i[1]) + " Цена: " + str(i[3]) + " :coin:" + "\n")
+            r.append("лот: " + str(i[0]) + " Название: " + "<@&" + str(i[1]) + ">" + " Цена: " + str(i[3]) + " :coin:" + "\n")
         for i in range(len(r)):
             r1 += r[i]
         embed = discord.Embed(
