@@ -512,6 +512,10 @@ async def check(interaction, пользователь: discord.Member):
     view.add_item(button5)
     button6 = Button(style=discord.ButtonStyle.green, label='123')
     view.add_item(button6)
+    button7 = Button(style=discord.ButtonStyle.red, label='123')
+    view.add_item(button7)
+    button8 = Button(style=discord.ButtonStyle.secondary, label='123')
+    view.add_item(button8)
 
     if пользователь is None:
         пользователь = interaction
