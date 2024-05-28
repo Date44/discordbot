@@ -362,7 +362,7 @@ async def ban(interaction, пользователь: discord.Member, время:
                     f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_ban, reason=причина)
     await log_chat.send(embed=embed)
-    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
+    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -393,7 +393,7 @@ async def mute(interaction, пользователь: discord.Member, время
                     f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
     await log_chat.send(embed=embed)
-    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
+    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -512,7 +512,7 @@ async def check(interaction, пользователь: discord.Member):
     all = cur.fetchone()
     embed = discord.Embed(
         description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя до разбана:"
-                    f" {all[3]}\nВремя до размута: {all[4]}\nКоличиство предупреждений: {all[5]}",
+                    f" <t:{all[3]}>\nВремя размута: <t:{all[4]}>\nКоличиство предупреждений: {all[5]}",
         color=0x1)
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
@@ -684,8 +684,8 @@ async def remove_expired_roles():
 
     for entry in all_entries:
         member_id = int(entry[0])
-        ban_timeout = datetime.datetime.strptime(str(entry[3]), '%H:%M:%S %d-%m-%Y') if entry[3] != 0 else None
-        mute_timeout = datetime.datetime.strptime(str(entry[4]), '%H:%M:%S %d-%m-%Y') if entry[4] != 0 else None
+        ban_timeout = entry[3] if entry[3] != 0 else None
+        mute_timeout = entry[4] if entry[4] != 0 else None
 
         if ban_timeout and current_time >= ban_timeout:
             await remove_role(guild, member_id, role_ban)
