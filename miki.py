@@ -500,18 +500,14 @@ async def reward(interaction):
 @tree.command(name="инфо", description="просмотр профиля", guild=discord.Object(id=guild_id))
 async def check(interaction, пользователь: discord.Member):
     view = View()
-    button1 = Button(style=discord.ButtonStyle.primary, label='123')
+    button1 = Button(style=discord.ButtonStyle.gray, label='123')
     view.add_item(button1)
-    button2 = Button(style=discord.ButtonStyle.danger, label='123')
+    button2 = Button(style=discord.ButtonStyle.gray, label='123')
     view.add_item(button2)
-    button3 = Button(style=discord.ButtonStyle.success, label='123')
+    button3 = Button(style=discord.ButtonStyle.gray, label='123')
     view.add_item(button3)
-    button4 = Button(style=discord.ButtonStyle.gray, label='123')
+    button4 = Button(style=discord.ButtonStyle.gray, label='123123123123123123123123123')
     view.add_item(button4)
-
-
-    if пользователь is None:
-        пользователь = interaction
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
     embed = discord.Embed(
