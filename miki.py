@@ -375,7 +375,8 @@ async def unban(interaction, пользователь: discord.Member, прич�
                     f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (interaction.user.id,))
-    if cur.fetchone()[0] == 0:
+    etry = cur.fetchone()
+    if etry[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
         await пользователь.remove_roles(role_ban, reason=причина)
@@ -406,7 +407,8 @@ async def unban(interaction, пользователь: discord.Member, прич�
                     "пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (interaction.user.id,))
-    if cur.fetchone()[0] == 0:
+    enty = cur.fetchone()
+    if enty[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
         await пользователь.remove_roles(role_mute, reason=причина)
