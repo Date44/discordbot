@@ -328,6 +328,10 @@ class my_modal(discord.ui.Modal, title='Modal'):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
+@tree.command(name="modal", description="Modal", guild=discord.Object(id=guild_id))
+async def modal(interaction):
+    await interaction.response.send_modal(my_modal())
+
 @tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild_id))
 async def info(interaction):
     Infomercial = ("\n"
@@ -614,7 +618,8 @@ async def shop1(interaction, лот: int = -1):
         r1 = ""
         cur.execute("SELECT * FROM Shop")
         for i in cur.fetchall():
-            r.append("лот: " + str(i[0]) + " Название: " + "<@&" + str(i[1]) + ">" + " Цена: " + str(i[3]) + " :coin:" + "\n")
+            r.append("лот: " + str(i[0]) + " Название: " + "<@&" + str(i[1]) + ">" + " Цена: " + str(
+                i[3]) + " :coin:" + "\n")
         for i in range(len(r)):
             r1 += r[i]
         embed = discord.Embed(
@@ -642,10 +647,8 @@ async def create_lot(interaction, name: discord.Role, description: str, price: f
     await interaction.response.send_message(f"{name} \n {description} \n {price}", ephemeral=True)
 
 
-@tree.command()
-async def echo(interaction: discord.Interaction, message: str) -> None:
-    await interaction.response.send_message(message)
-    await interaction.followup.send("This is a followup message.")
+async def toster(interaction):
+    pass
 
 
 @tree.error
