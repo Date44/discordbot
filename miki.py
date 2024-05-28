@@ -685,7 +685,7 @@ async def remove_role(guild, member_id, role):
 
 @tasks.loop(minutes=1)
 async def remove_expired_roles():
-    current_time = datetime.datetime.now()
+    current_time = datetime.datetime.now().timestamp()
 
     cur.execute("SELECT * FROM Users WHERE ban_timeout != 0 OR mute_timeout != 0")
     all_entries = cur.fetchall()
