@@ -330,8 +330,10 @@ class my_modal(discord.ui.Modal, title='Наказание'):
 async def modal(interaction):
     await interaction.response.send_modal(my_modal())
 
+
 @tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild_id))
 async def info(interaction):
+
     Infomercial = ("\n"
                    "    **Список доступных цветов:**\n"
                    "    DarkRed, Red, DarkOrange, Yellow, Gold, DarkBlue, Blue, Cyan, Lime, LimeGreen, OrangeRed\n"
@@ -496,7 +498,21 @@ async def reward(interaction):
 
 
 @tree.command(name="инфо", description="просмотр профиля", guild=discord.Object(id=guild_id))
-async def check(interaction, пользователь: discord.Member = None):
+async def check(interaction, пользователь: discord.Member):
+    view = View()
+    button1 = Button(style=discord.ButtonStyle.primary, label='123')
+    view.add_item(button1)
+    button2 = Button(style=discord.ButtonStyle.danger, label='123')
+    view.add_item(button2)
+    button3 = Button(style=discord.ButtonStyle.success, label='123')
+    view.add_item(button3)
+    button4 = Button(style=discord.ButtonStyle.blurple, label='123')
+    view.add_item(button4)
+    button5 = Button(style=discord.ButtonStyle.gray, label='123')
+    view.add_item(button5)
+    button6 = Button(style=discord.ButtonStyle.green, label='123')
+    view.add_item(button6)
+
     if пользователь is None:
         пользователь = interaction
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
@@ -507,7 +523,7 @@ async def check(interaction, пользователь: discord.Member = None):
         color=0x1)
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+    await interaction.response.send_message(embed=embed, view=view ,  ephemeral=True)
 
 
 @tree.command(name="ивент-пост", description="старт ивентов", guild=discord.Object(id=guild_id))
