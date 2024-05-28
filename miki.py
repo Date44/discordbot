@@ -506,7 +506,7 @@ async def check(interaction, пользователь: discord.Member):
     view.add_item(button2)
     button3 = Button(style=discord.ButtonStyle.gray, label='123')
     view.add_item(button3)
-    button4 = Button(style=discord.ButtonStyle.gray, label='123123123123123123123123123')
+    button4 = Button(style=discord.ButtonStyle.gray, label='123123123123123123123123123', row=1)
     view.add_item(button4)
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
