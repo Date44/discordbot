@@ -376,6 +376,7 @@ async def unban(interaction, пользователь: discord.Member, прич�
         color=0x000000)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (interaction.user.id,))
     etry = cur.fetchone()
+    print(etry)
     if etry[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
