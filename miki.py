@@ -311,17 +311,15 @@ async def on_message(message):
             await test(message)
 
 
-class my_modal(discord.ui.Modal, title='Modal'):
-    m1 = discord.ui.TextInput(label='Ваш возраст', placeholder="23 года")
-    m2 = discord.ui.TextInput(label='Никнейм в игре', placeholder="flowle_")
-    m3 = discord.ui.TextInput(label='Чем планируете заняться на сервере?', placeholder="Cтроительством, фермерством")
-    m4 = discord.ui.TextInput(label='Расскажите немного о себе', style=discord.TextStyle.long,
-                              placeholder="Я Максим, люблю пиццу", min_length=16, max_length=128)
+class my_modal(discord.ui.Modal, title='Наказание'):
+    m1 = discord.ui.TextInput(label='Время', placeholder="1d")
+    m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
+    m3 = discord.ui.TextInput(label='Комментарий', placeholder="Cтроительством, фермерством", required=False)
 
     async def on_submit(self, interaction: discord.Interaction):
         embed = discord.Embed(title=self.title,
                               description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n"
-                                          f"**{self.m3.label}**\n{self.m3}\n**{self.m4.label}**\n{self.m4}",
+                                          f"**{self.m3.label}**\n{self.m3}",
                               color=discord.Colour.blue())
         embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
         await log_chat.send(embed=embed)
