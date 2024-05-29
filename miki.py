@@ -358,9 +358,9 @@ async def info(interaction):
 @tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild_id))
 async def ban(interaction, пользователь: discord.Member, время: str, причина: str):
     embed = discord.Embed(
-        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был забанен пользоватилем "
+        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был забанен пользователем "
                     f" <@{interaction.user.id}> `{interaction.user}` на сервере, время"
-                    f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
+                    f"окончания: <t:{get_future_time2(время)}>**\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_ban, reason=причина)
     await log_chat.send(embed=embed)
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
@@ -390,9 +390,9 @@ async def unban(interaction, пользователь: discord.Member, прич�
 @tree.command(name="мут", description="mute user", guild=discord.Object(id=guild_id))
 async def mute(interaction, пользователь: discord.Member, время: str, причина: str):
     embed = discord.Embed(
-        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был замьючен пользоватилем"
+        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был замьючен пользователем"
                     f" <@{interaction.user.id}> `{interaction.user}` на сервере, время "
-                    f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
+                    f"окончания: <t:{get_future_time2(время)}>**\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
     await log_chat.send(embed=embed)
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
