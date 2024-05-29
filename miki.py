@@ -358,7 +358,8 @@ async def info(interaction):
 @tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild_id))
 async def ban(interaction, пользователь: discord.Member, время: str, причина: str):
     embed = discord.Embed(
-        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был забанен на сервере, время "
+        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был забанен пользоватилем "
+                    f" <@{interaction.user.id}> `{interaction.user}` на сервере, время"
                     f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_ban, reason=причина)
     await log_chat.send(embed=embed)
@@ -389,7 +390,8 @@ async def unban(interaction, пользователь: discord.Member, прич�
 @tree.command(name="мут", description="mute user", guild=discord.Object(id=guild_id))
 async def mute(interaction, пользователь: discord.Member, время: str, причина: str):
     embed = discord.Embed(
-        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был замьючен на сервере, время "
+        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}`\n **Был замьючен пользоватилем"
+                    f" <@{interaction.user.id}> `{interaction.user}` на сервере, время "
                     f"окончания: <t:{get_future_time2(время)}>\n Причина: {причина}**", color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
     await log_chat.send(embed=embed)
@@ -518,6 +520,7 @@ async def check(interaction, пользователь: discord.Member):
         mute = None
     else:
         mute = f"<t:{all[4]}>"
+
     embed = discord.Embed(
         description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя разбана:"
                     f" {ban}\nВремя размута: {mute}\n",
@@ -660,10 +663,6 @@ async def create_lot(interaction, name: discord.Role, description: str, price: f
     cur.execute("INSERT INTO Shop VALUES(?, ?, ?, ?)", data)
     con.commit()
     await interaction.response.send_message(f"{name} \n {description} \n {price}", ephemeral=True)
-
-
-async def toster(interaction):
-    pass
 
 
 @tree.error
