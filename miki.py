@@ -390,7 +390,7 @@ async def unban(interaction, пользователь: discord.Member, прич�
 async def mute(interaction, пользователь: discord.Member, время: str, причина: str):
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**время окончания:** <t:{get_future_time2(время)}>**\n **Причина: {причина}**", color=0x000000)
+                    f"\n**время окончания:** <t:{get_future_time2(время)}>.**\n **Причина: {причина}.**", color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
     await log_chat.send(embed=embed)
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
