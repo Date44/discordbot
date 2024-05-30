@@ -312,7 +312,7 @@ async def on_message(message):
             await test(message)
 
 
-class my_modal(discord.ui.Modal, title='Наказание', type=None):
+class my_modal(discord.ui.Modal, title='Наказание'):
     m1 = discord.ui.TextInput(label='Время', placeholder="1d")
     m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
     m3 = discord.ui.TextInput(label='Комментарий', placeholder="Cтроительством, фермерством", required=False)
