@@ -514,7 +514,7 @@ async def t4(interaction, правило: str, описание: str, наказ
 
         embed = discord.Embed(color=0x000000)
         embed.title = "** " + i["rules"] + "**"
-        embed.add_field(name=f"**> Описание **", value=f"```" + i["description"] + "'```", inline=False)
+        embed.add_field(name=f"**> Описание **", value=f"```" + i["description"] + "```", inline=False)
         embed.add_field(name=f"**> Наказание **", value=f"```" + i["punishment"] + "```", inline=True)
         embed.add_field(name=f"**> Длительность **", value=f"```" + i["duration"] + "```", inline=True)
         await interaction.channel.send(embed=embed)
