@@ -508,10 +508,10 @@ async def t4(interaction, правило: str, описание: str, наказ
             "duration": наказание
         }
     }
-    with open("data_file.json", "w") as write_file:
+    with open("data_file.json", "w", encoding="utf-8") as write_file:
         json.dump(data, write_file)
 
-    with open("data_file.json", "r") as read_file:
+    with open("data_file.json", "r", encoding="utf-8") as read_file:
         data = json.load(read_file)
     print(data)
     await interaction.response.send_message(data)
