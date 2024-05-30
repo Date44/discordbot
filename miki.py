@@ -506,13 +506,18 @@ async def t4(interaction, правило: str, описание: str, наказ
             "rules": правило,
             "description": описание,
             "punishment": наказание,
-            "duration": наказание
+            "duration": длительность
         }
     with open("data_file.json", "w", encoding="utf-8") as write_file:
         json.dump(data, write_file)
+    for i in data:
 
-    print(data["post"])
-    await interaction.response.send_message(data)
+        embed = discord.Embed(color=0x000000)
+        embed.title = f"**{i["rules"]}**"
+        embed.add_field(name=f"**> Описание **", value=f"```{i["description"]}```", inline=False)
+        embed.add_field(name=f"**> Наказание **", value=f"```{i["punishment"]}```", inline=True)
+        embed.add_field(name=f"**> Длительность **", value=f"```{i["duration"]}```", inline=True)
+        await interaction.response.send_message(embed=embed)
 
 
 @tree.command(name="мод-меню", description="мод. меню", guild=discord.Object(id=guild_id))
