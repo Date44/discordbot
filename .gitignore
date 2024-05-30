@@ -2,3 +2,4 @@ venv/
 .idea/
 Miki.db
 config.cfg
+text.json

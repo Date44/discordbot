@@ -5,6 +5,7 @@ import sqlite3
 import time
 import tracemalloc
 import subprocess
+import json
 
 import discord
 import random2
@@ -311,7 +312,7 @@ async def on_message(message):
             await test(message)
 
 
-class my_modal(discord.ui.Modal, title='Наказание'):
+class my_modal(discord.ui.Modal, title='Наказание', type=None):
     m1 = discord.ui.TextInput(label='Время', placeholder="1d")
     m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
     m3 = discord.ui.TextInput(label='Комментарий', placeholder="Cтроительством, фермерством", required=False)
@@ -333,7 +334,6 @@ async def modal(interaction):
 
 @tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild_id))
 async def info(interaction):
-
     Infomercial = ("\n"
                    "    **Список доступных цветов:**\n"
                    "    DarkRed, Red, DarkOrange, Yellow, Gold, DarkBlue, Blue, Cyan, Lime, LimeGreen, OrangeRed\n"
@@ -390,7 +390,8 @@ async def unban(interaction, пользователь: discord.Member, прич�
 async def mute(interaction, пользователь: discord.Member, время: str, причина: str):
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**время окончания:** <t:{get_future_time2(время)}>.**\n **Причина: {причина}.**", color=0x000000)
+                    f"\n**время окончания:** <t:{get_future_time2(время)}>.**\n **Причина: {причина}.**",
+        color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
     await log_chat.send(embed=embed)
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
@@ -497,11 +498,33 @@ async def reward(interaction):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
+@tree.command(name="правила", description="правила", guild=discord.Object(id=guild_id))
+async def t4(interaction, правило: str, описание: str, наказание: str, длительность: str):
+    data = {
+        "post": {
+            "rules": правило,
+            "description": описание,
+            "punishment": наказание,
+            "duration": наказание
+        }
+    }
+    with open("data_file.json", "w") as write_file:
+        json.dump(data, write_file)
+
+    with open("data_file.json", "r") as read_file:
+        data = json.load(read_file)
+    interaction.response.send_message(data)
+
+
 @tree.command(name="мод-меню", description="мод. меню", guild=discord.Object(id=guild_id))
 async def check(interaction, пользователь: discord.Member):
+    async def ban():
+        banr = interaction.response.send_modal(my_modal())
+
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label='Бан')
     view.add_item(button1)
+    button1.callback = ban
     button2 = Button(style=discord.ButtonStyle.gray, label='Мьют')
     view.add_item(button2)
     button3 = Button(style=discord.ButtonStyle.gray, label='Предупреждение')
@@ -525,7 +548,7 @@ async def check(interaction, пользователь: discord.Member):
         color=0x1)
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
-    await interaction.response.send_message(embed=embed, view=view ,  ephemeral=True)
+    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
 
 @tree.command(name="ивент-пост", description="старт ивентов", guild=discord.Object(id=guild_id))
