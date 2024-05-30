@@ -770,6 +770,7 @@ async def on_member_join(member):
         embed = discord.Embed(description=f"{member} впервые присоединился к серверу")
         create_profile(member.id)
     await log_chat.send(embed=embed)
+    await member.add_roles(1245751061705392208)
 
 
 @Bot.event
