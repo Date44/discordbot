@@ -272,7 +272,7 @@ async def edit_rules(message):
 
 
 async def test(message):
-    await bot_chat.send(content=message.content.replace("!123", ""), stickers=message.stickers )
+    await bot_chat.send(content=message.content.replace("!123", ""))
 
 
 async def restart(message):
@@ -503,15 +503,20 @@ async def t4(interaction, правило: str, описание: str, наказ
     with open("data_file.json", "r", encoding="utf-8") as read_file:
         data = json.load(read_file)
     data["post" + str(len(data) + 1)] = {
-            "rules": правило,
-            "description": описание,
-            "punishment": наказание,
-            "duration": длительность
-        }
+        "rules": правило,
+        "description": описание,
+        "punishment": наказание,
+        "duration": длительность
+    }
     with open("data_file.json", "w", encoding="utf-8") as write_file:
         json.dump(data, write_file)
-    for i in data.values():
 
+
+@tree.command(name="правила-отправить", description="правила", guild=discord.Object(id=guild_id))
+async def t5(interaction):
+    with open("data_file.json", "r", encoding="utf-8") as read_file:
+        data = json.load(read_file)
+    for i in data.values():
         embed = discord.Embed(color=0x000000)
         embed.title = "** " + i["rules"] + "**"
         embed.add_field(name=f"**> Описание **", value=f"```" + i["description"] + "```", inline=False)
