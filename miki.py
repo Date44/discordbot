@@ -513,7 +513,7 @@ async def t4(interaction, правило: str, описание: str, наказ
 
     with open("data_file.json", "r") as read_file:
         data = json.load(read_file)
-    print(data["rules"])
+    print(data)
     await interaction.response.send_message(data)
 
 
