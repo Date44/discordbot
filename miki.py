@@ -500,19 +500,17 @@ async def reward(interaction):
 
 @tree.command(name="правила", description="правила", guild=discord.Object(id=guild_id))
 async def t4(interaction, правило: str, описание: str, наказание: str, длительность: str):
-    data = {
-        "post": {
+    with open("data_file.json", "r", encoding="utf-8") as read_file:
+        data = json.load(read_file)
+    data["post" + str(len(data) + 1)] = {
             "rules": правило,
             "description": описание,
             "punishment": наказание,
             "duration": наказание
         }
-    }
     with open("data_file.json", "w", encoding="utf-8") as write_file:
         json.dump(data, write_file)
 
-    with open("data_file.json", "r", encoding="utf-8") as read_file:
-        data = json.load(read_file)
     print(data["post"])
     await interaction.response.send_message(data)
 
