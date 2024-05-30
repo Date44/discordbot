@@ -272,7 +272,7 @@ async def edit_rules(message):
 
 
 async def test(message):
-    await bot_chat.send(content=message.content.replace("!123", ""))
+    await bot_chat.send(content=message.content.replace("!123", ""), stickers=message.stickers )
 
 
 async def restart(message):
