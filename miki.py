@@ -762,6 +762,7 @@ async def on_ready():
 
 @Bot.event
 async def on_member_join(member):
+    role = guild.get_role(1245751061705392208)
     embed = discord.Embed(description=f"{member} присоединился к серверу")
 
     cur.execute("SELECT name FROM Users WHERE name = ?", (member.id,))
@@ -770,7 +771,7 @@ async def on_member_join(member):
         embed = discord.Embed(description=f"{member} впервые присоединился к серверу")
         create_profile(member.id)
     await log_chat.send(embed=embed)
-    await member.add_roles(1245751061705392208)
+    await member.add_roles(role, reason="(auto)")
 
 
 @Bot.event
