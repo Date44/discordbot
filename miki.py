@@ -513,9 +513,8 @@ async def t4(interaction, правило: str, описание: str, наказ
 
     with open("data_file.json", "r", encoding="utf-8") as read_file:
         data = json.load(read_file)
-    print(data)
+    print(data["post"])
     await interaction.response.send_message(data)
-
 
 
 @tree.command(name="мод-меню", description="мод. меню", guild=discord.Object(id=guild_id))
