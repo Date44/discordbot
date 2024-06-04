@@ -384,7 +384,7 @@ async def mute(interaction, пользователь: discord.Member, время
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
                     f"\n**время окончания:** <t:{get_future_time2(время)}>.**\n **Причина: {причина}.**\n**Коментарий: {коментарий}**",
         color=0x000000)
-    await пользователь.add_roles(role_mute, reason=причина)
+    await пользователь.add_roles(role_mute, reason=str(причина))
     await log_chat.send(embed=embed)
     add_history(пользователь.id, f"<@{пользователь.id}> | `{пользователь}` замьючен модератором <@{interaction.user.id}>"
                                  f" время окончания:  <t:{get_future_time2(время)}>")
