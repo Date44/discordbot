@@ -540,11 +540,11 @@ async def check(interaction, пользователь: discord.Member):
     print(type(entries[3]))
     n1 = ""
     n2 = ""
-    if entries[2] != "0":
+    if entries[2] != 0:
         n1 += "Снять бан"
     else:
         n1 += "Бан"
-    if entries[3] != "0":
+    if entries[3] != 0:
         n2 += "Снять мьют"
     else:
         n2 += "Мьют"
