@@ -341,7 +341,7 @@ async def ban(interaction, пользователь: discord.Member, время:
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере модератором** <@{interaction.user.id}> | `{interaction.user}`."
                     f"\n**Время окончания:  <t:{get_future_time2(время)}>**\n **Причина: {причина}**", color=0x000000)
-    await пользователь.add_roles(role_ban, reason=причина)
+    await пользователь.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
     con.commit()
@@ -525,7 +525,6 @@ async def check(interaction, пользователь: discord.Member):
                                               f"**{self.m3.label}**\n{self.m3}",
                                   color=discord.Colour.blue())
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-            print(interaction, пользователь, self.m1, self.m2, self.m3)
             await ban(interaction, пользователь, self.m1, self.m2, self.m3)
             await log_chat.send(embed=embed)
             await interaction.response.send_message(embed=embed, ephemeral=True)
