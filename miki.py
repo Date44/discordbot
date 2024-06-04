@@ -553,6 +553,8 @@ async def check(interaction, пользователь: discord.Member):
         all_entries = cur.fetchall()
         for i in all_entries:
             s1 += i[3] + "\n"
+        embed = discord.Embed(description=s1, color=0x1)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label='Бан')
