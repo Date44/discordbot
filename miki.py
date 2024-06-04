@@ -537,14 +537,13 @@ async def t5(interaction):
 async def check(interaction, пользователь: discord.Member):
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     entries = cur.fetchone()
-    print(type(entries[3]))
     n1 = ""
     n2 = ""
-    if entries[2] != 0:
+    if entries[3] != 0:
         n1 += "Снять бан"
     else:
         n1 += "Бан"
-    if entries[3] != 0:
+    if entries[4] != 0:
         n2 += "Снять мьют"
     else:
         n2 += "Мьют"
