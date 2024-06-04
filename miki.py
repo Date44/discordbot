@@ -352,7 +352,7 @@ async def ban(interaction, пользователь: discord.Member, время:
     await пользователь.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
     add_history(пользователь.id, f"<@{пользователь.id}> | `{пользователь}` забанен модератором <@{interaction.user.id}>"
-                                 f" время окончания:  <t:{get_future_time2(время)}>**")
+                                 f" время окончания:  <t:{get_future_time2(время)}>")
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -386,6 +386,8 @@ async def mute(interaction, пользователь: discord.Member, время
         color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
     await log_chat.send(embed=embed)
+    add_history(пользователь.id, f"<@{пользователь.id}> | `{пользователь}` замьючен модератором <@{interaction.user.id}>"
+                                 f" время окончания:  <t:{get_future_time2(время)}>")
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -551,8 +553,11 @@ async def check(interaction, пользователь: discord.Member):
         s1 = ""
         cur.execute("SELECT * FROM History WHERE name == ?", (пользователь.id,))
         all_entries = cur.fetchall()
-        for i in all_entries:
-            s1 += i[2] + "\n"
+        if len(all_entries) > 0:
+            for i in all_entries:
+                s1 += i[2] + "\n"
+        else:
+            s1 += "Нечего нету"
         embed = discord.Embed(description=s1, color=0x1)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
