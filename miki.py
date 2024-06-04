@@ -312,26 +312,6 @@ async def on_message(message):
             await test(message)
 
 
-class my_modal(discord.ui.Modal, title='Наказание'):
-    m1 = discord.ui.TextInput(label='Время', placeholder="1d")
-    m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
-    m3 = discord.ui.TextInput(label='Комментарий', placeholder="Cтроительством, фермерством", required=False)
-
-    async def on_submit(self, interaction: discord.Interaction):
-        embed = discord.Embed(title=self.title,
-                              description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n"
-                                          f"**{self.m3.label}**\n{self.m3}",
-                              color=discord.Colour.blue())
-        embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
-        await log_chat.send(embed=embed)
-        await interaction.response.send_message(embed=embed, ephemeral=True)
-
-
-@tree.command(name="modal", description="Modal", guild=discord.Object(id=guild_id))
-async def modal(interaction):
-    await interaction.response.send_modal(my_modal())
-
-
 @tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild_id))
 async def info(interaction):
     Infomercial = ("\n"
@@ -355,8 +335,8 @@ async def info(interaction):
     await interaction.response.send_message(embed=embed)
 
 
-@tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild_id))
-async def ban(interaction, пользователь: discord.Member, время: str, причина: str):
+# @tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild_id))
+async def ban(interaction, пользователь: discord.Member, время: str, причина: str, коментарий: str):
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере модератором** <@{interaction.user.id}> | `{interaction.user}`."
                     f"\n**Время окончания:  <t:{get_future_time2(время)}>**\n **Причина: {причина}**", color=0x000000)
@@ -387,7 +367,7 @@ async def unban(interaction, пользователь: discord.Member, прич�
 
 
 @tree.command(name="мут", description="mute user", guild=discord.Object(id=guild_id))
-async def mute(interaction, пользователь: discord.Member, время: str, причина: str):
+async def mute(interaction, пользователь: discord.Member, время: str, причина: str, коментарий: str):
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере модератором** <@{interaction.user.id}> | `{interaction.user}`."
                     f"\n**время окончания:** <t:{get_future_time2(время)}>.**\n **Причина: {причина}.**",
@@ -533,13 +513,28 @@ async def t5(interaction):
 
 @tree.command(name="мод-меню", description="мод. меню", guild=discord.Object(id=guild_id))
 async def check(interaction, пользователь: discord.Member):
-    async def ban():
-        banr = interaction.response.send_modal(my_modal())
+    class ban_modal(discord.ui.Modal, title='Наказание'):
+        m1 = discord.ui.TextInput(label='Время', placeholder="1d")
+        m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
+        m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
+
+        async def on_submit(self, interaction: discord.Interaction):
+            embed = discord.Embed(title=self.title,
+                                  description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n"
+                                              f"**{self.m3.label}**\n{self.m3}",
+                                  color=discord.Colour.blue())
+            embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            await ban(interaction, пользователь, self.m1, self.m2, self.m3)
+            await log_chat.send(embed=embed)
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    async def mod_ban():
+        interaction.response.send_modal(ban_modal())
 
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label='Бан')
     view.add_item(button1)
-    button1.callback = ban
+    button1.callback = mod_ban
     button2 = Button(style=discord.ButtonStyle.gray, label='Мьют')
     view.add_item(button2)
     button3 = Button(style=discord.ButtonStyle.gray, label='Предупреждение')
@@ -549,17 +544,17 @@ async def check(interaction, пользователь: discord.Member):
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
     if all[3] == 0:
-        ban = None
+        ban1 = None
     else:
-        ban = f"<t:{all[3]}>"
+        ban1 = f"<t:{all[3]}>"
     if all[4] == 0:
-        mute = None
+        mute1 = None
     else:
-        mute = f"<t:{all[4]}>"
+        mute1 = f"<t:{all[4]}>"
 
     embed = discord.Embed(
         description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя разбана:"
-                    f" {ban}\nВремя размута: {mute}\n",
+                    f" {ban1}\nВремя размута: {mute1}\n",
         color=0x1)
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
