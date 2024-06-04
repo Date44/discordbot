@@ -529,7 +529,7 @@ async def check(interaction, пользователь: discord.Member):
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
     async def mod_ban(interaction):
-        interaction.response.send_modal(ban_modal())
+        await interaction.response.send_modal(ban_modal())
 
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label='Бан')
