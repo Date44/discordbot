@@ -406,12 +406,12 @@ async def unmute(interaction, пользователь: discord.Member, прич
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с "
                     f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
-    cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (interaction.user.id,))
+    cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (пользователь.id,))
     if cur.fetchone()[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
         await пользователь.remove_roles(role_mute, reason=str(причина))
-        cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, interaction.user.id))
+        cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, пользователь.id))
         con.commit()
         add_history(пользователь.id,
                     f"<@{пользователь.id}> | `{пользователь}` разблокирован модератором <@{interaction.user.id}>"
