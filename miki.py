@@ -339,7 +339,8 @@ async def info(interaction):
 # @tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild_id))
 async def ban(interaction, пользователь: discord.Member, время: str, причина: str, коментарий: str):
     embed = discord.Embed(
-        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере модератором** <@{interaction.user.id}> | `{interaction.user}`."
+        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере "
+                    f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
                     f"\n**Время окончания:  <t:{get_future_time2(время)}>**\n **Причина: {причина}**\n**Коментарий: {коментарий}**", color=0x000000)
     await пользователь.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
@@ -367,11 +368,12 @@ async def unban(interaction, пользователь: discord.Member, прич�
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="мут", description="mute user", guild=discord.Object(id=guild_id))
+# @tree.command(name="мут", description="mute user", guild=discord.Object(id=guild_id))
 async def mute(interaction, пользователь: discord.Member, время: str, причина: str, коментарий: str):
     embed = discord.Embed(
-        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**время окончания:** <t:{get_future_time2(время)}>.**\n **Причина: {причина}.**",
+        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере "
+                    f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
+                    f"\n**время окончания:** <t:{get_future_time2(время)}>.**\n **Причина: {причина}.**\n**Коментарий: {коментарий}**",
         color=0x000000)
     await пользователь.add_roles(role_mute, reason=причина)
     await log_chat.send(embed=embed)
@@ -542,6 +544,7 @@ async def check(interaction, пользователь: discord.Member):
     button1.callback = mod_ban
     button2 = Button(style=discord.ButtonStyle.gray, label='Мьют')
     view.add_item(button2)
+    button2.callback = mod_mute
     button3 = Button(style=discord.ButtonStyle.gray, label='Предупреждение')
     view.add_item(button3)
     button4 = Button(style=discord.ButtonStyle.gray, label='История наказаний', row=1)
