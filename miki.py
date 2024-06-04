@@ -353,27 +353,30 @@ async def ban(interaction, пользователь: discord.Member, время:
     await пользователь.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
     add_history(пользователь.id, f"<@{пользователь.id}> | `{пользователь}` забанен модератором <@{interaction.user.id}>"
-                                 f" время окончания:  <t:{get_future_time2(время)}>")
+                                 f" время окончания:  <t:{get_future_time2(время)}>"
+                                 f", причина: {причина} коментарий: {коментарий}")
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="разбан", description="Снять бан", guild=discord.Object(id=guild_id))
-async def unban(interaction, пользователь: discord.Member, причина: str):
+# @tree.command(name="разбан", description="Снять бан", guild=discord.Object(id=guild_id))
+async def unban(interaction, пользователь: discord.Member, причина: str, коментарий: str):
     text = "Пользователь не забанен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с "
-                    f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
+                    f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**\n**Коментарий: {коментарий}**",
         color=0x000000)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
     if cur.fetchone()[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
-        await пользователь.remove_roles(role_ban, reason=причина)
+        await пользователь.remove_roles(role_ban, reason=str(причина))
         cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, пользователь.id))
         con.commit()
-
+        add_history(пользователь.id,
+                    f"<@{пользователь.id}> | `{пользователь}` разблокирован модератором <@{interaction.user.id}>"
+                    f", причина: {причина} коментарий: {коментарий}")
         await log_chat.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -387,15 +390,17 @@ async def mute(interaction, пользователь: discord.Member, время
         color=0x000000)
     await пользователь.add_roles(role_mute, reason=str(причина))
     await log_chat.send(embed=embed)
-    add_history(пользователь.id, f"<@{пользователь.id}> | `{пользователь}` замьючен модератором <@{interaction.user.id}>"
-                                 f" время окончания:  <t:{get_future_time2(время)}>")
+    add_history(пользователь.id,
+                f"<@{пользователь.id}> | `{пользователь}` замьючен модератором <@{interaction.user.id}>"
+                f" время окончания:  <t:{get_future_time2(время)}>"
+                f", причина: {причина} коментарий: {коментарий}")
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="размут", description="Снять мьют", guild=discord.Object(id=guild_id))
-async def unban(interaction, пользователь: discord.Member, причина: str):
+# @tree.command(name="размут", description="Снять мьют", guild=discord.Object(id=guild_id))
+async def unmute(interaction, пользователь: discord.Member, причина: str, коментарий: str):
     text = "Пользователь не замьючен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с "
@@ -405,10 +410,12 @@ async def unban(interaction, пользователь: discord.Member, прич�
     if cur.fetchone()[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
-        await пользователь.remove_roles(role_mute, reason=причина)
+        await пользователь.remove_roles(role_mute, reason=str(причина))
         cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, interaction.user.id))
         con.commit()
-
+        add_history(пользователь.id,
+                    f"<@{пользователь.id}> | `{пользователь}` разблокирован модератором <@{interaction.user.id}>"
+                    f", причина: {причина} коментарий: {коментарий}")
         await log_chat.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -528,6 +535,19 @@ async def t5(interaction):
 
 @tree.command(name="мод-меню", description="мод. меню", guild=discord.Object(id=guild_id))
 async def check(interaction, пользователь: discord.Member):
+    cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
+    entries = cur.fetchone()
+    n1 = ""
+    n2 = ""
+    if entries[2] != "0":
+        n1 += "Бан"
+    else:
+        n1 += "Снять бан"
+    if entries[3] != "0":
+        n2 += "Мьют"
+    else:
+        n2 += "Снять мьют"
+
     class ban_modal(discord.ui.Modal, title='Наказание'):
         m1 = discord.ui.TextInput(label='Время', placeholder="1d")
         m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
@@ -536,8 +556,19 @@ async def check(interaction, пользователь: discord.Member):
         async def on_submit(self, interaction: discord.Interaction):
             await ban(interaction, пользователь, self.m1, self.m2, self.m3)
 
+    class unban_modal(discord.ui.Modal, title='Наказание'):
+        m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
+        m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
+
+        async def on_submit(self, interaction: discord.Interaction):
+            await unban(interaction, пользователь, self.m2, self.m3)
+
     async def mod_ban(interaction):
-        await interaction.response.send_modal(ban_modal())
+        m = button1.label
+        if m == "Бан":
+            await interaction.response.send_modal(ban_modal())
+        else:
+            await interaction.response.send_modal(unban_modal())
 
     class mute_modal(discord.ui.Modal, title='Наказание'):
         m1 = discord.ui.TextInput(label='Время', placeholder="1d")
@@ -551,6 +582,7 @@ async def check(interaction, пользователь: discord.Member):
         await interaction.response.send_modal(mute_modal())
 
     async def history(interaction):
+
         s1 = ""
         cur.execute("SELECT * FROM History WHERE name == ?", (пользователь.id,))
         all_entries = cur.fetchall()
