@@ -26,6 +26,7 @@ async def menu(interaction: discord.Interaction, current: str, ) -> list[app_com
 def create_db():
     cur.execute("CREATE TABLE Users(name UNIQUE, money, timeout, ban_timeout, mute_timeout, warn)")
     cur.execute("CREATE TABLE Shop(id INTEGER UNIQUE PRIMARY KEY, name, description, price)")
+    cur.execute("CREATE TABLE History(id INTEGER UNIQUE PRIMARY KEY, description)")
 
 
 def create_profile(id_name):
