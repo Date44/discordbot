@@ -541,13 +541,13 @@ async def check(interaction, пользователь: discord.Member):
     n1 = ""
     n2 = ""
     if entries[2] != "0":
-        n1 += "Бан"
-    else:
         n1 += "Снять бан"
-    if entries[3] != "0":
-        n2 += "Мьют"
     else:
+        n1 += "Бан"
+    if entries[3] != "0":
         n2 += "Снять мьют"
+    else:
+        n2 += "Мьют"
 
     class ban_modal(discord.ui.Modal, title='Наказание'):
         m1 = discord.ui.TextInput(label='Время', placeholder="1d")
