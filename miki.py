@@ -534,7 +534,7 @@ async def check(interaction, пользователь: discord.Member):
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label='Бан')
     view.add_item(button1)
-    button1.callback = mod_ban
+    button1.callback = mod_ban()
     button2 = Button(style=discord.ButtonStyle.gray, label='Мьют')
     view.add_item(button2)
     button3 = Button(style=discord.ButtonStyle.gray, label='Предупреждение')
