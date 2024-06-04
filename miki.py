@@ -340,7 +340,7 @@ async def info(interaction):
 async def ban(interaction, пользователь: discord.Member, время: str, причина: str, коментарий: str):
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**Время окончания:  <t:{get_future_time2(время)}>**\n **Причина: {причина}**", color=0x000000)
+                    f"\n**Время окончания:  <t:{get_future_time2(время)}>**\n **Причина: {причина}**\nКоментарий: {коментарий}", color=0x000000)
     await пользователь.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
@@ -520,17 +520,21 @@ async def check(interaction, пользователь: discord.Member):
         m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
 
         async def on_submit(self, interaction: discord.Interaction):
-            embed = discord.Embed(title=self.title,
-                                  description=f"**{self.m1.label}**\n{self.m1}\n**{self.m2.label}**\n{self.m2}\n"
-                                              f"**{self.m3.label}**\n{self.m3}",
-                                  color=discord.Colour.blue())
-            embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
             await ban(interaction, пользователь, self.m1, self.m2, self.m3)
-            await log_chat.send(embed=embed)
-            await interaction.response.send_message(embed=embed, ephemeral=True)
 
     async def mod_ban(interaction):
         await interaction.response.send_modal(ban_modal())
+
+    class mute_modal(discord.ui.Modal, title='Наказание'):
+        m1 = discord.ui.TextInput(label='Время', placeholder="1d")
+        m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
+        m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
+
+        async def on_submit(self, interaction: discord.Interaction):
+            await mute(interaction, пользователь, self.m1, self.m2, self.m3)
+
+    async def mod_mute(interaction):
+        await interaction.response.send_modal(mute_modal())
 
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label='Бан')
