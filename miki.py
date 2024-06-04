@@ -1,3 +1,4 @@
+import asyncio
 import configparser
 import datetime
 import os
@@ -590,7 +591,9 @@ async def check(interaction, пользователь: discord.Member):
         color=0x1)
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
-    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+    message = await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+    await asyncio.sleep(120)
+    await message.delete()
 
 
 @tree.command(name="ивент-пост", description="старт ивентов", guild=discord.Object(id=guild_id))
