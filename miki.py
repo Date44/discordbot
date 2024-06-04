@@ -578,11 +578,21 @@ async def check(interaction, пользователь: discord.Member):
         async def on_submit(self, interaction: discord.Interaction):
             await mute(interaction, пользователь, self.m1, self.m2, self.m3)
 
+    class unmute_modal(discord.ui.Modal, title='Наказание'):
+        m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
+        m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
+
+        async def on_submit(self, interaction: discord.Interaction):
+            await unmute(interaction, пользователь, self.m2, self.m3)
+
     async def mod_mute(interaction):
-        await interaction.response.send_modal(mute_modal())
+        m = button2.label
+        if m == "Мьют":
+            await interaction.response.send_modal(mute_modal())
+        else:
+            await interaction.response.send_modal(unmute_modal())
 
-    async def history(interaction):
-
+    async def history(interaction)
         s1 = ""
         cur.execute("SELECT * FROM History WHERE name == ?", (пользователь.id,))
         all_entries = cur.fetchall()
@@ -595,10 +605,10 @@ async def check(interaction, пользователь: discord.Member):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     view = View()
-    button1 = Button(style=discord.ButtonStyle.gray, label='Бан')
+    button1 = Button(style=discord.ButtonStyle.gray, label=n1)
     view.add_item(button1)
     button1.callback = mod_ban
-    button2 = Button(style=discord.ButtonStyle.gray, label='Мьют')
+    button2 = Button(style=discord.ButtonStyle.gray, label=n2)
     view.add_item(button2)
     button2.callback = mod_mute
     button3 = Button(style=discord.ButtonStyle.gray, label='Предупреждение')
