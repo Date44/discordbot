@@ -130,7 +130,8 @@ if __name__ == '__main__':
 
 
 def get_future_time2(delta_str):
-    delta_unit = delta_str[-1].lower()
+
+    delta_unit = str(delta_str)[-1].lower()
     delta_value = int(delta_str[:-1])
 
     if delta_unit == 'd':
