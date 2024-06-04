@@ -26,7 +26,7 @@ async def menu(interaction: discord.Interaction, current: str, ) -> list[app_com
 def create_db():
     cur.execute("CREATE TABLE Users(name UNIQUE, money, timeout, ban_timeout, mute_timeout, warn)")
     cur.execute("CREATE TABLE Shop(id INTEGER UNIQUE PRIMARY KEY, name, description, price)")
-    cur.execute("CREATE TABLE History(id INTEGER UNIQUE PRIMARY KEY, description)")
+    cur.execute("CREATE TABLE History(id INTEGER UNIQUE PRIMARY KEY, name, description)")
 
 
 def create_profile(id_name):
@@ -35,6 +35,12 @@ def create_profile(id_name):
     con.commit()
     cur.execute("SELECT * FROM Users WHERE name = ?", (id_name,))
     return cur.fetchone()
+
+
+def add_history(id_name, description):
+    data = [(None, id_name, description), ]
+    cur.executemany("INSERT INTO History VALUES(?, ?, ?)", data)
+    con.commit()
 
 
 # config
@@ -131,7 +137,6 @@ if __name__ == '__main__':
 
 
 def get_future_time2(delta_str):
-
     delta_unit = str(delta_str)[-1].lower()
     delta_value = int(str(delta_str)[:-1])
 
@@ -342,9 +347,12 @@ async def ban(interaction, пользователь: discord.Member, время:
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**Время окончания:  <t:{get_future_time2(время)}>**\n **Причина: {причина}**\n**Коментарий: {коментарий}**", color=0x000000)
+                    f"\n**Время окончания:  <t:{get_future_time2(время)}>**\n **Причина: {причина}**\n**Коментарий: {коментарий}**",
+        color=0x000000)
     await пользователь.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
+    add_history(пользователь.id, f"<@{пользователь.id}> | `{пользователь}` забанен модератором <@{interaction.user.id}>"
+                                 f" время окончания:  <t:{get_future_time2(время)}>**")
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -539,6 +547,13 @@ async def check(interaction, пользователь: discord.Member):
     async def mod_mute(interaction):
         await interaction.response.send_modal(mute_modal())
 
+    async def history(interaction):
+        s1 = ""
+        cur.execute("SELECT * FROM History WHERE name == ?", пользователь.id)
+        all_entries = cur.fetchall()
+        for i in all_entries:
+            s1 += i[3] + "\n"
+
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label='Бан')
     view.add_item(button1)
@@ -550,6 +565,7 @@ async def check(interaction, пользователь: discord.Member):
     view.add_item(button3)
     button4 = Button(style=discord.ButtonStyle.gray, label='История наказаний', row=1)
     view.add_item(button4)
+    button4.callback = history
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     all = cur.fetchone()
     if all[3] == 0:
