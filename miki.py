@@ -340,7 +340,7 @@ async def info(interaction):
 async def ban(interaction, пользователь: discord.Member, время: str, причина: str, коментарий: str):
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**Время окончания:  <t:{get_future_time2(время)}>**\n **Причина: {причина}**\nКоментарий: {коментарий}", color=0x000000)
+                    f"\n**Время окончания:  <t:{get_future_time2(время)}>**\n **Причина: {причина}**\n**Коментарий: {коментарий}**", color=0x000000)
     await пользователь.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
