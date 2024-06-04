@@ -383,7 +383,7 @@ async def mute(interaction, пользователь: discord.Member, время
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**время окончания:** <t:{get_future_time2(время)}>.**\n **Причина: {причина}.**\n**Коментарий: {коментарий}**",
+                    f"\n**время окончания: <t:{get_future_time2(время)}>.**\n **Причина: {причина}.**\n**Коментарий: {коментарий}**",
         color=0x000000)
     await пользователь.add_roles(role_mute, reason=str(причина))
     await log_chat.send(embed=embed)
