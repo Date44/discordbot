@@ -549,7 +549,7 @@ async def check(interaction, пользователь: discord.Member):
 
     async def history(interaction):
         s1 = ""
-        cur.execute("SELECT * FROM History WHERE name == ?", пользователь.id)
+        cur.execute("SELECT * FROM History WHERE name == ?", (пользователь.id,))
         all_entries = cur.fetchall()
         for i in all_entries:
             s1 += i[3] + "\n"
