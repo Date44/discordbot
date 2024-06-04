@@ -524,6 +524,7 @@ async def check(interaction, пользователь: discord.Member):
                                               f"**{self.m3.label}**\n{self.m3}",
                                   color=discord.Colour.blue())
             embed.set_author(name=interaction.user, icon_url=interaction.user.avatar)
+            print(interaction, пользователь, self.m1, self.m2, self.m3)
             await ban(interaction, пользователь, self.m1, self.m2, self.m3)
             await log_chat.send(embed=embed)
             await interaction.response.send_message(embed=embed, ephemeral=True)
