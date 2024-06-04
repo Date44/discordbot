@@ -132,7 +132,7 @@ if __name__ == '__main__':
 def get_future_time2(delta_str):
 
     delta_unit = str(delta_str)[-1].lower()
-    delta_value = int(str(delta_str[:-1]))
+    delta_value = int(str(delta_str)[:-1])
 
     if delta_unit == 'd':
         delta = datetime.timedelta(days=delta_value)
