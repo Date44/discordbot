@@ -592,7 +592,7 @@ async def check(interaction, пользователь: discord.Member):
         else:
             await interaction.response.send_modal(unmute_modal())
 
-    async def history(interaction)
+    async def history(interaction):
         s1 = ""
         cur.execute("SELECT * FROM History WHERE name == ?", (пользователь.id,))
         all_entries = cur.fetchall()
