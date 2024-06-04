@@ -404,7 +404,7 @@ async def unmute(interaction, пользователь: discord.Member, прич
     text = "Пользователь не замьючен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с "
-                    "пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
+                    f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**",
         color=0x000000)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (interaction.user.id,))
     if cur.fetchone()[0] == 0:
