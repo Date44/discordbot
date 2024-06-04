@@ -537,7 +537,7 @@ async def t5(interaction):
 async def check(interaction, пользователь: discord.Member):
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     entries = cur.fetchone()
-    print(entries)
+    print(type(entries[3]))
     n1 = ""
     n2 = ""
     if entries[2] != "0":
