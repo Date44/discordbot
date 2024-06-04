@@ -528,13 +528,13 @@ async def check(interaction, пользователь: discord.Member):
             await log_chat.send(embed=embed)
             await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    async def mod_ban():
+    async def mod_ban(interaction):
         interaction.response.send_modal(ban_modal())
 
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label='Бан')
     view.add_item(button1)
-    button1.callback = mod_ban()
+    button1.callback = mod_ban
     button2 = Button(style=discord.ButtonStyle.gray, label='Мьют')
     view.add_item(button2)
     button3 = Button(style=discord.ButtonStyle.gray, label='Предупреждение')
