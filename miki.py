@@ -552,8 +552,7 @@ async def check(interaction, пользователь: discord.Member):
         cur.execute("SELECT * FROM History WHERE name == ?", (пользователь.id,))
         all_entries = cur.fetchall()
         for i in all_entries:
-            print(i)
-            s1 += i + "\n"
+            s1 += i[2] + "\n"
         embed = discord.Embed(description=s1, color=0x1)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
