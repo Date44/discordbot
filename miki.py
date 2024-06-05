@@ -540,6 +540,21 @@ async def t5(interaction: discord.Interaction):
 
 @tree.command(name="мод-меню", description="мод. меню", guild=discord.Object(id=guild_id))
 async def check(interaction: discord.Interaction, пользователь: discord.Member):
+    cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
+    entries = cur.fetchone()
+    if entries[3] != 0:
+        n1 = "Снять бан"
+        ban1 = f"<t:{entries[3]}>"
+    else:
+        n1 = "Бан"
+        ban1 = 0
+    if entries[4] != 0:
+        n2 = "Снять мьют"
+        mute1 = f"<t:{entries[4]}>"
+    else:
+        n2 = "Мьют"
+        mute1 = 0
+
     class ban_modal(discord.ui.Modal, title='Наказание'):
         m1 = discord.ui.TextInput(label='Время', placeholder="1d")
         m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
@@ -555,7 +570,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
         async def on_submit(self, interaction1: discord.Interaction):
             await unban(interaction1, пользователь, str(self.m2), str(self.m3))
 
-    async def mod_ban(interaction):
+    async def mod_ban(interaction: discord.Interaction):
         m = button1.label
         if m == "Бан":
             await interaction.response.send_modal(ban_modal())
@@ -577,14 +592,14 @@ async def check(interaction: discord.Interaction, пользователь: disc
         async def on_submit(self, interaction1: discord.Interaction):
             await unmute(interaction1, пользователь, self.m2, self.m3)
 
-    async def mod_mute(interaction):
+    async def mod_mute(interaction: discord.Interaction):
         m = button2.label
         if m == "Мьют":
             await interaction.response.send_modal(mute_modal())
         else:
             await interaction.response.send_modal(unmute_modal())
 
-    async def history(interaction):
+    async def history(interaction: discord.Interaction):
         s1 = ""
         cur.execute("SELECT * FROM History WHERE name == ?", (пользователь.id,))
         all_entries = cur.fetchall()
@@ -595,22 +610,6 @@ async def check(interaction: discord.Interaction, пользователь: disc
             s1 += "Нечего нету"
         embed = discord.Embed(description=s1, color=0x1)
         await interaction.response.send_message(embed=embed, ephemeral=True)
-
-
-    cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
-    entries = cur.fetchone()
-    if entries[3] != 0:
-        n1 = "Снять бан"
-        ban1 = f"<t:{entries[3]}>"
-    else:
-        n1 = "Бан"
-        ban1 = 0
-    if entries[4] != 0:
-        n2 = "Снять мьют"
-        mute1 = f"<t:{entries[4]}>"
-    else:
-        n2 = "Мьют"
-        mute1 = 0
 
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label=n1)
