@@ -812,7 +812,7 @@ class DropdownView(discord.ui.View):
         self.add_item(Dropdown())
 
 
-@tree.command(name="roles")
+@tree.command(name="roles", guild=discord.Object(id=guild_id))
 async def roles(ctx):
     view = DropdownView()
     await ctx.send("Выберите серверные роли:", view=view)
