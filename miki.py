@@ -596,19 +596,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
         embed = discord.Embed(description=s1, color=0x1)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    message = discord.Interaction.message
-    view = View()
-    button1 = Button(style=discord.ButtonStyle.gray, label=n1)
-    view.add_item(button1)
-    button1.callback = mod_ban
-    button2 = Button(style=discord.ButtonStyle.gray, label=n2)
-    view.add_item(button2)
-    button2.callback = mod_mute
-    button3 = Button(style=discord.ButtonStyle.gray, label='Предупреждение')
-    view.add_item(button3)
-    button4 = Button(style=discord.ButtonStyle.gray, label='История наказаний', row=1)
-    view.add_item(button4)
-    button4.callback = history
+
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     entries = cur.fetchone()
     if entries[3] != 0:
@@ -623,6 +611,19 @@ async def check(interaction: discord.Interaction, пользователь: disc
     else:
         n2 = "Мьют"
         mute1 = 0
+
+    view = View()
+    button1 = Button(style=discord.ButtonStyle.gray, label=n1)
+    view.add_item(button1)
+    button1.callback = mod_ban
+    button2 = Button(style=discord.ButtonStyle.gray, label=n2)
+    view.add_item(button2)
+    button2.callback = mod_mute
+    button3 = Button(style=discord.ButtonStyle.gray, label='Предупреждение')
+    view.add_item(button3)
+    button4 = Button(style=discord.ButtonStyle.gray, label='История наказаний', row=1)
+    view.add_item(button4)
+    button4.callback = history
 
     embed = discord.Embed(
         description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя разбана:"
