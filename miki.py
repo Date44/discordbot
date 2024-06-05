@@ -801,7 +801,7 @@ class Dropdown(discord.ui.Select):
         super().__init__(placeholder="Игры", min_values=0, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f"Вы выбрали: {self.values[1]}", ephemeral=True)
+        await interaction.response.send_message(f"Вы выбрали: {self.values[0]}", ephemeral=True)
 
 
 class DropdownView(discord.ui.View):
