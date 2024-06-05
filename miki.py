@@ -86,55 +86,54 @@ def read_config():
     return config
 
 
-if __name__ == '__main__':
-    intents = discord.Intents.default()
-    intents.typing = False
-    intents.presences = True
-    intents.message_content = True
-    intents.guilds = True
-    intents.members = True
-    Bot = discord.Client(intents=intents)
-    tree = app_commands.CommandTree(Bot)
-    tracemalloc.start()
+intents = discord.Intents.default()
+intents.typing = False
+intents.presences = True
+intents.message_content = True
+intents.guilds = True
+intents.members = True
+Bot = discord.Client(intents=intents)
+tree = app_commands.CommandTree(Bot)
+tracemalloc.start()
 
-    if not os.path.exists('Miki.db'):
-        con = sqlite3.connect("Miki.db")
-        cur = con.cursor()
-        create_db()
+if not os.path.exists('Miki.db'):
+    con = sqlite3.connect("Miki.db")
+    cur = con.cursor()
+    create_db()
 
-    else:
-        con = sqlite3.connect("Miki.db")
-        cur = con.cursor()
+else:
+    con = sqlite3.connect("Miki.db")
+    cur = con.cursor()
 
-    if not os.path.exists('config.cfg'):
-        create_config()
-        time.sleep(5)
-        cfg = read_config()
-    else:
-        cfg = read_config()
+if not os.path.exists('config.cfg'):
+    create_config()
+    time.sleep(5)
+    cfg = read_config()
+else:
+    cfg = read_config()
 
-    token = cfg["token"]
-    bot_chat_id = int(cfg["command_chat"])
-    white_list = cfg["white_list"]
-    log_chat_id = int(cfg["log_chat"])
-    guild_id = int(cfg["guild_id"])
-    event_chat = int(cfg["event_chat"])
-    event_categorize = int(cfg["event_categorize"])
-    role_ban_id = int(cfg["role_ban"])
-    role_mute_id = int(cfg["role_mute"])
-    colors = {
-        'DarkRed': 0x8B0000,
-        'Red': 0xFF0000,
-        'DarkOrange': 0xFF8C00,
-        'Yellow': 0xFFFF00,
-        'Gold': 0xFFD700,
-        'DarkBlue': 0x00008B,
-        'Blue': 0x0000FF,
-        'Cyan': 0x00FFFF,
-        'Lime': 0x00FF00,
-        'LimeGreen': 0x32CD32,
-        'OrangeRed': 0xFF4500
-    }
+token = cfg["token"]
+bot_chat_id = int(cfg["command_chat"])
+white_list = cfg["white_list"]
+log_chat_id = int(cfg["log_chat"])
+guild_id = int(cfg["guild_id"])
+event_chat = int(cfg["event_chat"])
+event_categorize = int(cfg["event_categorize"])
+role_ban_id = int(cfg["role_ban"])
+role_mute_id = int(cfg["role_mute"])
+colors = {
+    'DarkRed': 0x8B0000,
+    'Red': 0xFF0000,
+    'DarkOrange': 0xFF8C00,
+    'Yellow': 0xFFFF00,
+    'Gold': 0xFFD700,
+    'DarkBlue': 0x00008B,
+    'Blue': 0x0000FF,
+    'Cyan': 0x00FFFF,
+    'Lime': 0x00FF00,
+    'LimeGreen': 0x32CD32,
+    'OrangeRed': 0xFF4500
+}
 
 
 def get_future_time2(delta_str):
@@ -280,7 +279,7 @@ async def edit_rules(message):
 
 
 async def test(message):
-    cur.execute("CREATE TABLE History(id INTEGER UNIQUE PRIMARY KEY, name, description)")
+    await message.channel.send(message.content)
 
 
 async def restart(message):
@@ -344,7 +343,8 @@ async def info(interaction):
 
 
 # @tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild_id))
-async def ban(interaction, пользователь: discord.Member, время: str, причина: str, коментарий: str):
+async def ban(interaction: discord.Interaction, пользователь: discord.Member, время: str, причина: str,
+              коментарий: str):
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
@@ -361,7 +361,7 @@ async def ban(interaction, пользователь: discord.Member, время:
 
 
 # @tree.command(name="разбан", description="Снять бан", guild=discord.Object(id=guild_id))
-async def unban(interaction, пользователь: discord.Member, причина: str, коментарий: str):
+async def unban(interaction: discord.Interaction, пользователь: discord.Member, причина: str, коментарий: str):
     text = "Пользователь не забанен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с "
@@ -382,7 +382,8 @@ async def unban(interaction, пользователь: discord.Member, прич�
 
 
 # @tree.command(name="мут", description="mute user", guild=discord.Object(id=guild_id))
-async def mute(interaction, пользователь: discord.Member, время: str, причина: str, коментарий: str):
+async def mute(interaction: discord.Interaction, пользователь: discord.Member, время: str, причина: str,
+               коментарий: str):
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
@@ -400,7 +401,7 @@ async def mute(interaction, пользователь: discord.Member, время
 
 
 # @tree.command(name="размут", description="Снять мьют", guild=discord.Object(id=guild_id))
-async def unmute(interaction, пользователь: discord.Member, причина: str, коментарий: str):
+async def unmute(interaction: discord.Interaction, пользователь: discord.Member, причина: str, коментарий: str):
     text = "Пользователь не замьючен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с "
@@ -432,7 +433,7 @@ async def money(interaction):
 
 
 @tree.command(name="перевести", description="перевести коины", guild=discord.Object(id=guild_id))
-async def move(interaction, пользователь: discord.Member, сумма: int):
+async def move(interaction: discord.Interaction, пользователь: discord.Member, сумма: int):
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     result1 = cur.fetchone()
     cur.execute("SELECT money FROM Users WHERE name = ?", (пользователь.id,))
@@ -474,8 +475,12 @@ async def move(interaction, пользователь: discord.Member, сумма
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
+# @tree.context_menu()
+# async def command(interaction: discord.Interaction):
+
+
 @tree.command(name="награда", description="Ежедневная награда", guild=discord.Object(id=guild_id))
-async def reward(interaction):
+async def reward(interaction: discord.Interaction):
     cur.execute("SELECT money, timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
     if all[1] != get_current_date() or all[0] == 0:
@@ -501,7 +506,7 @@ async def reward(interaction):
 
 
 @tree.command(name="правила", description="правила", guild=discord.Object(id=guild_id))
-async def t4(interaction, правило: str, описание: str, наказание: str, длительность: str):
+async def t4(interaction: discord.Interaction, правило: str, описание: str, наказание: str, длительность: str):
     with open("data_file.json", "r", encoding="utf-8") as read_file:
         data = json.load(read_file)
     data["post" + str(len(data) + 1)] = {
@@ -521,7 +526,7 @@ async def t4(interaction, правило: str, описание: str, наказ
 
 
 @tree.command(name="правила-отправить", description="правила", guild=discord.Object(id=guild_id))
-async def t5(interaction):
+async def t5(interaction: discord.Interaction):
     with open("data_file.json", "r", encoding="utf-8") as read_file:
         data = json.load(read_file)
     for i in data.values():
@@ -534,7 +539,7 @@ async def t5(interaction):
 
 
 @tree.command(name="мод-меню", description="мод. меню", guild=discord.Object(id=guild_id))
-async def check(interaction, пользователь: discord.Member):
+async def check(interaction: discord.Interaction, пользователь: discord.Member):
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     entries = cur.fetchone()
     n1 = ""
@@ -554,14 +559,14 @@ async def check(interaction, пользователь: discord.Member):
         m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
 
         async def on_submit(self, interaction: discord.Interaction):
-            await ban(interaction, пользователь, self.m1, self.m2, self.m3)
+            await ban(interaction, пользователь, str(self.m1), str(self.m2), str(self.m3))
 
     class unban_modal(discord.ui.Modal, title='Наказание'):
         m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
         m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
 
         async def on_submit(self, interaction: discord.Interaction):
-            await unban(interaction, пользователь, self.m2, self.m3)
+            await unban(interaction, пользователь, str(self.m2), str(self.m3))
 
     async def mod_ban(interaction):
         m = button1.label
@@ -606,6 +611,7 @@ async def check(interaction, пользователь: discord.Member):
         embed = discord.Embed(description=s1, color=0x1)
         await interaction.response.send_message(embed=embed, ephemeral=True)
         await message.delete()
+
     message = discord.Interaction.message
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label=n1)
@@ -643,7 +649,7 @@ async def check(interaction, пользователь: discord.Member):
 
 @tree.command(name="ивент-пост", description="старт ивентов", guild=discord.Object(id=guild_id))
 @app_commands.autocomplete(ивент=menu)
-async def event1(interaction, ивент: str, ссылка: str):
+async def event1(interaction: discord.Interaction, ивент: str, ссылка: str):
     interaction1 = interaction
     category = guild.get_channel(event_categorize)
     voice = await guild.create_voice_channel(name=str(ивент), reason="Начало ивента", user_limit=15, category=category)
@@ -684,7 +690,7 @@ async def event1(interaction, ивент: str, ссылка: str):
 
 
 @tree.command(name="казино", description="Казино", guild=discord.Object(id=guild_id))
-async def casino(interaction, ставка: int):
+async def casino(interaction: discord.Interaction, ставка: int):
     r = random2.randint(0, 1)
     max = 1000
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
@@ -731,12 +737,12 @@ async def casino(interaction, ставка: int):
 
 
 @tree.command(name="магазин", description="магазин", guild=discord.Object(id=guild_id))
-async def shop1(interaction, лот: int = -1):
+async def shop1(interaction: discord.Interaction, лот: int = -1):
     view = View()
     button = Button(style=discord.ButtonStyle.primary, label='Подтвердить')
 
     async def button_callback(interaction: discord.Interaction, price):
-        cur.execute("SELECT money FROM Users WHERE name = ?", (interaction,))
+        cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
         if price[3] > cur.fetchone():
             await interaction.response.send_message('Не достаточно средств', ephemeral=True)
         else:
@@ -767,13 +773,49 @@ async def shop1(interaction, лот: int = -1):
 
 
 @tree.command(name="createl", description="123", guild=discord.Object(id=guild_id))
-async def create_lot(interaction, name: discord.Role, description: str, price: float):
+async def create_lot(interaction: discord.Interaction, name: discord.Role, description: str, price: float):
     print(f"{name} \n {description} \n {price}")
     data = [None, name.id, description, price]
 
     cur.execute("INSERT INTO Shop VALUES(?, ?, ?, ?)", data)
     con.commit()
     await interaction.response.send_message(f"{name} \n {description} \n {price}", ephemeral=True)
+
+
+class Dropdown(discord.ui.Select):
+    def __init__(self):
+        options = [
+            discord.SelectOption(label="Мафия", value="Мафия"),
+            discord.SelectOption(label="Бункер", value="Бункер"),
+            discord.SelectOption(label="Алиас/Шляпа", value="Алиас/Шляпа"),
+            discord.SelectOption(label="Крокодил", value="Крокодил"),
+            discord.SelectOption(label="GarlicPhone", value="GarlicPhone"),
+            discord.SelectOption(label="JackBox", value="JackBox"),
+            discord.SelectOption(label="Codenames", value="Codenames"),
+            discord.SelectOption(label="Намёк понял", value="Намёк понял"),
+            discord.SelectOption(label="Шпион", value="Шпион"),
+            discord.SelectOption(label="Кто я?", value="Кто я?"),
+            discord.SelectOption(label="Криминалист", value="Криминалист")
+        ]
+
+        super().__init__(placeholder="Игры", min_values=0, max_values=1, options=options)
+
+    async def callback(self, interaction: discord.Interaction):
+        selected_roles = [discord.utils.get(interaction.guild.roles, id=int(value)) for value in self.values]
+        await interaction.response.send_message(f"Вы выбрали роли: {', '.join([role.name for role in selected_roles])}",
+                                                ephemeral=True)
+
+
+class DropdownView(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.add_item(Dropdown())
+
+
+@tree.command()
+async def roles(ctx):
+    view = DropdownView()
+    await ctx.send("Выберите серверные роли:", view=view)
 
 
 @tree.error
