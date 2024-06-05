@@ -569,7 +569,7 @@ async def check(interaction, пользователь: discord.Member):
             await interaction.response.send_modal(ban_modal())
         else:
             await interaction.response.send_modal(unban_modal())
-        await interaction.message.delete()
+        await message.delete()
 
     class mute_modal(discord.ui.Modal, title='Наказание'):
         m1 = discord.ui.TextInput(label='Время', placeholder="1d")
@@ -592,7 +592,7 @@ async def check(interaction, пользователь: discord.Member):
             await interaction.response.send_modal(mute_modal())
         else:
             await interaction.response.send_modal(unmute_modal())
-        await interaction.message.delete()
+        await message.delete()
 
     async def history(interaction):
         s1 = ""
@@ -605,8 +605,8 @@ async def check(interaction, пользователь: discord.Member):
             s1 += "Нечего нету"
         embed = discord.Embed(description=s1, color=0x1)
         await interaction.response.send_message(embed=embed, ephemeral=True)
-        await interaction.message.delete()
-
+        await message.delete()
+    message = discord.Interaction.message
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label=n1)
     view.add_item(button1)
@@ -636,7 +636,7 @@ async def check(interaction, пользователь: discord.Member):
         color=0x1)
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
-    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+    message = await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
     # await asyncio.sleep(120)
     # await message.delete()
 
