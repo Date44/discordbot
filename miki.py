@@ -801,7 +801,7 @@ class Dropdown(discord.ui.Select):
         super().__init__(placeholder="Игры", min_values=0, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f"Вы выбрали: {self.values}", ephemeral=True)
+        await interaction.response.send_message(f"Вы выбрали: {self.values[1]}", ephemeral=True)
 
 
 class DropdownView(discord.ui.View):
@@ -813,7 +813,7 @@ class DropdownView(discord.ui.View):
 @tree.command(name="roles", guild=discord.Object(id=guild_id))
 async def roles(interaction: discord.Interaction):
     view = DropdownView()
-    await interaction.response.send_message("Выберите серверные роли:", view=view)
+    await interaction.response.send_message("Выберите серверные роли:", view=view, ephemeral=True)
 
 
 @tree.error
