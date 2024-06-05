@@ -625,12 +625,12 @@ async def check(interaction: discord.Interaction, пользователь: disc
     button4.callback = history
 
     embed = discord.Embed(
-        description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя разбана:"
+        description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {entries[1]} :coin:\nВремя разбана:"
                     f" {ban1}\nВремя размута: {mute1}\n",
         color=0x1)
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
-    message = await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+    await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
 
 @tree.command(name="ивент-пост", description="старт ивентов", guild=discord.Object(id=guild_id))
