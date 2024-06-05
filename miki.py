@@ -813,9 +813,9 @@ class DropdownView(discord.ui.View):
 
 
 @tree.command(name="roles", guild=discord.Object(id=guild_id))
-async def roles(ctx):
+async def roles(interaction: discord.Interaction):
     view = DropdownView()
-    await ctx.send("Выберите серверные роли:", view=view)
+    await interaction.response.send_message("Выберите серверные роли:", view=view)
 
 
 @tree.error
