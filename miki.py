@@ -540,33 +540,20 @@ async def t5(interaction: discord.Interaction):
 
 @tree.command(name="мод-меню", description="мод. меню", guild=discord.Object(id=guild_id))
 async def check(interaction: discord.Interaction, пользователь: discord.Member):
-    cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
-    entries = cur.fetchone()
-    n1 = ""
-    n2 = ""
-    if entries[3] != 0:
-        n1 += "Снять бан"
-    else:
-        n1 += "Бан"
-    if entries[4] != 0:
-        n2 += "Снять мьют"
-    else:
-        n2 += "Мьют"
-
     class ban_modal(discord.ui.Modal, title='Наказание'):
         m1 = discord.ui.TextInput(label='Время', placeholder="1d")
         m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
         m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
 
-        async def on_submit(self, interaction: discord.Interaction):
-            await ban(interaction, пользователь, str(self.m1), str(self.m2), str(self.m3))
+        async def on_submit(self, interaction1: discord.Interaction):
+            await ban(interaction1, пользователь, str(self.m1), str(self.m2), str(self.m3))
 
     class unban_modal(discord.ui.Modal, title='Наказание'):
         m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
         m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
 
-        async def on_submit(self, interaction: discord.Interaction):
-            await unban(interaction, пользователь, str(self.m2), str(self.m3))
+        async def on_submit(self, interaction1: discord.Interaction):
+            await unban(interaction1, пользователь, str(self.m2), str(self.m3))
 
     async def mod_ban(interaction):
         m = button1.label
@@ -574,22 +561,21 @@ async def check(interaction: discord.Interaction, пользователь: disc
             await interaction.response.send_modal(ban_modal())
         else:
             await interaction.response.send_modal(unban_modal())
-        await message.delete()
 
     class mute_modal(discord.ui.Modal, title='Наказание'):
         m1 = discord.ui.TextInput(label='Время', placeholder="1d")
         m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
         m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
 
-        async def on_submit(self, interaction: discord.Interaction):
-            await mute(interaction, пользователь, self.m1, self.m2, self.m3)
+        async def on_submit(self, interaction1: discord.Interaction):
+            await mute(interaction1, пользователь, self.m1, self.m2, self.m3)
 
     class unmute_modal(discord.ui.Modal, title='Наказание'):
         m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
         m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
 
-        async def on_submit(self, interaction: discord.Interaction):
-            await unmute(interaction, пользователь, self.m2, self.m3)
+        async def on_submit(self, interaction1: discord.Interaction):
+            await unmute(interaction1, пользователь, self.m2, self.m3)
 
     async def mod_mute(interaction):
         m = button2.label
@@ -597,7 +583,6 @@ async def check(interaction: discord.Interaction, пользователь: disc
             await interaction.response.send_modal(mute_modal())
         else:
             await interaction.response.send_modal(unmute_modal())
-        await message.delete()
 
     async def history(interaction):
         s1 = ""
@@ -610,7 +595,6 @@ async def check(interaction: discord.Interaction, пользователь: disc
             s1 += "Нечего нету"
         embed = discord.Embed(description=s1, color=0x1)
         await interaction.response.send_message(embed=embed, ephemeral=True)
-        await message.delete()
 
     message = discord.Interaction.message
     view = View()
@@ -626,15 +610,19 @@ async def check(interaction: discord.Interaction, пользователь: disc
     view.add_item(button4)
     button4.callback = history
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
-    all = cur.fetchone()
-    if all[3] == 0:
-        ban1 = None
+    entries = cur.fetchone()
+    if entries[3] != 0:
+        n1 = "Снять бан"
+        ban1 = f"<t:{entries[3]}>"
     else:
-        ban1 = f"<t:{all[3]}>"
-    if all[4] == 0:
-        mute1 = None
+        n1 = "Бан"
+        ban1 = 0
+    if entries[4] != 0:
+        n2 = "Снять мьют"
+        mute1 = f"<t:{entries[4]}>"
     else:
-        mute1 = f"<t:{all[4]}>"
+        n2 = "Мьют"
+        mute1 = 0
 
     embed = discord.Embed(
         description=f"<@{пользователь.id}> | `{пользователь}`\n\nНа счету: {all[1]} :coin:\nВремя разбана:"
@@ -643,8 +631,6 @@ async def check(interaction: discord.Interaction, пользователь: disc
     embed.set_thumbnail(url=пользователь.avatar)
     embed.set_author(name="Пользователь")
     message = await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
-    # await asyncio.sleep(120)
-    # await message.delete()
 
 
 @tree.command(name="ивент-пост", description="старт ивентов", guild=discord.Object(id=guild_id))
@@ -664,14 +650,14 @@ async def event1(interaction: discord.Interaction, ивент: str, ссылка
                     f"ивента (Скриншот конца каждой игры).",
         color=0x1)
 
-    async def callback2(interaction):
-        if interaction.user.id == interaction1.user.id:
-            await interaction.response.send_message(embed=embed3)
+    async def callback2(interaction2):
+        if interaction2.user.id == interaction1.user.id:
+            await interaction2.response.send_message(embed=embed3)
             await channel.send(embed=embed1)
-            print(interaction.message.content)
+            print(interaction2.message.content)
             await voice.delete()
         else:
-            await interaction.response.send_message("123")
+            await interaction2.response.send_message("123")
 
     view = View()
     view1 = View()
