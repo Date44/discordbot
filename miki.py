@@ -801,9 +801,7 @@ class Dropdown(discord.ui.Select):
         super().__init__(placeholder="Игры", min_values=0, max_values=1, options=options)
 
     async def callback(self, interaction: discord.Interaction):
-        selected_roles = [discord.utils.get(interaction.guild.roles, id=int(value)) for value in self.values]
-        await interaction.response.send_message(f"Вы выбрали роли: {', '.join([role.name for role in selected_roles])}",
-                                                ephemeral=True)
+        await interaction.response.send_message(f"Вы выбрали: {self.values}", ephemeral=True)
 
 
 class DropdownView(discord.ui.View):
