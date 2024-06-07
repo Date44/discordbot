@@ -257,19 +257,26 @@ async def create_rules(message):
     await channel.send(embed=embed)
 
 
-@tree.context_menu(name="edit")
-async def edit_rules(interaction: discord.Interaction, user: discord.Member):
-    print(interaction.message.embeds[0])
+# @tree.context_menu(name="edit")
+async def edit_rules(message: discord.Message):
+    text = message.content
+    text = text.split("\n")
+    line = (text[0].replace(f"https://discord.com/channels/{guild_id}/", "")
+            .replace("!правила-изменение", "")
+            .replace(" ", "")
+            .split('/'))
+    del text[0]
+    channel = Bot.get_channel(int(line[0]))
 
-    class modal(discord.ui.Modal, title='edit'):
-        m1 = discord.ui.TextInput(label='edit', default="")
-
-        async def on_submit(self, interaction1: discord.Interaction):
-            await ban(interaction1, str(self.m1), str(self.m2), str(self.m3))
-
-    embed = interaction.message.embeds[0]
-    await interaction.message.edit(embed=embed)
-
+    embed = discord.Embed(color=0x000000)
+    embed.title = f"**{text[0]}**"
+    embed.set_footer(text=f"{text[7]}")
+    embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
+    embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
+    embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
+    async for i in channel.history():
+        if i.id == int(line[1]):
+            await i.edit(embed=embed)
 
 async def test(message):
     await message.channel.send(message.content)
@@ -291,7 +298,7 @@ async def restart(message):
 
 
 @Bot.event
-async def on_message(message):
+async def on_message(message: discord.Message):
     black_listbot = [str(Bot.user.id), ]
     channel = message.channel
     text = message.content
@@ -306,8 +313,8 @@ async def on_message(message):
             await edit_embed(message)
         elif text.startswith("!правила-создание"):
             await create_rules(message)
-        # elif text.startswith("!правила-изменение"):
-        #     await edit_rules(message)
+        elif text.startswith("!правила-изменение"):
+            await edit_rules(message)
         elif text.startswith("!123"):
             await test(message)
 
