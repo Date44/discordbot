@@ -257,25 +257,17 @@ async def create_rules(message):
     await channel.send(embed=embed)
 
 
-async def edit_rules(message):
-    text = message.content
-    text = text.split("\n")
-    line = (text[0].replace(f"https://discord.com/channels/{guild_id}/", "")
-            .replace("!правила-изменение", "")
-            .replace(" ", "")
-            .split('/'))
-    del text[0]
-    channel = Bot.get_channel(int(line[0]))
+@tree.context_menu(name="edit")
+async def edit_rules(interaction: discord.Interaction):
+    print(interaction.message.embeds[0])
 
-    embed = discord.Embed(color=0x000000)
-    embed.title = f"**{text[0]}**"
-    embed.set_footer(text=f"{text[7]}")
-    embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
-    embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
-    embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
-    async for i in channel.history():
-        if i.id == int(line[1]):
-            await i.edit(embed=embed)
+    class modal(discord.ui.Modal, title='edit'):
+        m1 = discord.ui.TextInput(label='edit', default="")
+        async def on_submit(self, interaction1: discord.Interaction):
+            await ban(interaction1, str(self.m1), str(self.m2), str(self.m3))
+
+    embed = interaction.message.embeds[0]
+    interaction.message.edit(embed=embed)
 
 
 async def test(message):
@@ -320,7 +312,7 @@ async def on_message(message):
 
 
 @tree.command(name="info", description="Command info/Информация о командах")
-async def info(interaction):
+async def info(interaction: discord.Interaction):
     Infomercial = ("\n"
                    "    **Список доступных цветов:**\n"
                    "    DarkRed, Red, DarkOrange, Yellow, Gold, DarkBlue, Blue, Cyan, Lime, LimeGreen, OrangeRed\n"
@@ -801,9 +793,6 @@ class DropdownView(discord.ui.View):
 async def roles(interaction: discord.Interaction):
     view = DropdownView()
     await interaction.response.send_message("Выберите серверные роли:", view=view, ephemeral=True)
-
-
-
 
 
 @tree.error
