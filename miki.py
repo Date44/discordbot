@@ -166,11 +166,11 @@ async def create_rules(message):
 
 
 @tree.context_menu(name="edit", guild=discord.Object(id=guild_id))
-async def edit_rules(message: discord.Message, member: discord.Member):
+async def edit_rules(interaction: discord.Interaction, member: discord.Member):
     if member == Bot.user:
-        await message.send(message)
+        await interaction.response.send_message(interaction.message)
     else:
-        await message.channel.send("123", suppress_embeds=True)
+        await interaction.channel.send("123", suppress_embeds=True)
     # text = message.content
     # text = text.split("\n")
     # line = (text[0].replace(f"https://discord.com/channels/{guild_id}/", "")
