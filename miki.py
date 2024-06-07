@@ -168,7 +168,7 @@ async def create_rules(message):
 @tree.context_menu(name="edit", guild=discord.Object(id=guild_id))
 async def edit_rules(interaction: discord.Interaction, message: discord.Message):
     if message.author == Bot.user:
-        await interaction.response.send_message(message.embeds[0], ephemeral=True)
+        await interaction.response.send_message(message.embeds[0].description, ephemeral=True)
     else:
         await interaction.response.send_message("123", suppress_embeds=True, ephemeral=True)
     # text = message.content
