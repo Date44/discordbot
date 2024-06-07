@@ -484,7 +484,8 @@ async def t4(interaction: discord.Interaction, правило: str, описан
         "rules": правило,
         "description": описание,
         "punishment": наказание,
-        "duration": длительность }
+        "duration": длительность
+    }
     with open("data_file.json", "w", encoding="utf-8") as write_file:
         json.dump(data, write_file)
     embed = discord.Embed(color=0x000000)
