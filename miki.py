@@ -267,7 +267,7 @@ async def edit_rules(interaction: discord.Interaction):
             await ban(interaction1, str(self.m1), str(self.m2), str(self.m3))
 
     embed = interaction.message.embeds[0]
-    interaction.message.edit(embed=embed)
+    await interaction.message.edit(embed=embed)
 
 
 async def test(message):
