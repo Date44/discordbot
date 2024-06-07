@@ -165,7 +165,7 @@ async def create_rules(message):
 
 
 @tree.context_menu(name="edit", guild=discord.Object(id=guild_id))
-async def edit_rules(message: discord.Message):
+async def edit_rules(message: discord.Message, member: discord.Member):
     await bot_chat.send(message)
     # text = message.content
     # text = text.split("\n")
