@@ -258,7 +258,7 @@ async def create_rules(message):
 
 
 @tree.context_menu(name="edit")
-async def edit_rules(interaction: discord.Interaction):
+async def edit_rules(interaction: discord.Interaction, user: discord.Member):
     print(interaction.message.embeds[0])
 
     class modal(discord.ui.Modal, title='edit'):
