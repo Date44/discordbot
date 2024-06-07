@@ -319,7 +319,7 @@ async def on_message(message):
             await test(message)
 
 
-@tree.command(name="info", description="Command info/Информация о командах", guild=discord.Object(id=guild_id))
+@tree.command(name="info", description="Command info/Информация о командах")
 async def info(interaction):
     Infomercial = ("\n"
                    "    **Список доступных цветов:**\n"
@@ -342,7 +342,7 @@ async def info(interaction):
     await interaction.response.send_message(embed=embed)
 
 
-# @tree.command(name="бан", description="забанить пользователя", guild=discord.Object(id=guild_id))
+# @tree.command(name="бан", description="забанить пользователя")
 async def ban(interaction: discord.Interaction, пользователь: discord.Member, время: str, причина: str,
               коментарий: str):
     embed = discord.Embed(
@@ -360,7 +360,7 @@ async def ban(interaction: discord.Interaction, пользователь: discor
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-# @tree.command(name="разбан", description="Снять бан", guild=discord.Object(id=guild_id))
+# @tree.command(name="разбан", description="Снять бан")
 async def unban(interaction: discord.Interaction, пользователь: discord.Member, причина: str, коментарий: str):
     text = "Пользователь не забанен"
     embed = discord.Embed(
@@ -381,7 +381,7 @@ async def unban(interaction: discord.Interaction, пользователь: disc
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-# @tree.command(name="мут", description="mute user", guild=discord.Object(id=guild_id))
+# @tree.command(name="мут", description="mute user")
 async def mute(interaction: discord.Interaction, пользователь: discord.Member, время: str, причина: str,
                коментарий: str):
     embed = discord.Embed(
@@ -400,7 +400,7 @@ async def mute(interaction: discord.Interaction, пользователь: disco
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-# @tree.command(name="размут", description="Снять мьют", guild=discord.Object(id=guild_id))
+# @tree.command(name="размут", description="Снять мьют")
 async def unmute(interaction: discord.Interaction, пользователь: discord.Member, причина: str, коментарий: str):
     text = "Пользователь не замьючен"
     embed = discord.Embed(
@@ -421,7 +421,7 @@ async def unmute(interaction: discord.Interaction, пользователь: dis
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="счёт", description="Проверить счёт", guild=discord.Object(id=guild_id))
+@tree.command(name="счёт", description="Проверить счёт")
 async def money(interaction):
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     embed = discord.Embed(
@@ -432,7 +432,7 @@ async def money(interaction):
     await interaction.response.send_message(embed=embed)
 
 
-@tree.command(name="перевести", description="перевести коины", guild=discord.Object(id=guild_id))
+@tree.command(name="перевести", description="перевести коины")
 async def move(interaction: discord.Interaction, пользователь: discord.Member, сумма: int):
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
     result1 = cur.fetchone()
@@ -479,7 +479,7 @@ async def move(interaction: discord.Interaction, пользователь: disco
 # async def command(interaction: discord.Interaction):
 
 
-@tree.command(name="награда", description="Ежедневная награда", guild=discord.Object(id=guild_id))
+@tree.command(name="награда", description="Ежедневная награда")
 async def reward(interaction: discord.Interaction):
     cur.execute("SELECT money, timeout FROM Users WHERE name = ?", (interaction.user.id,))
     all = cur.fetchone()
@@ -505,7 +505,7 @@ async def reward(interaction: discord.Interaction):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="правила", description="правила", guild=discord.Object(id=guild_id))
+@tree.command(name="правила", description="правила")
 async def t4(interaction: discord.Interaction, правило: str, описание: str, наказание: str, длительность: str):
     with open("data_file.json", "r", encoding="utf-8") as read_file:
         data = json.load(read_file)
@@ -525,7 +525,7 @@ async def t4(interaction: discord.Interaction, правило: str, описан
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="правила-отправить", description="правила", guild=discord.Object(id=guild_id))
+@tree.command(name="правила-отправить", description="правила")
 async def t5(interaction: discord.Interaction):
     with open("data_file.json", "r", encoding="utf-8") as read_file:
         data = json.load(read_file)
@@ -538,8 +538,8 @@ async def t5(interaction: discord.Interaction):
         await interaction.channel.send(embed=embed)
 
 
-# @tree.command(name="мод-меню", guild=discord.Object(id=guild_id))
-@tree.context_menu(name="мод-меню", guild=discord.Object(id=guild_id))
+# @tree.command(name="мод-меню")
+@tree.context_menu(name="мод-меню")
 async def check(interaction: discord.Interaction, пользователь: discord.Member):
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     entries = cur.fetchone()
@@ -634,7 +634,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
     await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
 
-@tree.command(name="ивент-пост", description="старт ивентов", guild=discord.Object(id=guild_id))
+@tree.command(name="ивент-пост", description="старт ивентов")
 @app_commands.autocomplete(ивент=menu)
 async def event1(interaction: discord.Interaction, ивент: str, ссылка: str):
     interaction1 = interaction
@@ -676,7 +676,7 @@ async def event1(interaction: discord.Interaction, ивент: str, ссылка
     await channel.send(embed=embed, view=view)
 
 
-@tree.command(name="казино", description="Казино", guild=discord.Object(id=guild_id))
+@tree.command(name="казино", description="Казино")
 async def casino(interaction: discord.Interaction, ставка: int):
     r = random2.randint(0, 1)
     max = 1000
@@ -723,7 +723,7 @@ async def casino(interaction: discord.Interaction, ставка: int):
                 await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-@tree.command(name="магазин", description="магазин", guild=discord.Object(id=guild_id))
+@tree.command(name="магазин", description="магазин")
 async def shop1(interaction: discord.Interaction, лот: int = -1):
     view = View()
     button = Button(style=discord.ButtonStyle.primary, label='Подтвердить')
@@ -759,7 +759,7 @@ async def shop1(interaction: discord.Interaction, лот: int = -1):
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
 
-@tree.command(name="createl", description="123", guild=discord.Object(id=guild_id))
+@tree.command(name="createl", description="123")
 async def create_lot(interaction: discord.Interaction, name: discord.Role, description: str, price: float):
     print(f"{name} \n {description} \n {price}")
     data = [None, name.id, description, price]
