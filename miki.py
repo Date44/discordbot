@@ -263,6 +263,7 @@ async def edit_rules(interaction: discord.Interaction, user: discord.Member):
 
     class modal(discord.ui.Modal, title='edit'):
         m1 = discord.ui.TextInput(label='edit', default="")
+
         async def on_submit(self, interaction1: discord.Interaction):
             await ban(interaction1, str(self.m1), str(self.m2), str(self.m3))
 
