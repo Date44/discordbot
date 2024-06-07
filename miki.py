@@ -1,12 +1,10 @@
-import asyncio
 import configparser
 import datetime
+import json
 import os
 import sqlite3
 import time
 import tracemalloc
-import subprocess
-import json
 
 import discord
 import random2
@@ -555,14 +553,14 @@ async def check(interaction: discord.Interaction, пользователь: disc
         m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
 
         async def on_submit(self, interaction1: discord.Interaction):
-            await mute(interaction1, пользователь, self.m1, self.m2, self.m3)
+            await mute(interaction1, пользователь, str(self.m1), str(self.m2), str(self.m3))
 
     class unmute_modal(discord.ui.Modal, title='Наказание'):
         m2 = discord.ui.TextInput(label='Причина', placeholder="flowle_")
         m3 = discord.ui.TextInput(label='Комментарий', placeholder="Бла бла бла", required=False)
 
         async def on_submit(self, interaction1: discord.Interaction):
-            await unmute(interaction1, пользователь, self.m2, self.m3)
+            await unmute(interaction1, пользователь, str(self.m2), str(self.m3))
 
     async def mod_mute(interaction: discord.Interaction):
         m = button2.label
@@ -783,7 +781,7 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
     await bot_chat.send(embed=embed)
 
 
-async def remove_role(guild, member_id, role):
+async def remove_role(guild: discord.Guild , member_id, role):
     member = await guild.fetch_member(member_id)
     if member:
         await member.remove_roles(role, reason="(auto)")
