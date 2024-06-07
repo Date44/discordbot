@@ -3,6 +3,7 @@ from miki import cur, con
 
 import datetime
 
+
 def get_future_time(delta_str):
     delta_unit = str(delta_str)[-1].lower()
     delta_value = int(str(delta_str)[:-1])
@@ -27,6 +28,7 @@ def get_future_time(delta_str):
 def get_current_date():
     current_time = datetime.datetime.now()
     return current_time.strftime("%d-%m-%Y")
+
 
 def create_db():
     cur.execute("CREATE TABLE Users(name UNIQUE, money, timeout, ban_timeout, mute_timeout, warn)")

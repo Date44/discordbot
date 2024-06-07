@@ -3,6 +3,7 @@ import os
 import sqlite3
 import time
 from lib import functions
+from lib.functions import read_config
 
 import tracemalloc
 
@@ -44,9 +45,9 @@ else:
 if not os.path.exists('config.cfg'):
     functions.create_config()
     time.sleep(5)
-    cfg = functions.read_config()
+    cfg = read_config()
 else:
-    cfg = functions.read_config()
+    cfg = read_config()
 
 token = cfg["token"]
 bot_chat_id = int(cfg["command_chat"])
