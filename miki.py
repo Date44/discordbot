@@ -1,4 +1,5 @@
 import configparser
+import datetime
 import json
 import os
 import sqlite3
@@ -724,7 +725,7 @@ async def remove_role(guild: discord.Guild, member_id, role):
 
 @tasks.loop(minutes=1)
 async def remove_expired_roles():
-    current_time = functions.datetime.datetime.now().timestamp()
+    current_time = datetime.datetime.now().timestamp()
 
     cur.execute("SELECT * FROM Users WHERE ban_timeout != 0 OR mute_timeout != 0")
     all_entries = cur.fetchall()
