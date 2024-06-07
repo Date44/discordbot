@@ -538,7 +538,7 @@ async def t5(interaction: discord.Interaction):
         await interaction.channel.send(embed=embed)
 
 
-@tree.command(name="мод-меню", description="мод. меню", guild=discord.Object(id=guild_id))
+@tree.context_menu(name="мод-меню", guild=discord.Object(id=guild_id))
 async def check(interaction: discord.Interaction, пользователь: discord.Member):
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
     entries = cur.fetchone()
@@ -802,9 +802,6 @@ async def roles(interaction: discord.Interaction):
     await interaction.response.send_message("Выберите серверные роли:", view=view, ephemeral=True)
 
 
-@tree.context_menu(name='userinfo', guild=discord.Object(id=guild_id))
-async def show_user_info(interaction: discord.Interaction, user: discord.User):
-    await interaction.response.send_message(f'User Info:\nUsername: {user.name}\nID: {user.id}', ephemeral=True)
 
 
 
