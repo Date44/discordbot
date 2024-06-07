@@ -136,7 +136,7 @@ colors = {
 }
 
 
-def get_future_time2(delta_str):
+def get_future_time(delta_str):
     delta_unit = str(delta_str)[-1].lower()
     delta_value = int(str(delta_str)[:-1])
 
@@ -155,27 +155,6 @@ def get_future_time2(delta_str):
 
     future_time = datetime.datetime.now() + delta
     return int(future_time.timestamp())
-
-
-def get_future_time(delta_str):
-    delta_unit = delta_str[-1].lower()
-    delta_value = int(delta_str[:-1])
-
-    if delta_unit == 'd':
-        delta = datetime.timedelta(days=delta_value)
-    elif delta_unit == 'm':
-        delta = datetime.timedelta(minutes=delta_value)
-    elif delta_unit == 'h':
-        delta = datetime.timedelta(hours=delta_value)
-    elif delta_unit == 's':
-        delta = datetime.timedelta(seconds=delta_value)
-    elif delta_unit == 'w':
-        delta = datetime.timedelta(weeks=delta_value)
-    else:
-        delta = datetime.timedelta()  # Default to 0
-
-    future_time = datetime.datetime.now() + delta
-    return future_time.strftime('%H:%M:%S %d-%m-%Y')
 
 
 def get_current_date():
@@ -278,20 +257,12 @@ async def edit_rules(message: discord.Message):
         if i.id == int(line[1]):
             await i.edit(embed=embed)
 
+
 async def test(message):
     await message.channel.send(message.content)
 
 
 async def restart(message):
-    result = subprocess.run(['git', 'pull'], cwd='.', capture_output=True, text=True)
-
-    if result.returncode == 0:
-        print(result.stdout)
-    else:
-        print(result.stderr)
-
-    time.sleep(1)
-
     await message.delete()
     await Bot.close()
     exit()
@@ -333,39 +304,39 @@ async def info(interaction: discord.Interaction):
                    "**!правила-создание** [#канал] \n `Заголовок` \n`Текст1` "
                    "\n`Текст1` \n`Текст2` \n`Текст2` \n`Текст3`"
                    "\n`Текст3`"
-                   "\n`Футер` \n"
+                   "\n"
                    "**!правила-изменение** [ссылка на сообщение] \n `Заголовок` "
                    "\n`Текст1` \n`Текст1` \n`Текст2` \n`Текст2` "
-                   "\n`Текст3` \n`Текст3` \n`Футер` \n")
+                   "\n`Текст3` \n`Текст3` \n")
 
     embed = discord.Embed(title="Инфо", description=Infomercial, color=0x1)
     await interaction.response.send_message(embed=embed)
 
 
-# @tree.command(name="бан", description="забанить пользователя")
 async def ban(interaction: discord.Interaction, пользователь: discord.Member, время: str, причина: str,
               коментарий: str):
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**Время окончания:  <t:{get_future_time2(время)}>**\n **Причина: {причина}**\n**Коментарий: {коментарий}**",
+                    f"\n**Время окончания:  <t:{get_future_time(время)}>**\n **Причина:"
+                    f" {причина}**\n**Коментарий: {коментарий}**",
         color=0x000000)
     await пользователь.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
     add_history(пользователь.id, f"<@{пользователь.id}> | `{пользователь}` забанен модератором <@{interaction.user.id}>"
-                                 f" время окончания:  <t:{get_future_time2(время)}>"
+                                 f" время окончания:  <t:{get_future_time(время)}>"
                                  f", причина: {причина} коментарий: {коментарий}")
-    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
+    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-# @tree.command(name="разбан", description="Снять бан")
 async def unban(interaction: discord.Interaction, пользователь: discord.Member, причина: str, коментарий: str):
     text = "Пользователь не забанен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с "
-                    f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**\n**Коментарий: {коментарий}**",
+                    f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина:"
+                    f" {причина}**\n**Коментарий: {коментарий}**",
         color=0x000000)
     cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
     if cur.fetchone()[0] == 0:
@@ -381,31 +352,31 @@ async def unban(interaction: discord.Interaction, пользователь: disc
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-# @tree.command(name="мут", description="mute user")
 async def mute(interaction: discord.Interaction, пользователь: discord.Member, время: str, причина: str,
                коментарий: str):
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**время окончания: <t:{get_future_time2(время)}>.**\n **Причина: {причина}.**\n**Коментарий: {коментарий}**",
+                    f"\n**время окончания: <t:{get_future_time(время)}>.**\n **Причина:"
+                    f" {причина}.**\n**Коментарий: {коментарий}**",
         color=0x000000)
     await пользователь.add_roles(role_mute, reason=str(причина))
     await log_chat.send(embed=embed)
     add_history(пользователь.id,
                 f"<@{пользователь.id}> | `{пользователь}` замьючен модератором <@{interaction.user.id}>"
-                f" время окончания:  <t:{get_future_time2(время)}>"
+                f" время окончания:  <t:{get_future_time(время)}>"
                 f", причина: {причина} коментарий: {коментарий}")
-    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time2(время), пользователь.id))
+    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-# @tree.command(name="размут", description="Снять мьют")
 async def unmute(interaction: discord.Interaction, пользователь: discord.Member, причина: str, коментарий: str):
     text = "Пользователь не замьючен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с "
-                    f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина: {причина}**\n**Коментарий: {коментарий}**",
+                    f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина:"
+                    f" {причина}**\n**Коментарий: {коментарий}**",
         color=0x000000)
     cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (пользователь.id,))
     if cur.fetchone()[0] == 0:
@@ -482,9 +453,9 @@ async def move(interaction: discord.Interaction, пользователь: disco
 @tree.command(name="награда", description="Ежедневная награда", guild=discord.Object(id=guild_id))
 async def reward(interaction: discord.Interaction):
     cur.execute("SELECT money, timeout FROM Users WHERE name = ?", (interaction.user.id,))
-    all = cur.fetchone()
-    if all[1] != get_current_date() or all[0] == 0:
-        new_valui = int(all[0]) + 100
+    result = cur.fetchone()
+    if result[1] != get_current_date() or result[0] == 0:
+        new_valui = int(result[0]) + 100
         cur.execute("UPDATE Users SET money = ?, timeout = ? WHERE name = ?",
                     (new_valui, get_current_date(), interaction.user.id))
         con.commit()
@@ -513,8 +484,7 @@ async def t4(interaction: discord.Interaction, правило: str, описан
         "rules": правило,
         "description": описание,
         "punishment": наказание,
-        "duration": длительность
-    }
+        "duration": длительность }
     with open("data_file.json", "w", encoding="utf-8") as write_file:
         json.dump(data, write_file)
     embed = discord.Embed(color=0x000000)
@@ -679,19 +649,19 @@ async def event1(interaction: discord.Interaction, ивент: str, ссылка
 @tree.command(name="казино", guild=discord.Object(id=guild_id))
 async def casino(interaction: discord.Interaction, ставка: int):
     r = random2.randint(0, 1)
-    max = 1000
+    max_values = 1000
     cur.execute("SELECT money FROM Users WHERE name = ?", (interaction.user.id,))
-    all = cur.fetchone()
-    if ставка > max:
+    result = cur.fetchone()
+    if ставка > max_values:
         embed = discord.Embed(
             description=f"<@{interaction.user.id}> | `{interaction.user}`\n\n Ваша ставка привышает лимит, "
-                        f"максимальная ставка {max} :coin:",
+                        f"максимальная ставка {max_values} :coin:",
             color=0x1)
         embed.set_thumbnail(url=interaction.user.avatar)
         embed.set_author(name="Пользователь")
         await interaction.response.send_message(embed=embed, ephemeral=True)
     else:
-        if int(all[0]) < ставка:
+        if int(result[0]) < ставка:
             embed = discord.Embed(
                 description=f"<@{interaction.user.id}> | `{interaction.user}`\n\n У Вас не достаточно средств",
                 color=0x1)
@@ -700,7 +670,7 @@ async def casino(interaction: discord.Interaction, ставка: int):
             await interaction.response.send_message(embed=embed, ephemeral=True)
         else:
             if r == 1:
-                new_valui = int(all[0]) + (ставка * 2 - ставка)
+                new_valui = int(result[0]) + (ставка * 2 - ставка)
                 cur.execute("UPDATE Users SET money = ? WHERE name = ?", (new_valui, interaction.user.id))
                 con.commit()
                 embed = discord.Embed(
@@ -711,7 +681,7 @@ async def casino(interaction: discord.Interaction, ставка: int):
                 embed.set_author(name="Пользователь")
                 await interaction.response.send_message(embed=embed, ephemeral=True)
             else:
-                new_valui = int(all[0]) - ставка
+                new_valui = int(result[0]) - ставка
                 cur.execute("UPDATE Users SET money = ? WHERE name = ?", (new_valui, interaction.user.id))
                 con.commit()
                 embed = discord.Embed(
@@ -750,11 +720,11 @@ async def shop1(interaction: discord.Interaction, лот: int = -1):
         await interaction.response.send_message(embed=embed, ephemeral=True)
     else:
         cur.execute("SELECT * FROM Shop WHERE id = ?", (лот,))
-        all = cur.fetchone()
-        button.callback = button_callback(interaction, all)
+        result = cur.fetchone()
+        button.callback = button_callback(interaction, result)
         view.add_item(button)
         embed = discord.Embed(
-            description=f"Название: {all[1]}\nОписание: {all[2]}\nЦена: {all[3]} :coin:",
+            description=f"Название: {result[1]}\nОписание: {result[2]}\nЦена: {result[3]} :coin:",
             color=0x36393E)
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
