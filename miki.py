@@ -802,7 +802,7 @@ async def roles(interaction: discord.Interaction):
     await interaction.response.send_message("Выберите серверные роли:", view=view, ephemeral=True)
 
 
-@tree.context_menu(name='userinfo')
+@tree.context_menu(name='userinfo', guild=discord.Object(id=guild_id))
 async def show_user_info(interaction: discord.Interaction, user: discord.User):
     await interaction.response.send_message(f'User Info:\nUsername: {user.name}\nID: {user.id}', ephemeral=True)
 
