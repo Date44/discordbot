@@ -850,7 +850,7 @@ async def remove_expired_roles():
 async def on_ready():
     global guild, role_ban, role_mute, log_chat, bot_chat
     await Bot.change_presence(status=discord.Status.online)
-    await tree.sync(guild=discord.Object(id=guild_id))
+    await tree.sync()
     remove_expired_roles.start()
     guild = Bot.get_guild(guild_id)
     role_ban = guild.get_role(role_ban_id)
