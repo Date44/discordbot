@@ -305,8 +305,8 @@ async def on_message(message):
             await edit_embed(message)
         elif text.startswith("!правила-создание"):
             await create_rules(message)
-        elif text.startswith("!правила-изменение"):
-            await edit_rules(message)
+        # elif text.startswith("!правила-изменение"):
+        #     await edit_rules(message)
         elif text.startswith("!123"):
             await test(message)
 
