@@ -1,9 +1,11 @@
-import configparser
-import datetime
+
 import json
 import os
 import sqlite3
 import time
+from lib.functions import *
+
+
 import tracemalloc
 
 import discord
@@ -20,68 +22,6 @@ async def menu(interaction: discord.Interaction, current: str, ) -> list[app_com
         app_commands.Choice(name=string, value=string)
         for string in menu if current.lower() in string.lower()
     ]
-
-
-def create_db():
-    cur.execute("CREATE TABLE Users(name UNIQUE, money, timeout, ban_timeout, mute_timeout, warn)")
-    cur.execute("CREATE TABLE Shop(id INTEGER UNIQUE PRIMARY KEY, name, description, price)")
-    cur.execute("CREATE TABLE History(id INTEGER UNIQUE PRIMARY KEY, name, description)")
-
-
-def create_profile(id_name):
-    data = [(id_name, 0, 0, 0, 0, 0), ]
-    cur.executemany("INSERT INTO Users VALUES(?, ?, ?, ?, ?, ?)", data)
-    con.commit()
-    cur.execute("SELECT * FROM Users WHERE name = ?", (id_name,))
-    return cur.fetchone()
-
-
-def add_history(id_name, description):
-    data = [(None, id_name, description), ]
-    cur.executemany("INSERT INTO History VALUES(?, ?, ?)", data)
-    con.commit()
-
-
-# config
-def create_config():
-    id_chat = "0000000000000000000"
-    config = configparser.ConfigParser()
-
-    config.add_section('Login')
-    config.add_section('Protect')
-    config.add_section('Log')
-    config.add_section('Event')
-    config.add_section('Roles')
-
-    config.set('Login', 'token', '')
-    config.set('Login', 'command_chat', id_chat)
-    config.set('Login', 'guild_id', id_chat)
-    config.set('Protect', 'white_list', "[281772955690860544, ]")
-    config.set('Log', 'log_chat', id_chat)
-    config.set('Event', 'event_chat', id_chat)
-    config.set('Event', 'event_categorize', id_chat)
-    config.set('Roles', 'role_ban', id_chat)
-    config.set('Roles', 'role_mute', id_chat)
-
-    with open('config.cfg', 'w') as configfile:
-        config.write(configfile)
-
-
-def read_config():
-    config = configparser.ConfigParser()
-    config.read('config.cfg')
-    config = {
-        "token": config.get('Login', 'token'),
-        "command_chat": config.get('Login', 'command_chat'),
-        "guild_id": config.get('Login', 'guild_id'),
-        "white_list": config.get('Protect', 'white_list'),
-        "log_chat": config.get('Log', 'log_chat'),
-        "event_chat": config.get('Event', 'event_chat'),
-        "event_categorize": config.get('Event', 'event_categorize'),
-        "role_ban": config.get('Roles', 'role_ban'),
-        "role_mute": config.get('Roles', 'role_mute'),
-    }
-    return config
 
 
 intents = discord.Intents.default()
@@ -110,6 +50,7 @@ if not os.path.exists('config.cfg'):
 else:
     cfg = read_config()
 
+
 token = cfg["token"]
 bot_chat_id = int(cfg["command_chat"])
 white_list = cfg["white_list"]
@@ -134,30 +75,7 @@ colors = {
 }
 
 
-def get_future_time(delta_str):
-    delta_unit = str(delta_str)[-1].lower()
-    delta_value = int(str(delta_str)[:-1])
 
-    if delta_unit == 'd':
-        delta = datetime.timedelta(days=delta_value)
-    elif delta_unit == 'm':
-        delta = datetime.timedelta(minutes=delta_value)
-    elif delta_unit == 'h':
-        delta = datetime.timedelta(hours=delta_value)
-    elif delta_unit == 's':
-        delta = datetime.timedelta(seconds=delta_value)
-    elif delta_unit == 'w':
-        delta = datetime.timedelta(weeks=delta_value)
-    else:
-        delta = datetime.timedelta()
-
-    future_time = datetime.datetime.now() + delta
-    return int(future_time.timestamp())
-
-
-def get_current_date():
-    current_time = datetime.datetime.now()
-    return current_time.strftime("%d-%m-%Y")
 
 
 async def delete_messages(text, channel):
@@ -234,26 +152,28 @@ async def create_rules(message):
     await channel.send(embed=embed)
 
 
-# @tree.context_menu(name="edit")
+@tree.context_menu(name="edit",  guild=discord.Object(id=guild_id))
 async def edit_rules(message: discord.Message):
-    text = message.content
-    text = text.split("\n")
-    line = (text[0].replace(f"https://discord.com/channels/{guild_id}/", "")
-            .replace("!правила-изменение", "")
-            .replace(" ", "")
-            .split('/'))
-    del text[0]
-    channel = Bot.get_channel(int(line[0]))
 
-    embed = discord.Embed(color=0x000000)
-    embed.title = f"**{text[0]}**"
-    embed.set_footer(text=f"{text[7]}")
-    embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
-    embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
-    embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
-    async for i in channel.history():
-        if i.id == int(line[1]):
-            await i.edit(embed=embed)
+    await bot_chat.send(message)
+    # text = message.content
+    # text = text.split("\n")
+    # line = (text[0].replace(f"https://discord.com/channels/{guild_id}/", "")
+    #         .replace("!правила-изменение", "")
+    #         .replace(" ", "")
+    #         .split('/'))
+    # del text[0]
+    # channel = Bot.get_channel(int(line[0]))
+
+    # embed = discord.Embed(color=0x000000)
+    # embed.title = f"**{text[0]}**"
+    # embed.set_footer(text=f"{text[7]}")
+    # embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
+    # embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
+    # embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
+    # async for i in channel.history():
+    #     if i.id == int(line[1]):
+    #         await i.edit(embed=embed)
 
 
 async def test(message):
@@ -311,20 +231,20 @@ async def info(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed)
 
 
-async def ban(interaction: discord.Interaction, пользователь: discord.Member, время: str, причина: str,
+async def ban(interaction: discord.Interaction, user: discord.Member, время: str, причина: str,
               коментарий: str):
     embed = discord.Embed(
-        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был забанен на сервере "
+        description=f"**Пользователь** <@{user.id}> | `{user}` **был забанен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
                     f"\n**Время окончания:  <t:{get_future_time(время)}>**\n **Причина:"
                     f" {причина}**\n**Коментарий: {коментарий}**",
         color=0x000000)
-    await пользователь.add_roles(role_ban, reason=str(причина))
+    await user.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
-    add_history(пользователь.id, f"<@{пользователь.id}> | `{пользователь}` забанен модератором <@{interaction.user.id}>"
+    add_history(user.id, f"<@{user.id}> | `{user}` забанен модератором <@{interaction.user.id}>"
                                  f" время окончания:  <t:{get_future_time(время)}>"
                                  f", причина: {причина} коментарий: {коментарий}")
-    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
+    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time(время), user.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -781,7 +701,7 @@ async def on_error(interaction: discord.Interaction, error: app_commands.AppComm
     await bot_chat.send(embed=embed)
 
 
-async def remove_role(guild: discord.Guild , member_id, role):
+async def remove_role(guild: discord.Guild, member_id, role):
     member = await guild.fetch_member(member_id)
     if member:
         await member.remove_roles(role, reason="(auto)")
