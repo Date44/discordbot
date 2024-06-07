@@ -802,6 +802,12 @@ async def roles(interaction: discord.Interaction):
     await interaction.response.send_message("Выберите серверные роли:", view=view, ephemeral=True)
 
 
+@tree.context_menu(name='userinfo')
+async def show_user_info(interaction: discord.Interaction, user: discord.User):
+    await interaction.response.send_message(f'User Info:\nUsername: {user.name}\nID: {user.id}', ephemeral=True)
+
+
+
 @tree.error
 async def on_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
     embed = discord.Embed(description=f"Со мной что-то случилось\n{error}", color=0x1)
