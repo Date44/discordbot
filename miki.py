@@ -538,7 +538,7 @@ async def t5(interaction: discord.Interaction):
         await interaction.channel.send(embed=embed)
 
 
-@tree.command(name="мод-меню", guild=discord.Object(id=guild_id))
+# @tree.command(name="мод-меню", guild=discord.Object(id=guild_id))
 @tree.context_menu(name="мод-меню", guild=discord.Object(id=guild_id))
 async def check(interaction: discord.Interaction, пользователь: discord.Member):
     cur.execute("SELECT * FROM Users WHERE name = ?", (пользователь.id,))
