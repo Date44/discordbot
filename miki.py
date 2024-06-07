@@ -166,7 +166,7 @@ async def create_rules(message):
 
 
 @tree.context_menu(name="edit", guild=discord.Object(id=guild_id))
-async def edit_rules(interaction: discord.Interaction, message: discord.Message, member: discord.Member):
+async def edit_rules(message: discord.Message, member: discord.Member):
     if member == Bot.user:
         await message.send(message)
     else:
