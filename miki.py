@@ -166,8 +166,11 @@ async def create_rules(message):
 
 
 @tree.context_menu(name="edit", guild=discord.Object(id=guild_id))
-async def edit_rules(message: discord.Message, member: discord.Member):
-    await bot_chat.send(message)
+async def edit_rules(interaction: discord.Interaction, message: discord.Message, member: discord.Member):
+    if member == Bot.user:
+        await message.send(message)
+    else:
+        await message.channel.send("123", suppress_embeds=True)
     # text = message.content
     # text = text.split("\n")
     # line = (text[0].replace(f"https://discord.com/channels/{guild_id}/", "")
@@ -214,8 +217,8 @@ async def on_message(message: discord.Message):
             await edit_embed(message)
         elif text.startswith("!правила-создание"):
             await create_rules(message)
-        elif text.startswith("!правила-изменение"):
-            await edit_rules(message)
+        # elif text.startswith("!правила-изменение"):
+        #     await edit_rules(message)
         elif text.startswith("!123"):
             await test(message)
 
