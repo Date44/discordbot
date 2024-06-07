@@ -75,18 +75,3 @@ def create_config():
         config.write(configfile)
 
 
-def read_config():
-    config = configparser.ConfigParser()
-    config.read('config.cfg')
-    config = {
-        "token": config.get('Login', 'token'),
-        "command_chat": config.get('Login', 'command_chat'),
-        "guild_id": config.get('Login', 'guild_id'),
-        "white_list": config.get('Protect', 'white_list'),
-        "log_chat": config.get('Log', 'log_chat'),
-        "event_chat": config.get('Event', 'event_chat'),
-        "event_categorize": config.get('Event', 'event_categorize'),
-        "role_ban": config.get('Roles', 'role_ban'),
-        "role_mute": config.get('Roles', 'role_mute'),
-    }
-    return config
