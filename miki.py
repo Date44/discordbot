@@ -192,7 +192,7 @@ async def edit_rules(interaction: discord.Interaction, message: discord.Message)
 
 
 async def test(message):
-    await message.channel.send(message)
+    await message.channel.send(message.content)
 
 
 async def restart(message):
