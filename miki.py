@@ -4,7 +4,6 @@ import json
 import os
 import sqlite3
 import time
-from lib import functions
 
 import tracemalloc
 
@@ -13,6 +12,77 @@ import random2
 from discord import app_commands
 from discord.ext import tasks
 from discord.ui import View, Button
+
+
+def get_future_time(delta_str):
+    delta_unit = str(delta_str)[-1].lower()
+    delta_value = int(str(delta_str)[:-1])
+
+    if delta_unit == 'd':
+        delta = datetime.timedelta(days=delta_value)
+    elif delta_unit == 'm':
+        delta = datetime.timedelta(minutes=delta_value)
+    elif delta_unit == 'h':
+        delta = datetime.timedelta(hours=delta_value)
+    elif delta_unit == 's':
+        delta = datetime.timedelta(seconds=delta_value)
+    elif delta_unit == 'w':
+        delta = datetime.timedelta(weeks=delta_value)
+    else:
+        delta = datetime.timedelta()
+
+    future_time = datetime.datetime.now() + delta
+    return int(future_time.timestamp())
+
+
+def get_current_date():
+    current_time = datetime.datetime.now()
+    return current_time.strftime("%d-%m-%Y")
+
+
+def create_db():
+    cur.execute("CREATE TABLE Users(name UNIQUE, money, timeout, ban_timeout, mute_timeout, warn)")
+    cur.execute("CREATE TABLE Shop(id INTEGER UNIQUE PRIMARY KEY, name, description, price)")
+    cur.execute("CREATE TABLE History(id INTEGER UNIQUE PRIMARY KEY, name, description)")
+
+
+def create_profile(id_name):
+    data = [(id_name, 0, 0, 0, 0, 0), ]
+    cur.executemany("INSERT INTO Users VALUES(?, ?, ?, ?, ?, ?)", data)
+    con.commit()
+    cur.execute("SELECT * FROM Users WHERE name = ?", (id_name,))
+    return cur.fetchone()
+
+
+def add_history(id_name, description):
+    data = [(None, id_name, description), ]
+    cur.executemany("INSERT INTO History VALUES(?, ?, ?)", data)
+    con.commit()
+
+
+# config
+def create_config():
+    id_chat = "0000000000000000000"
+    config = configparser.ConfigParser()
+
+    config.add_section('Login')
+    config.add_section('Protect')
+    config.add_section('Log')
+    config.add_section('Event')
+    config.add_section('Roles')
+
+    config.set('Login', 'token', '')
+    config.set('Login', 'command_chat', id_chat)
+    config.set('Login', 'guild_id', id_chat)
+    config.set('Protect', 'white_list', "[281772955690860544, ]")
+    config.set('Log', 'log_chat', id_chat)
+    config.set('Event', 'event_chat', id_chat)
+    config.set('Event', 'event_categorize', id_chat)
+    config.set('Roles', 'role_ban', id_chat)
+    config.set('Roles', 'role_mute', id_chat)
+
+    with open('config.cfg', 'w') as configfile:
+        config.write(configfile)
 
 
 async def menu(interaction: discord.Interaction, current: str, ) -> list[app_commands.Choice[str]]:
@@ -54,14 +124,14 @@ tracemalloc.start()
 if not os.path.exists('Miki.db'):
     con = sqlite3.connect("Miki.db")
     cur = con.cursor()
-    functions.create_db()
+    create_db()
 
 else:
     con = sqlite3.connect("Miki.db")
     cur = con.cursor()
 
 if not os.path.exists('config.cfg'):
-    functions.create_config()
+    create_config()
     time.sleep(5)
     cfg = read_config()
 else:
@@ -251,15 +321,15 @@ async def ban(interaction: discord.Interaction, user: discord.Member, время
     embed = discord.Embed(
         description=f"**Пользователь** <@{user.id}> | `{user}` **был забанен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**Время окончания:  <t:{functions.get_future_time(время)}>**\n **Причина:"
+                    f"\n**Время окончания:  <t:{get_future_time(время)}>**\n **Причина:"
                     f" {причина}**\n**Коментарий: {коментарий}**",
         color=0x000000)
     await user.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
-    functions.add_history(user.id, f"<@{user.id}> | `{user}` забанен модератором <@{interaction.user.id}>"
-                                   f" время окончания:  <t:{functions.get_future_time(время)}>"
-                                   f", причина: {причина} коментарий: {коментарий}")
-    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (functions.get_future_time(время), user.id))
+    add_history(user.id, f"<@{user.id}> | `{user}` забанен модератором <@{interaction.user.id}>"
+                         f" время окончания:  <t:{get_future_time(время)}>"
+                         f", причина: {причина} коментарий: {коментарий}")
+    cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time(время), user.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -278,10 +348,10 @@ async def unban(interaction: discord.Interaction, пользователь: disc
         await пользователь.remove_roles(role_ban, reason=str(причина))
         cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, пользователь.id))
         con.commit()
-        functions.add_history(пользователь.id,
-                              f"<@{пользователь.id}> | `{пользователь}` разблокирован"
-                              f" модератором <@{interaction.user.id}>"
-                              f", причина: {причина} коментарий: {коментарий}")
+        add_history(пользователь.id,
+                    f"<@{пользователь.id}> | `{пользователь}` разблокирован"
+                    f" модератором <@{interaction.user.id}>"
+                    f", причина: {причина} коментарий: {коментарий}")
         await log_chat.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -291,16 +361,16 @@ async def mute(interaction: discord.Interaction, пользователь: disco
     embed = discord.Embed(
         description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**время окончания: <t:{functions.get_future_time(время)}>.**\n **Причина:"
+                    f"\n**время окончания: <t:{get_future_time(время)}>.**\n **Причина:"
                     f" {причина}.**\n**Коментарий: {коментарий}**",
         color=0x000000)
     await пользователь.add_roles(role_mute, reason=str(причина))
     await log_chat.send(embed=embed)
-    functions.add_history(пользователь.id,
-                          f"<@{пользователь.id}> | `{пользователь}` замьючен модератором <@{interaction.user.id}>"
-                          f" время окончания:  <t:{functions.get_future_time(время)}>"
-                          f", причина: {причина} коментарий: {коментарий}")
-    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (functions.get_future_time(время), пользователь.id))
+    add_history(пользователь.id,
+                f"<@{пользователь.id}> | `{пользователь}` замьючен модератором <@{interaction.user.id}>"
+                f" время окончания:  <t:{get_future_time(время)}>"
+                f", причина: {причина} коментарий: {коментарий}")
+    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -319,10 +389,10 @@ async def unmute(interaction: discord.Interaction, пользователь: dis
         await пользователь.remove_roles(role_mute, reason=str(причина))
         cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, пользователь.id))
         con.commit()
-        functions.add_history(пользователь.id,
-                              f"<@{пользователь.id}> | `{пользователь}` разблокирован"
-                              f" модератором <@{interaction.user.id}>"
-                              f", причина: {причина} коментарий: {коментарий}")
+        add_history(пользователь.id,
+                    f"<@{пользователь.id}> | `{пользователь}` разблокирован"
+                    f" модератором <@{interaction.user.id}>"
+                    f", причина: {причина} коментарий: {коментарий}")
         await log_chat.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -389,10 +459,10 @@ async def move(interaction: discord.Interaction, пользователь: disco
 async def reward(interaction: discord.Interaction):
     cur.execute("SELECT money, timeout FROM Users WHERE name = ?", (interaction.user.id,))
     result = cur.fetchone()
-    if result[1] != functions.get_current_date() or result[0] == 0:
+    if result[1] != get_current_date() or result[0] == 0:
         new_valui = int(result[0]) + 100
         cur.execute("UPDATE Users SET money = ?, timeout = ? WHERE name = ?",
-                    (new_valui, functions.get_current_date(), interaction.user.id))
+                    (new_valui, get_current_date(), interaction.user.id))
         con.commit()
         embed = discord.Embed(
             description=f"<@{interaction.user.id}> | `{interaction.user}`\n\nВы получили 100 :coin: Следующую "
@@ -665,7 +735,7 @@ async def shop1(interaction: discord.Interaction, лот: int = -1):
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
 
-@tree.command(name="createl", description="123",  guild=discord.Object(id=guild_id))
+@tree.command(name="createl", description="123", guild=discord.Object(id=guild_id))
 async def create_lot(interaction: discord.Interaction, name: discord.Role, description: str, price: float):
     print(f"{name} \n {description} \n {price}")
     data = [None, name.id, description, price]
@@ -764,7 +834,7 @@ async def on_ready():
         if not member.bot:
             cur.execute("SELECT money FROM Users WHERE name = ?", (member.id,))
             if cur.fetchone() is None:
-                functions.create_profile(member.id)
+                create_profile(member.id)
                 print(member.name)
 
 
@@ -777,7 +847,7 @@ async def on_member_join(member):
     entrie = cur.fetchone()
     if entrie is None:
         embed = discord.Embed(description=f"{member} впервые присоединился к серверу")
-        functions.create_profile(member.id)
+        create_profile(member.id)
     await log_chat.send(embed=embed)
     await member.add_roles(role, reason="(auto)")
 
