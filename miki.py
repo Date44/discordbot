@@ -665,7 +665,7 @@ async def shop1(interaction: discord.Interaction, лот: int = -1):
         await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
 
 
-@tree.command(name="createl", guild=discord.Object(id=guild_id))
+@tree.command(name="createl", description="123",  guild=discord.Object(id=guild_id))
 async def create_lot(interaction: discord.Interaction, name: discord.Role, description: str, price: float):
     print(f"{name} \n {description} \n {price}")
     data = [None, name.id, description, price]
