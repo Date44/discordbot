@@ -502,7 +502,7 @@ async def t4(interaction: discord.Interaction, правило: str, описан
 
 
 @tree.command(name="правила-отправить", guild=discord.Object(id=guild_id))
-async def t5(interaction: discord.Interaction, mode: str = "0"):
+async def t5(interaction: discord.Interaction, mode: str):
     with open("data_file.json", "r", encoding="utf-8") as read_file:
         data = json.load(read_file)
     for i in data.values():
