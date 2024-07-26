@@ -508,7 +508,7 @@ async def t5(interaction: discord.Interaction, mode: str = "0"):
     for i in data.values():
         embed = discord.Embed(color=0x000000)
         if mode == "1":
-            embed.set_footer(f'post{i}')
+            embed.add_field(f'post{i}',  inline=False)
 
         embed.title = "** " + i["rules"] + "**"
         embed.add_field(name=f"**> Описание **", value=f"```" + i["description"] + "```", inline=False)
