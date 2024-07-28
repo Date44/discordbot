@@ -580,7 +580,9 @@ async def check(interaction: discord.Interaction, пользователь: disc
 
         else:
             s1 += "Нечего нету"
-        await interaction.response.send_message(s1, ephemeral=True)
+
+        embed = discord.Embed(description=s1, color=0x1)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label=n1)
