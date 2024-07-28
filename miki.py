@@ -239,11 +239,10 @@ async def create_rules(message):
 async def edit_rules(interaction: discord.Interaction, message: discord.Message):
     if message.author == Bot.user:
         class modal(discord.ui.Modal, title='Edit'):
-            m = discord.ui.TextInput()
+
             l = list()
             for i in message.embeds[0].fields:
-                m.value = i.value
-                m.label = i.name
+                m = discord.ui.TextInput(label=i.name, default=i.value)
 
             async def on_submit(self, interaction1: discord.Interaction):
                 print(self.m)
