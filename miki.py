@@ -235,14 +235,13 @@ async def create_rules(message):
     await channel.send(embed=embed)
 
 
-
 @tree.context_menu(name="edit", guild=discord.Object(id=guild_id))
 async def edit_rules(interaction: discord.Interaction, message: discord.Message):
-
     if message.author == Bot.user:
         class modal(discord.ui.Modal, title='Edit'):
             l = list()
             for i in message.embeds[0].fields:
+                print(i)
                 l.append(discord.ui.TextInput(label=i.name, default=i.value))
 
             async def on_submit(self, interaction1: discord.Interaction):
@@ -250,7 +249,8 @@ async def edit_rules(interaction: discord.Interaction, message: discord.Message)
 
         await interaction.response.send_modal(modal())
     else:
-        await interaction.response.send_message(f"Даная функция работает только на сообщения от <@!{Bot.user.id}>", suppress_embeds=True, ephemeral=True)
+        await interaction.response.send_message(f"Даная функция работает только на сообщения от <@!{Bot.user.id}>",
+                                                suppress_embeds=True, ephemeral=True)
     # text = message.content
     # text = text.split("\n")
     # line = (text[0].replace(f"https://discord.com/channels/{guild_id}/", "")
