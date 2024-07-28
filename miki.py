@@ -43,7 +43,7 @@ def get_current_date():
 def create_db():
     cur.execute("CREATE TABLE Users(name UNIQUE, money, timeout, ban_timeout, mute_timeout, warn)")
     cur.execute("CREATE TABLE Shop(id INTEGER UNIQUE PRIMARY KEY, name, description, price)")
-    cur.execute("CREATE TABLE History(id INTEGER UNIQUE PRIMARY KEY, name, description)")
+    cur.execute("CREATE TABLE History(id INTEGER UNIQUE PRIMARY KEY, name, type, data, rule, moderator)")
 
 
 def create_profile(id_name):
@@ -54,9 +54,9 @@ def create_profile(id_name):
     return cur.fetchone()
 
 
-def add_history(id_name, description):
-    data = [(None, id_name, description), ]
-    cur.executemany("INSERT INTO History VALUES(?, ?, ?)", data)
+def add_history(name, type, data, rule, moderator):
+    data = [(None, name, type, data, rule, moderator), ]
+    cur.executemany("INSERT INTO History VALUES(?, ?, ?, ?, ?, ?)", data)
     con.commit()
 
 
@@ -322,77 +322,66 @@ async def ban(interaction: discord.Interaction, user: discord.Member, время
         description=f"**Пользователь** <@{user.id}> | `{user}` **был забанен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
                     f"\n**Время окончания:  <t:{get_future_time(время)}>**\n **Причина:"
-                    f" {причина}**\n**Коментарий: {коментарий}**",
+                    f" {причина}**",
         color=0x000000)
     await user.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
-    add_history(user.id, f"<@{user.id}> | `{user}` забанен модератором <@{interaction.user.id}>"
-                         f" время окончания:  <t:{get_future_time(время)}>"
-                         f", причина: {причина} коментарий: {коментарий}")
+    add_history(user.id, 1, int(time.time()), причина, interaction.user.id)
     cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (get_future_time(время), user.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-async def unban(interaction: discord.Interaction, пользователь: discord.Member, причина: str, коментарий: str):
+async def unban(interaction: discord.Interaction, user: discord.Member, причина: str, коментарий: str):
     text = "Пользователь не забанен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял бан с "
-                    f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина:"
+                    f"пользователя:** <@{user.id}> | `{user}`\n**Причина:"
                     f" {причина}**\n**Коментарий: {коментарий}**",
         color=0x000000)
-    cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (пользователь.id,))
+    cur.execute("SELECT ban_timeout FROM Users WHERE name = ?", (user.id,))
     if cur.fetchone()[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
-        await пользователь.remove_roles(role_ban, reason=str(причина))
-        cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, пользователь.id))
+        await user.remove_roles(role_ban, reason=str(причина))
+        cur.execute("UPDATE Users SET ban_timeout = ? WHERE name = ?", (0, user.id))
         con.commit()
-        add_history(пользователь.id,
-                    f"<@{пользователь.id}> | `{пользователь}` разблокирован"
-                    f" модератором <@{interaction.user.id}>"
-                    f", причина: {причина} коментарий: {коментарий}")
+        add_history(user.id, 3, int(time.time()), причина, interaction.user.id)
         await log_chat.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-async def mute(interaction: discord.Interaction, пользователь: discord.Member, время: str, причина: str,
+async def mute(interaction: discord.Interaction, user: discord.Member, время: str, причина: str,
                коментарий: str):
     embed = discord.Embed(
-        description=f"**Пользователь** <@{пользователь.id}> | `{пользователь}` **был замьючен на сервере "
+        description=f"**Пользователь** <@{user.id}> | `{user}` **был замьючен на сервере "
                     f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
                     f"\n**время окончания: <t:{get_future_time(время)}>.**\n **Причина:"
                     f" {причина}.**\n**Коментарий: {коментарий}**",
         color=0x000000)
-    await пользователь.add_roles(role_mute, reason=str(причина))
+    await user.add_roles(role_mute, reason=str(причина))
     await log_chat.send(embed=embed)
-    add_history(пользователь.id,
-                f"<@{пользователь.id}> | `{пользователь}` замьючен модератором <@{interaction.user.id}>"
-                f" время окончания:  <t:{get_future_time(время)}>"
-                f", причина: {причина} коментарий: {коментарий}")
-    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time(время), пользователь.id))
+    add_history(user.id, 1, int(time.time()), причина, interaction.user.id)
+    cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time(время), user.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-async def unmute(interaction: discord.Interaction, пользователь: discord.Member, причина: str, коментарий: str):
+async def unmute(interaction: discord.Interaction, user: discord.Member, причина: str, коментарий: str):
     text = "Пользователь не замьючен"
     embed = discord.Embed(
         description=f"**Модератор** <@{interaction.user.id}> | `{interaction.user}`\n **Снял мьют с "
-                    f"пользователя:** <@{пользователь.id}> | `{пользователь}`\n**Причина:"
+                    f"пользователя:** <@{user.id}> | `{user}`\n**Причина:"
                     f" {причина}**\n**Коментарий: {коментарий}**",
         color=0x000000)
-    cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (пользователь.id,))
+    cur.execute("SELECT mute_timeout FROM Users WHERE name = ?", (user.id,))
     if cur.fetchone()[0] == 0:
         await interaction.response.send_message(text, ephemeral=True)
     else:
-        await пользователь.remove_roles(role_mute, reason=str(причина))
-        cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, пользователь.id))
+        await user.remove_roles(role_mute, reason=str(причина))
+        cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (0, user.id))
         con.commit()
-        add_history(пользователь.id,
-                    f"<@{пользователь.id}> | `{пользователь}` разблокирован"
-                    f" модератором <@{interaction.user.id}>"
-                    f", причина: {причина} коментарий: {коментарий}")
+        add_history(user.id, 3, int(time.time()), причина, interaction.user.id)
         await log_chat.send(embed=embed)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -582,7 +571,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
         all_entries = cur.fetchall()
         if len(all_entries) > 0:
             for i in all_entries:
-                s1 += i[2] + "\n"
+                s1 += i + "\n"
         else:
             s1 += "Нечего нету"
         await interaction.response.send_message(s1, ephemeral=True)
