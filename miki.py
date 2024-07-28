@@ -585,7 +585,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
                 s1 += i[2] + "\n"
         else:
             s1 += "Нечего нету"
-        await interaction.response.send_message(description=s1, ephemeral=True)
+        await interaction.response.send_message(s1, ephemeral=True)
 
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label=n1)
