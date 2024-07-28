@@ -581,8 +581,8 @@ async def check(interaction: discord.Interaction, пользователь: disc
                 elif i[2] == 3:
                     s1 += "<:pred:1267205995231187056> "
                 s1 += "<t:" + str(i[3]) + ":d> "
-                s1 += str(i[4]) + " "
-                s1 += "<@!" + str(i[5]) + ">"
+                s1 += "    " + str(i[4]) + " "
+                s1 += "    " +  "<@!" + str(i[5]) + ">"
 
 
         else:
