@@ -571,8 +571,14 @@ async def check(interaction: discord.Interaction, пользователь: disc
         all_entries = cur.fetchall()
         if len(all_entries) > 0:
             for i in all_entries:
-                if i[2] == 1:
-                    s1 += "<:d_:1267194151213076570> "
+                if i[2] == 0:
+                    s1 += "<:pred:1267205995231187056> "
+                elif i[2] == 1:
+                    s1 += "<:ban:1267205964315103394> "
+                elif i[2] == 2:
+                    s1 += "<:mute:1267205986108571700> "
+                elif i[2] == 3:
+                    s1 += "<:pred:1267205995231187056> "
                 s1 += "<t:" + str(i[3]) + ":d> "
                 s1 += str(i[4]) + " "
                 s1 += "<@!" + str(i[5]) + ">"
