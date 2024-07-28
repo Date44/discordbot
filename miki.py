@@ -238,15 +238,18 @@ async def create_rules(message):
 class EditModal(discord.ui.Modal):
     def __init__(self, message: discord.Message):
         super().__init__(title="Edit")
+        self.message = message
         for field in message.embeds[0].fields:
             self.add_item(
                 discord.ui.TextInput(label=field.name, default=field.value, style=discord.TextStyle.paragraph))
 
     async def on_submit(self, interaction: discord.Interaction):
-        response = "You entered:\n"
-        for child in self.children:
-            response += f"{child.label}: {child.value}\n"
-        await interaction.response.send_message(response, ephemeral=True)
+        embed = discord.Embed(color=0x000000)
+        embed.title = "** " + self.message.embeds[0].title + "**"
+        embed.add_field(name=self.children[0].label, value=self.children[0].value, inline=False)
+        embed.add_field(name=self.children[1].label, value=self.children[1].value, inline=True)
+        embed.add_field(name=self.children[2].label, value=self.children[2].value, inline=True)
+        await self.message.edit(embed=embed)
 
 
 @tree.context_menu(name="edit", guild=discord.Object(id=guild_id))
@@ -254,7 +257,7 @@ async def edit_rules(interaction: discord.Interaction, message: discord.Message)
     if message.author == Bot.user:
         await interaction.response.send_modal(EditModal(message))
     else:
-        await interaction.response.send_message(f"Данная функция работает только на сообщения от <@!{bot.user.id}>",
+        await interaction.response.send_message(f"Данная функция работает только на сообщения от <@!{Bot.user.id}>",
                                                 suppress_embeds=True, ephemeral=True)
 
 
