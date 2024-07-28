@@ -570,7 +570,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
         cur.execute("SELECT * FROM History WHERE name == ?", (пользователь.id,))
         all_entries = cur.fetchall()
         if len(all_entries) > 0:
-            s1 += "## История наказаний\n`тип/время` `причина` `модератор`\n"
+            s1 += "## История наказаний\n`   тип/время   ` `   причина   ` `   модератор   `\n"
             for i in all_entries:
                 if i[2] == 0:
                     s1 += "<:pred:1267205995231187056> "
