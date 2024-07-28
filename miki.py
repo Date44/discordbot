@@ -240,7 +240,7 @@ async def edit_rules(interaction: discord.Interaction, message: discord.Message)
     if message.author == Bot.user:
         await interaction.response.send_message(message.embeds[0].fields, ephemeral=True)
     else:
-        await interaction.response.send_message("123", suppress_embeds=True, ephemeral=True)
+        await interaction.response.send_message(f"Даная функция работает только на сообшения от <@!{Bot.user.id}>", suppress_embeds=True, ephemeral=True)
     # text = message.content
     # text = text.split("\n")
     # line = (text[0].replace(f"https://discord.com/channels/{guild_id}/", "")
