@@ -571,7 +571,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
         all_entries = cur.fetchall()
         if len(all_entries) > 0:
             for i in all_entries:
-                s1 += i + "\n"
+                s1 += str(i) + "\n"
         else:
             s1 += "Нечего нету"
         await interaction.response.send_message(s1, ephemeral=True)
