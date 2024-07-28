@@ -245,7 +245,7 @@ class EditModal(discord.ui.Modal):
 
     async def on_submit(self, interaction: discord.Interaction):
         embed = discord.Embed(color=0x000000)
-        embed.title = "** " + self.message.embeds[0].title + "**"
+        embed.title = self.message.embeds[0].title
         embed.add_field(name=self.children[0].label, value=self.children[0].value, inline=False)
         embed.add_field(name=self.children[1].label, value=self.children[1].value, inline=True)
         embed.add_field(name=self.children[2].label, value=self.children[2].value, inline=True)
