@@ -241,7 +241,7 @@ async def edit_rules(interaction: discord.Interaction, message: discord.Message)
         class modal(discord.ui.Modal, title='Edit'):
             l = list()
             for i in message.embeds[0].fields:
-                print(i)
+                print(i.name)
                 l.append(discord.ui.TextInput(label=i.name, default=i.value))
 
             async def on_submit(self, interaction1: discord.Interaction):
