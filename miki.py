@@ -238,14 +238,17 @@ async def create_rules(message):
 @tree.context_menu(name="edit", guild=discord.Object(id=guild_id))
 async def edit_rules(interaction: discord.Interaction, message: discord.Message):
     if message.author == Bot.user:
-        class modal(discord.ui.Modal, title='Edit'):
-
-            l = dict()
-            for j, i in message.embeds[0].fields:
-                l[f"m{j}"] = discord.ui.TextInput(label=i.name, default=i.value)
+        class modal(discord.ui.Modal):
+            def __init__(self):
+                super().__init__(title="Edit")
+                for i in message.embeds[0].fields:
+                    self.add_item(discord.ui.TextInput(label=i.name, default=i.value))
 
             async def on_submit(self, interaction1: discord.Interaction):
-                print(self.l)
+                response = "You entered:\n"
+                for child in self.children:
+                    response += f"{child.label}: {child.value}\n"
+                await interaction.response.send_message(response)
 
         await interaction.response.send_modal(modal())
     else:
