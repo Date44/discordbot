@@ -242,7 +242,7 @@ async def edit_rules(interaction: discord.Interaction, message: discord.Message)
 
             l = list()
             for i in message.embeds[0].fields:
-                m = discord.ui.TextInput(label=i.name, default=i.value)
+                l.append(discord.ui.TextInput(label=i.name, default=i.value))
 
             async def on_submit(self, interaction1: discord.Interaction):
                 print(self.m)
