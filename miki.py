@@ -235,10 +235,20 @@ async def create_rules(message):
     await channel.send(embed=embed)
 
 
+
 @tree.context_menu(name="edit", guild=discord.Object(id=guild_id))
 async def edit_rules(interaction: discord.Interaction, message: discord.Message):
+
     if message.author == Bot.user:
-        await interaction.response.send_message(message.embeds[0].fields, ephemeral=True)
+        class modal(discord.ui.Modal, title='Edit'):
+            l = list()
+            for i in message.embeds[0].fields:
+                l.append(discord.ui.TextInput(label=i.name, default=i.value))
+
+            async def on_submit(self, interaction1: discord.Interaction):
+                print(self.l)
+
+        await interaction.response.send_modal(modal())
     else:
         await interaction.response.send_message(f"Даная функция работает только на сообщения от <@!{Bot.user.id}>", suppress_embeds=True, ephemeral=True)
     # text = message.content
@@ -585,8 +595,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
                 s1 += i[2] + "\n"
         else:
             s1 += "Нечего нету"
-        embed = discord.Embed(description=s1, color=0x1)
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await interaction.response.send_message(description=s1, ephemeral=True)
 
     view = View()
     button1 = Button(style=discord.ButtonStyle.gray, label=n1)
