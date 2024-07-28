@@ -571,7 +571,13 @@ async def check(interaction: discord.Interaction, пользователь: disc
         all_entries = cur.fetchall()
         if len(all_entries) > 0:
             for i in all_entries:
-                s1 += str(i) + "\n"
+                if i[1] == 1:
+                    s1 += "<:d_:1267194151213076570> "
+                s1 += "<t:" + i[2] + ":d> "
+                s1 += i[3] + " "
+                s1 += "<@!" + i[4] + ">"
+
+
         else:
             s1 += "Нечего нету"
         await interaction.response.send_message(s1, ephemeral=True)
