@@ -235,43 +235,27 @@ async def create_rules(message):
     await channel.send(embed=embed)
 
 
+class EditModal(discord.ui.Modal):
+    def __init__(self, message: discord.Message):
+        super().__init__(title="Edit")
+        for field in message.embeds[0].fields:
+            self.add_item(
+                discord.ui.TextInput(label=field.name, default=field.value, style=discord.TextStyle.paragraph))
+
+    async def on_submit(self, interaction: discord.Interaction):
+        response = "You entered:\n"
+        for child in self.children:
+            response += f"{child.label}: {child.value}\n"
+        await interaction.response.send_message(response, ephemeral=True)
+
+
 @tree.context_menu(name="edit", guild=discord.Object(id=guild_id))
 async def edit_rules(interaction: discord.Interaction, message: discord.Message):
     if message.author == Bot.user:
-        class modal(discord.ui.Modal):
-            def __init__(self):
-                super().__init__(title="Edit")
-                for i in message.embeds[0].fields:
-                    self.add_item(discord.ui.TextInput(label=i.name, default=i.value))
-
-            async def on_submit(self, interaction1: discord.Interaction):
-                response = "You entered:\n"
-                for child in self.children:
-                    response += f"{child.label}: {child.value}\n"
-                await interaction.response.send_message(response)
-
-        await interaction.response.send_modal(modal())
+        await interaction.response.send_modal(EditModal(message))
     else:
-        await interaction.response.send_message(f"Даная функция работает только на сообщения от <@!{Bot.user.id}>",
+        await interaction.response.send_message(f"Данная функция работает только на сообщения от <@!{bot.user.id}>",
                                                 suppress_embeds=True, ephemeral=True)
-    # text = message.content
-    # text = text.split("\n")
-    # line = (text[0].replace(f"https://discord.com/channels/{guild_id}/", "")
-    #         .replace("!правила-изменение", "")
-    #         .replace(" ", "")
-    #         .split('/'))
-    # del text[0]
-    # channel = Bot.get_channel(int(line[0]))
-
-    # embed = discord.Embed(color=0x000000)
-    # embed.title = f"**{text[0]}**"
-    # embed.set_footer(text=f"{text[7]}")
-    # embed.add_field(name=f"**> {text[1]} **", value=f"```{text[2]}```", inline=False)
-    # embed.add_field(name=f"**> {text[3]} **", value=f"```{text[4]}```", inline=True)
-    # embed.add_field(name=f"**> {text[5]} **", value=f"```{text[6]}```", inline=True)
-    # async for i in channel.history():
-    #     if i.id == int(line[1]):
-    #         await i.edit(embed=embed)
 
 
 async def test(message):
