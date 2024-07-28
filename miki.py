@@ -571,11 +571,11 @@ async def check(interaction: discord.Interaction, пользователь: disc
         all_entries = cur.fetchall()
         if len(all_entries) > 0:
             for i in all_entries:
-                if i[1] == 1:
+                if i[2] == 1:
                     s1 += "<:d_:1267194151213076570> "
-                s1 += "<t:" + str(i[2]) + ":d> "
-                s1 += str(i[3]) + " "
-                s1 += "<@!" + str(i[4]) + ">"
+                s1 += "<t:" + str(i[3]) + ":d> "
+                s1 += str(i[4]) + " "
+                s1 += "<@!" + str(i[5]) + ">"
 
 
         else:
