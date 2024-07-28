@@ -573,9 +573,9 @@ async def check(interaction: discord.Interaction, пользователь: disc
             for i in all_entries:
                 if i[1] == 1:
                     s1 += "<:d_:1267194151213076570> "
-                s1 += "<t:" + i[2].__str__ + ":d> "
-                s1 += i[3].__str__  + " "
-                s1 += "<@!" + i[4].__str__  + ">"
+                s1 += "<t:" + str(i[2]) + ":d> "
+                s1 += str(i[3]) + " "
+                s1 += "<@!" + str(i[4]) + ">"
 
 
         else:
