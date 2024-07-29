@@ -361,7 +361,7 @@ async def mute(interaction: discord.Interaction, user: discord.Member, врем�
         color=0x000000)
     await user.add_roles(role_mute, reason=str(причина))
     await log_chat.send(embed=embed)
-    add_history(user.id, 1, int(time.time()), причина, interaction.user.id)
+    add_history(user.id, 2, int(time.time()), причина, interaction.user.id)
     cur.execute("UPDATE Users SET mute_timeout = ? WHERE name = ?", (get_future_time(время), user.id))
     con.commit()
     await interaction.response.send_message(embed=embed, ephemeral=True)
@@ -570,7 +570,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
         cur.execute("SELECT * FROM History WHERE name == ?", (пользователь.id,))
         all_entries = cur.fetchall()
         if len(all_entries) > 0:
-            s1 += "## История наказаний\n`тип/время` `причина` `модератор`\n"
+            s1 += "## История наказаний\n`  тип/время  причина  модератор`\n"
             for i in all_entries:
                 if i[2] == 0:
                     s1 += "<:pred:1267205995231187056> "
@@ -580,9 +580,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
                     s1 += "<:mute:1267205986108571700> "
                 elif i[2] == 3:
                     s1 += "<:pred:1267205995231187056> "
-                s1 += "<t:" + str(i[3]) + ":d> "
-                s1 += "    " + str(i[4]) + " "
-                s1 += "    " + "<@!" + str(i[5]) + ">\n"
+                s1 += f"<t:{str(i[3])}:d>  {str(i[4])}  <@!{str(i[5])}>\n"
                 print(s1)
 
 
