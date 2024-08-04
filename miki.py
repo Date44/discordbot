@@ -130,9 +130,10 @@ else:
     con = sqlite3.connect("Miki.db")
     cur = con.cursor()
 
-if not os.path.exists('data_file.json'):
+if not os.path.exists("data_file.json"):
     with open("data_file.json", "w", encoding="utf-8") as write_file:
-        json.dump("", write_file)
+        json.dump({}, write_file, indent=4)
+
 
 if not os.path.exists('config.cfg'):
     create_config()
@@ -476,8 +477,6 @@ async def reward(interaction: discord.Interaction):
 
 @tree.command(name="правила", guild=discord.Object(id=guild_id))
 async def t4(interaction: discord.Interaction, правило: str, описание: str, наказание: str, длительность: str):
-
-
     with open("data_file.json", "r", encoding="utf-8") as read_file:
         data = json.load(read_file)
     data["post" + str(len(data) + 1)] = {
@@ -487,7 +486,7 @@ async def t4(interaction: discord.Interaction, правило: str, описан
         "duration": длительность
     }
     with open("data_file.json", "w", encoding="utf-8") as write_file:
-        json.dump(data, write_file)
+        json.dump(data, write_file, indent=4)
     embed = discord.Embed(color=0x000000)
     embed.title = "** " + правило + "**"
     embed.add_field(name=f"**> Описание **", value=f"```" + описание + "```", inline=False)
