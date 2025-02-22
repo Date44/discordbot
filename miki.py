@@ -596,14 +596,15 @@ async def check(interaction: discord.Interaction, пользователь: disc
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     view = View()
-    button1 = Button(style=discord.ButtonStyle.gray, label=n1)
-    view.add_item(button1)
-    button1.callback = mod_ban
-    button2 = Button(style=discord.ButtonStyle.gray, label=n2)
-    view.add_item(button2)
-    button2.callback = mod_mute
-    button3 = Button(style=discord.ButtonStyle.gray, label='Предупреждение')
-    view.add_item(button3)
+    if interaction != пользователь:
+        button1 = Button(style=discord.ButtonStyle.gray, label=n1)
+        view.add_item(button1)
+        button1.callback = mod_ban
+        button2 = Button(style=discord.ButtonStyle.gray, label=n2)
+        view.add_item(button2)
+        button2.callback = mod_mute
+        button3 = Button(style=discord.ButtonStyle.gray, label='Предупреждение')
+        view.add_item(button3)
     button4 = Button(style=discord.ButtonStyle.gray, label='История наказаний', row=1)
     view.add_item(button4)
     button4.callback = history
