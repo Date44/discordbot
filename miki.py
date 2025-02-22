@@ -596,7 +596,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     view = View()
-    if interaction != пользователь:
+    if interaction.user.id != пользователь.id:
         button1 = Button(style=discord.ButtonStyle.gray, label=n1)
         view.add_item(button1)
         button1.callback = mod_ban
