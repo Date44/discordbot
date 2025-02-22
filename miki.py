@@ -586,7 +586,6 @@ async def check(interaction: discord.Interaction, пользователь: disc
                 elif i[2] == 3:
                     s1 += "<:pred:1267205995231187056> "
                 s1 += f"<t:{str(i[3])}:d>⠀{str(i[4])}⠀⠀⠀<@!{str(i[5])}>\n"
-                print(s1)
 
 
         else:
@@ -639,7 +638,6 @@ async def event1(interaction: discord.Interaction, ивент: str, ссылка
         if interaction2.user.id == interaction1.user.id:
             await interaction2.response.send_message(embed=embed3)
             await channel.send(embed=embed1)
-            print(interaction2.message.content)
             await voice.delete()
         else:
             await interaction2.response.send_message("123")
