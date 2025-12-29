@@ -327,7 +327,7 @@ async def ban(interaction: discord.Interaction, user: discord.Member, время
         description=f"**Пользователь** <@{user.id}> | `{user}` **был забанен на сервере.**"
                     f"\n**Модератор:** <@{interaction.user.id}> | `{interaction.user}`."
                     f"\n**Время окончания:**  <t:{get_future_time(время)}>"
-                    f"\n**Причина:{причина}**",
+                    f"\n**Причина:{причина}**"
                     f"\n**Комментарий:{комментарий}**",
         color=0x000000)
     await user.add_roles(role_ban, reason=str(причина))
