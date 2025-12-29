@@ -586,7 +586,7 @@ async def check(interaction: discord.Interaction, пользователь: disc
                     s1 += "<:mute:1267205986108571700> "
                 elif i[2] == 3:
                     s1 += "<:pred:1267205995231187056> "
-                s1 += f"<t:{str(i[3])}:d>⠀{str(i[4])}⠀⠀⠀<@!{str(i[5])}>\n"
+                s1 += f"<t:{str(i[3])}:d> ⠀{str(i[4])}⠀⠀⠀<@!{str(i[5])}>\n"
 
 
         else:
