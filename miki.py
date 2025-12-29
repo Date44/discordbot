@@ -322,12 +322,13 @@ async def info(interaction: discord.Interaction):
 
 
 async def ban(interaction: discord.Interaction, user: discord.Member, время: str, причина: str,
-              коментарий: str):
+              комментарий: str):
     embed = discord.Embed(
-        description=f"**Пользователь** <@{user.id}> | `{user}` **был забанен на сервере "
-                    f"модератором** <@{interaction.user.id}> | `{interaction.user}`."
-                    f"\n**Время окончания:  <t:{get_future_time(время)}>**\n **Причина:"
-                    f" {причина}**",
+        description=f"**Пользователь** <@{user.id}> | `{user}` **был забанен на сервере.**"
+                    f"\n**Модератор:** <@{interaction.user.id}> | `{interaction.user}`."
+                    f"\n**Время окончания:**  <t:{get_future_time(время)}>"
+                    f"\n**Причина:{причина}**",
+                    f"\n**Комментарий:{комментарий}**"
         color=0x000000)
     await user.add_roles(role_ban, reason=str(причина))
     await log_chat.send(embed=embed)
